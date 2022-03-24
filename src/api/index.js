@@ -1,26 +1,77 @@
 import requests from "./request";
 
 // 用户
-export const UserInfoListFindAll = (pageNum, pageSize) => requests({
-    url: (`http://localhost:8082/userInfo/findAll?pageNum=${pageNum}&pageSize=${pageSize}`),
+export const UsergetAll = (pageNum, pageSize) => requests({
+    url: (`http://localhost:8083/user/getAllUser?pageNum=${pageNum}&pageSize=${pageSize}`),
     method: 'get'
 });
-export const UserInfoFindById = (userId) => requests({
-    url: (`http://localhost:8082/userInfo/findById?userId=${userId}`),
+
+export const UsergetById = (uId) => requests({
+    url: (`http://localhost:8083/user/getUserById?uId=${uId}`),
     method: 'get'
 });
-export const UserInfoAdd = (name, pwd, phone, email, redate) => requests({
-    url: (`http://localhost:8082/userInfo/addUser?userName=${name}&userPwd=${pwd}&userPhone=${phone}&userEmail=${email}&userRedate=${redate}`),
+
+export const UsergetByName = (userName) => requests({
+    url: (`http://localhost:8083/user/getUserByName?userName=${userName}`),
     method: 'get'
 });
-export const UserRemove = (userId) => requests({
-    url: (`http://localhost:8082/userInfo/delete?userId=${userId}`),
-    method: "get"
-})
-export const UserInfoUpdate = (userId, name, pwd, phone, email, root) => requests({
-    url: (`http://localhost:8082/userInfo/update?userId=${userId}&userName=${name}&userPwd=${pwd}&userPhone=${phone}&userEmail=${email}&userRoot=${root}`),
-    method: "get"
-})
+
+export const UserRegsiter = (userName, userPwd, userSex, userPhone, userEmail,userIdentity, uCreateTime) => requests({
+    method: 'post',
+    url: 'http://localhost:8083/user/register',
+    data: {
+        userName : userName,
+        userPwd : userPwd,
+        userSex : userSex,
+        userPhone : userPhone,
+        userEmail : userEmail,
+        userIdentity : userIdentity,
+        uCreateTime : uCreateTime
+    },
+    transformRequest: [
+      function (data) {
+        let ret = ''
+        for (let it in data) {
+          // 如果 data[it] 是一个对象, 需要先使用 JSON.stringify, 再使用 encode
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        ret = ret.substring(0, ret.lastIndexOf('&'))
+        return ret
+      }
+    ],
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+});
+
+export const UserUpdate = (uId, userName, userPwd, userSex, userPhone, userEmail,userIdentity, uCreateTime) => requests({
+    method: 'post',
+    url: 'http://localhost:8083/user/updateUser',
+    data: {
+        uId : uId,
+        userName : userName,
+        userPwd : userPwd,
+        userSex : userSex,
+        userPhone : userPhone,
+        userEmail : userEmail,
+        userIdentity : userIdentity,
+        uCreateTime : uCreateTime
+    },
+    transformRequest: [
+      function (data) {
+        let ret = ''
+        for (let it in data) {
+          // 如果 data[it] 是一个对象, 需要先使用 JSON.stringify, 再使用 encode
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        ret = ret.substring(0, ret.lastIndexOf('&'))
+        return ret
+      }
+    ],
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+});
 
 // 商品
 export const ProductInfoFindAll = (pageNum, pageSize) => requests({

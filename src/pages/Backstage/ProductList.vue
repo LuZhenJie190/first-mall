@@ -157,7 +157,7 @@ import {
   ProductFindByCore,
 } from "../../api/index.js";
 import { MessageBox } from "element-ui";
-import HeaderTop from "../../components/Backstage/HeaderTop.vue";
+import HeaderTop from "../../components/Backstage/BackstageTop.vue";
 
 const COS = require("cos-js-sdk-v5");
 // 填写自己腾讯云cos中的key和id (密钥)

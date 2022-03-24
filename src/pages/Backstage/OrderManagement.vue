@@ -122,7 +122,7 @@ import {
   OrderUpdate,
   OrderRemove,
 } from "../../api/index";
-import HeaderTop from '../../components/Backstage/HeaderTop.vue';
+import HeaderTop from '../../components/Backstage/BackstageTop.vue';
 export default {
   components: { HeaderTop },
   name: "OrderManagement",

@@ -1,19 +1,18 @@
 <template>
   <div>
-    <header-top @searchInput="searchInput" :inputValue="uvalue" />
-    <el-table :data="tableData" border stripe style="width: 90%; margin: auto">
-      <el-table-column prop="userId" label="ID" width="100"> </el-table-column>
-      <el-table-column prop="userName" label="用户名" width="150">
-      </el-table-column>
-      <el-table-column prop="userPwd" label="密码" width="160">
-      </el-table-column>
-      <el-table-column prop="userEmail" label="邮箱" width="190">
-      </el-table-column>
-      <el-table-column prop="userPhone" label="手机号" width="170">
-      </el-table-column>
-      <el-table-column prop="userRedate" label="注册时间" width="204">
-      </el-table-column>
-      <el-table-column label="操作" width="150">
+    <!-- 搜索 -->
+    <backstage-search @searchInput="searchInput" :inputValue="uvalue" />
+    <el-table :data="tableData" border stripe style="width: 95%; margin: auto">
+      <el-table-column type="selection" width="50"/>
+      <el-table-column prop="uId" label="ID" width="80" fixed="left"/> 
+      <el-table-column prop="userIdentity" label="身份" width="120"/>
+      <el-table-column prop="userName" label="用户名" width="150"/>
+      <el-table-column prop="userPwd" label="密码" width="160"/>
+      <el-table-column prop="userSex" label="性别" width="100"/>
+      <el-table-column prop="userEmail" label="邮箱" width="180"/>
+      <el-table-column prop="userPhone" label="手机号" width="170"/>
+      <el-table-column prop="uCreateTime" label="注册时间" width="180"/>
+      <el-table-column label="操作" width="150" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="update(scope.$index)">修改</el-button>
           <el-button
@@ -25,108 +24,140 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      background
-      layout="prev, pager, next ,total"
-      :total="total"
-      :current-page="curPage"
-      :page-count="pageNum"
-      :page-size="PageSize"
-      @current-change="paper"
-      v-show="pageShow"
-    >
-    </el-pagination>
+
+    <!-- 分页 -->
+    <div class="pagination">
+      <paging @pageInfo="pageInfo" :pageShow="pageShow"></paging>
+    </div>
+  
     <!-- 修改模态框 -->
     <div class="model-update" v-show="modelShow">
       <div class="model-bg"></div>
       <div class="model-context">
         <i class="el-icon-circle-close" @click="mShow"></i>
-        <el-form
-          :label-position="labelPosition"
-          label-width="100px"
-          :model="form"
-        >
-          <el-form-item label="id">
-            <el-input v-model="form.id" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="用户名：">
-            <el-input v-model="form.name"></el-input>
-          </el-form-item>
-          <el-form-item label="密码：">
-            <el-input v-model="form.pwd"></el-input>
-          </el-form-item>
-          <el-form-item label="邮箱：">
-            <el-input v-model="form.email"></el-input>
-          </el-form-item>
-          <el-form-item label="手机号码：">
-            <el-input v-model="form.phone"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button class="add" type="primary" @click="updateInfo()"
-              >点击修改</el-button
-            >
-          </el-form-item>
-        </el-form>
+        <div class="form">
+              <el-form 
+    :label-position="labelPosition"
+    label-width="100px" 
+    :model="form" 
+    :rules="rules"
+    ref="form">
+      <el-form-item label="用户名：" prop="userName">
+        <el-input v-model="form.userName"></el-input>
+      </el-form-item>
+      <el-form-item label="密码：" prop="userPwd">
+        <el-input v-model="form.userPwd"></el-input>
+      </el-form-item>
+      <el-form-item label="性别：" prop="userSex">
+        <el-select 
+            v-model="form.userSex"
+            placeholder="请选择"
+           >
+                <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                >
+                </el-option>
+        </el-select>
+      </el-form-item> 
+      <el-form-item label="手机号码：" prop="userPhone">
+        <el-input v-model="form.userPhone"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱：" prop="userEmail">
+        <el-input v-model="form.userEmail"></el-input>
+      </el-form-item>
+      <el-form-item label="注册时间：">
+        <el-input v-model="form.uCreateTime" :disabled="true"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button  type="primary" @click="submitForm('form')">确认修改</el-button>
+      </el-form-item>
+    </el-form>
+        </div>
+        
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import HeaderTop from "../../components/Backstage/HeaderTop.vue";
+
 import {
-  UserInfoListFindAll,
   UserRemove,
-  UserInfoFindById,
-  UserInfoUpdate,
+  UsergetById,
+  UserUpdate,
+  UsergetByName,
 } from "../../api/index";
 import { MessageBox } from "element-ui";
+import Paging from '../../components/Backstage/Paging.vue';
+import BackstageSearch from '../../components/Backstage/BackstageSearch.vue';
 export default {
-  components: { HeaderTop },
+  components: { Paging, BackstageSearch },
+  inject:['reload'],
   name: "UserList",
   data() {
     return {
-      uvalue: "请输入手机号",
+      uvalue: "请输入手机号/用户名",
       search: "",
       tableData: [],
-      total: 0,
-      curPage: 1,
-      pageNum: 1,
-      PageSize: 5,
-      labelPosition: "right",
       pageShow: true,
-      form: {
-        id: "",
-        name: "",
-        pwd: "",
-        email: "",
-        phone: "",
-        retime: "",
-        root: "",
-      },
       modelShow: false,
+      options: [
+                {value: 1, label: '男'},
+                {value: 0, label: '女'}
+            ],
+            labelPosition: "right",
+            form: {
+                uId:"",
+                userName: "",
+                userPwd: "",
+                userSex:"",
+                userPhone: "",
+                userEmail: "",
+                userIdentity:"0",
+                uCreateTime: "",
+            },
+            rules: {
+                userName: [
+                    { required: true, message: '请输入用户名' , trigger: 'blur'},
+                    { min: 3, max: 8, message: '3 到 8 个字符' , trigger: 'blur'}
+                ],
+                userPwd: [
+                    { required: true, message: '请输入密码' , trigger: 'blur'},
+                    { min: 6, max: 20, message: '不少于6位数字或字母' , trigger: 'blur'}
+                ],
+                userSex: [
+                    { required: true, message: '请选择性别' , trigger: 'change'},
+                ],
+                userPhone: [
+                    { required: true, message: '请输入手机号' , trigger: 'blur'},
+                    { min: 11, max:11, message: '请输入11位数的手机号' , trigger: 'blur'}
+                ],
+                userEmail: [
+                    { required: true, message: '请输入邮箱',trigger: 'blur'},
+                    { min: 6, max: 20, message: '不少于6位',trigger: 'blur'}
+                ],
+            }
+
     };
   },
   created() {
-    this.getUserInfoList();
+    this.pageInfo();
   },
   methods: {
     // 获取数据展示
-    getUserInfoList() {
-      UserInfoListFindAll(this.pageNum, this.PageSize).then((res) => {
-        this.tableData = res.list;
-        this.total = res.total;
-      });
+      pageInfo(val){  
+        this.tableData=val;
     },
-    // 把当前显示页数赋值给pageNum
-    paper(curPage) {
-      this.pageNum = curPage;
-      this.getUserInfoList();
-    },
+
+    //删除行
     removeList(uid) {
       // 拿到表格行的下标，把它赋值给数组的下标，实现根据对象的id删除
       const index = uid;
-      const tableIndex = this.tableData[index].userId;
+      const tableIndex = this.tableData[index].uId;
+      console.log(tableIndex);
       MessageBox.confirm("此操作将永久删除用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -136,10 +167,8 @@ export default {
           // 删除操作
           UserRemove(tableIndex);
           MessageBox.alert("删除成功");
-          // 重新获取数据
-          setTimeout(() => {
-            this.getUserInfoList();
-          }, 500);
+          // 刷新页面
+         this.reload();
         })
         .catch(() => {
           MessageBox.alert("已取消操作");
@@ -149,14 +178,17 @@ export default {
     update(uid) {
       this.modelShow = true;
       var index = uid;
-      var tableIndex = this.tableData[index].userId;
-      UserInfoFindById(tableIndex).then((res) => {
-        console.log(res);
-        this.form.id = res[0].userId;
-        this.form.name = res[0].userName;
-        this.form.pwd = res[0].userPwd;
-        this.form.phone = res[0].userPhone;
-        this.form.email = res[0].userEmail;
+      var tableIndex = this.tableData[index].uId;
+      UsergetById(tableIndex).then((res) => {
+        this.form.uId = res.uId;
+        this.form.userName = res.userName;
+        this.form.userPwd = res.userPwd;
+        this.form.userSex = res.userSex;
+        this.form.userPhone = res.userPhone;
+        this.form.userEmail = res.userEmail;
+        this.form.userIdentity = res.userIdentity;
+        this.form.uCreateTime = res.uCreateTime;
+
       });
     },
     // 模态框隐藏
@@ -164,35 +196,40 @@ export default {
       this.modelShow = false;
     },
     // 点击修改更新数据
-    updateInfo() {
-      let { id, name, pwd, phone, email, root } = this.form;
-      // 判读有空的就返回
-      if (name == "" || pwd == "" || phone == "" || email == "") {
-        MessageBox.alert("不能为空");
-      } else {
-        // 更新数据
-        UserInfoUpdate(id, name, pwd, phone, email, root);
-        MessageBox.alert("修改成功");
-        this.modelShow = false;
-        //刷新数据
-        this.timer = setInterval(() => {
-          this.getUserInfoList();
-        }, 200);
-      }
+    submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+            if (valid) {
+              let {uId ,userName, userPwd, userSex, userPhone, userEmail,userIdentity, uCreateTime} = this.form;
+              UserUpdate(uId ,userName, userPwd, userSex, userPhone, userEmail,userIdentity, uCreateTime).then((res) => {
+                  
+                if (res == "修改成功") {
+                MessageBox.alert(res);
+                //关闭模态框
+                this.modelShow=false;
+                //刷新数据
+                this.reload();
+                }
+                
+              });
+            } else {
+                return false;
+            }            
+        }); 
     },
     // 接收子组件的数据
     searchInput(val) {
       this.search = val;
       if (this.search != "") {
-        UserInfoFindById(this.search).then((res) => {
+        UsergetByName(this.search).then((res) => {
           this.tableData = res;
           this.pageShow = false;
         });
       } else {
-        this.getUserInfoList();
+        this.reload();
         this.pageShow = true;
       }
     },
+
   },
 };
 </script>
@@ -203,33 +240,34 @@ export default {
   background: #ccc !important;
   color: #000 !important;
 }
-
-.el-pagination {
+.pagination {
   position: absolute;
-  top: 520px;
+  top: 650px;
   left: 700px;
 }
 .model-bg {
   width: 100%;
   height: 100%;
   background: #ccc;
-  opacity: 0.5;
+  opacity: 0.8;
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 4;
 }
 .model-context {
   width: 40%;
-  height: 450px;
+  height: 500px;
   background: #fff;
   border-radius: 10px;
   position: absolute;
-  top: 120px;
+  top: 100px;
   left: 500px;
+  z-index: 5;
 }
-.model-context .el-form {
+.model-context .form {
   position: relative;
-  top: 60px;
+  top: 45px;
   right: 50px;
   width: 60%;
   margin: auto;
@@ -243,7 +281,7 @@ export default {
   cursor: pointer;
 }
 .model-context i:hover {
-  color: #409eff;
+  color: #F56C6C;
 }
 .add {
   margin-left: 70px;

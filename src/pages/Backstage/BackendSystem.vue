@@ -2,14 +2,7 @@
   <div class="backend-system">
     <el-container>
       <el-header>
-        <div class="sys-header">
-          <h1>数码购后台管理系统</h1>
-          <span class="now-time">北京时间 : {{ nowTime }}</span>
-          <span class="quit">
-            <p>您好，管理员名称</p>
-            <el-button type="primary" plain size="mini" @click="backTo">退出</el-button>
-          </span>
-        </div>
+          <backstage-top/>
       </el-header>
       <el-container>
         <el-aside>
@@ -68,34 +61,15 @@
 </template>
 
 <script>
-import { getnowDate } from "../../utils/index";
+import BackstageTop from '../../components/Backstage/BackstageTop.vue';
 export default {
+  components: { BackstageTop },
   name: "BackendSystem",
   data() {
     return {
       vrouter: true,
       isCollapse: false,
-      nowTime: 0,
     };
-  },
-  created() {
-    this.getTime();
-  },
-  beforeDestroy() {
-    clearInterval(this.timer);
-  },
-  methods: {
-    // 获取当前时间
-    getTime() {
-      this.timer = setInterval(() => {
-        this.nowTime = getnowDate();
-      }, 100);
-    },
-    backTo(){
-      this.$router.push({
-        path:"/Index"
-      })
-    }
   },
 };
 </script>
@@ -110,43 +84,26 @@ html {
   min-height: 400px;
 }
 
-.now-time {
-  width: 250px;
-  line-height: 60px;
-}
 .el-header {
-  margin: 5px 10px 0px 10px;
+  margin: 5px 5px 0px 5px;
   background: #fff;
-  border-radius: 10px;
-}
-.sys-header {
-  display: flex;
-  justify-content: space-between;
-}
-.sys-header h1 {
-  padding: 15px 0px 10px 0px;
-}
-.quit {
-  display: flex;
-  align-items: center;
-}
-.quit p {
-  margin-right: 15px;
+  border-radius: 5px;
 }
 
+
 .el-aside {
-  width: 250px !important;
-  height: 88vh;
-  margin: 10px;
-  padding: 25px;
+  width: 230px !important;
+  height: 90vh;
+  margin: 5px 5px 0px 5px;
+  padding: 15px;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 .el-main {
   background: #fff;
-  margin: 10px 10px 10px 0px;
-  padding: 50px 10px 10px 10px;
-  border-radius: 10px;
+  margin: 5px 5px 0px 0px;
+  padding: 20px 10px 10px 10px;
+  border-radius: 5px;
 }
 .el-menu {
   border: none;

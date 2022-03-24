@@ -1,8 +1,7 @@
 <template>
   <div id="app">
-    
      <nav-menu v-if="!$route.meta.showNav"/>
-     <router-view/>
+     <router-view v-if="isRouterAlive"/>
       <div class="back">
         <el-button v-show="backTop" @click="goback"><i class="el-icon-top"></i></el-button>
       <!-- <h1 v-show="backTop" @click="goback">回到顶部</h1> -->
@@ -18,9 +17,15 @@ import Index from './pages/Reception/Index.vue';
 export default {
   components: { Index, NavMenu },
   name: "App",
+  provide(){
+    return{
+      reload:this.reload
+    }
+  },
     data() {
     return {
       backTop: false,
+      isRouterAlive:true
     };
   },
    mounted() {
@@ -28,7 +33,8 @@ export default {
     window.addEventListener("scroll", this.scrollToTop, true);
   },
   methods: {
-        goback() {
+    //返回顶部
+    goback() {
         // 获取滚动了多少
       let top = document.documentElement.scrollTop || document.body.scrollTop;
     //   设置定时器 滚动效果
@@ -48,6 +54,13 @@ export default {
           this.backTop=false
       }
     },
+
+    reload(){
+      this.isRouterAlive = false;
+      this.$nextTick(function(){
+        this.isRouterAlive = true;
+      })
+    }
   },
 
 };
