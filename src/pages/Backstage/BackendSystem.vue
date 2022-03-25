@@ -104,6 +104,8 @@ html {
   margin: 5px 5px 0px 0px;
   padding: 20px 10px 10px 10px;
   border-radius: 5px;
+  height: 90vh;
+  overflow: auto;
 }
 .el-menu {
   border: none;

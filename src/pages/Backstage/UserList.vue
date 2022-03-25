@@ -1,8 +1,13 @@
 <template>
   <div>
     <!-- 搜索 -->
-    <backstage-search @searchInput="searchInput" :inputValue="uvalue" />
-    <el-table :data="tableData" border stripe style="width: 95%; margin: auto">
+    <backstage-search @searchInput="searchInput" :inputValue="uvalue" :multipleSelection="multipleSelection"/>
+    <el-table 
+    :data="tableData" 
+    border stripe style="width: 95%; margin: auto"
+    ref="multipleTable"
+    height="485"
+    @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50"/>
       <el-table-column prop="uId" label="ID" width="80" fixed="left"/> 
       <el-table-column prop="userIdentity" label="身份" width="120"/>
@@ -27,7 +32,7 @@
 
     <!-- 分页 -->
     <div class="pagination">
-      <paging @pageInfo="pageInfo" :pageShow="pageShow"></paging>
+      <paging @pNum="pNum"  :pageInfo="pageInfo"></paging>
     </div>
   
     <!-- 修改模态框 -->
@@ -85,6 +90,7 @@
 <script>
 
 import {
+  UsergetAll,
   UserRemove,
   UsergetById,
   UserUpdate,
@@ -99,57 +105,108 @@ export default {
   name: "UserList",
   data() {
     return {
+     
       uvalue: "请输入手机号/用户名",
       search: "",
       tableData: [],
-      pageShow: true,
+      pageInfo:{
+        pageNum:1,
+        pageSize:8,
+        pageTotal:0,
+        pageShow: true,
+      },
+     
+      ppp:[],
       modelShow: false,
       options: [
                 {value: 1, label: '男'},
                 {value: 0, label: '女'}
             ],
-            labelPosition: "right",
-            form: {
-                uId:"",
-                userName: "",
-                userPwd: "",
-                userSex:"",
-                userPhone: "",
-                userEmail: "",
-                userIdentity:"0",
-                uCreateTime: "",
-            },
-            rules: {
-                userName: [
-                    { required: true, message: '请输入用户名' , trigger: 'blur'},
-                    { min: 3, max: 8, message: '3 到 8 个字符' , trigger: 'blur'}
-                ],
-                userPwd: [
-                    { required: true, message: '请输入密码' , trigger: 'blur'},
-                    { min: 6, max: 20, message: '不少于6位数字或字母' , trigger: 'blur'}
-                ],
-                userSex: [
-                    { required: true, message: '请选择性别' , trigger: 'change'},
-                ],
-                userPhone: [
-                    { required: true, message: '请输入手机号' , trigger: 'blur'},
-                    { min: 11, max:11, message: '请输入11位数的手机号' , trigger: 'blur'}
-                ],
-                userEmail: [
-                    { required: true, message: '请输入邮箱',trigger: 'blur'},
-                    { min: 6, max: 20, message: '不少于6位',trigger: 'blur'}
-                ],
-            }
-
+      labelPosition: "right",
+      form: {
+          uId:"",
+          userName: "",
+          userPwd: "",
+          userSex:"",
+          userPhone: "",
+          userEmail: "",
+          userIdentity:"0",
+          uCreateTime: "",
+      },
+      rules: {
+          userName: [
+              { required: true, message: '请输入用户名' , trigger: 'blur'},
+              { min: 3, max: 8, message: '3 到 8 个字符' , trigger: 'blur'}
+          ],
+          userPwd: [
+              { required: true, message: '请输入密码' , trigger: 'blur'},
+              { min: 6, max: 20, message: '不少于6位数字或字母' , trigger: 'blur'}
+          ],
+          userSex: [
+              { required: true, message: '请选择性别' , trigger: 'change'},
+          ],
+          userPhone: [
+              { required: true, message: '请输入手机号' , trigger: 'blur'},
+              { min: 11, max:11, message: '请输入11位数的手机号' , trigger: 'blur'}
+          ],
+          userEmail: [
+              { required: true, message: '请输入邮箱',trigger: 'blur'},
+              { min: 6, max: 20, message: '不少于6位',trigger: 'blur'}
+          ],
+      },
+      multipleSelection: [],
     };
   },
   created() {
-    this.pageInfo();
+    UsergetAll(this.pageInfo.pageNum,this.pageInfo.pageSize).then((res)=>{
+      this.tableData=res.list
+        this.pageInfo.pageTotal=res.total
+    });
+    this.pNum();
+    
+    //  this.userData();
   },
   methods: {
+     toggleSelection(rows) {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
+        }
+      },
+     handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
     // 获取数据展示
-      pageInfo(val){  
-        this.tableData=val;
+      pNum(val){
+        if (val == undefined) {
+            val=1;
+        }else{
+            val == val;
+        }
+        UsergetAll(val,this.pageInfo.pageSize).then((res)=>{
+        this.tableData = res.list
+        this.reName();
+    });
+    },
+
+    //重命名
+    reName(){
+         this.tableData.filter(e=>{
+            if (e.userIdentity == 0 ){
+                e.userIdentity="普通用户"
+            }else{
+                e.userIdentity="管理员"
+            }
+            if (e.userSex == 0 ){
+                e.userSex="女"
+            }else{
+                e.userSex="男"
+            }
+    
+          });
     },
 
     //删除行
@@ -157,7 +214,7 @@ export default {
       // 拿到表格行的下标，把它赋值给数组的下标，实现根据对象的id删除
       const index = uid;
       const tableIndex = this.tableData[index].uId;
-      console.log(tableIndex);
+      // console.log(tableIndex);
       MessageBox.confirm("此操作将永久删除用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -222,11 +279,11 @@ export default {
       if (this.search != "") {
         UsergetByName(this.search).then((res) => {
           this.tableData = res;
-          this.pageShow = false;
+          this.pageInfo.pageShow = false;
         });
       } else {
         this.reload();
-        this.pageShow = true;
+        this.pageInfo.pageShow = true;
       }
     },
 

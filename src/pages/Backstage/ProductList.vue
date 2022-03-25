@@ -1,20 +1,38 @@
 <template>
   <div>
-    <header-top @searchInput="searchInput" :inputValue="ivalue" />
-    <el-table :data="tableData" stripe border style="width: 90%; margin: auto">
-      <el-table-column prop="ptype" label="商品类型" width="160">
+    <backstage-search @searchInput="searchInput" :inputValue="ivalue" />
+    <el-table :data="tableData" 
+    stripe 
+    border 
+    style="width: 95%; margin: auto"
+    ref="multipleTable"
+    height="490"
+     @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="50"/>
+      <el-table-column prop="pid" label="商品ID" width="100" fixed="left">
       </el-table-column>
-      <el-table-column prop="pcore" label="商品编码" width="160">
+      <el-table-column prop="categoryId" label="品类" width="100" >
       </el-table-column>
-      <el-table-column prop="pname" label="商品名称" width="165">
+      <el-table-column prop="brandId" label="品牌" width="100" >
       </el-table-column>
-      <el-table-column prop="pprice" label="商品价格(￥)" width="160">
+      <el-table-column prop="title" label="名称" width="150">
       </el-table-column>
-      <el-table-column prop="pweight" label="商品重量(g)" width="160">
+      <el-table-column  prop="mainImg" label="主图" width="105">
+        <template slot-scope="scope">
+          <img :src="scope.row.mainImg" alt="" style="width: 60px;height: 55px">
+        </template>
       </el-table-column>
-      <el-table-column prop="psupplier" label="商品供应商" width="160">
+      <el-table-column prop="price" label="价格(￥)" width="160">
       </el-table-column>
-      <el-table-column label="操作" width="159">
+      <el-table-column prop="count" label="数量" width="160">
+      </el-table-column>
+      <el-table-column prop="color" label="颜色" width="160">
+      </el-table-column>
+            <el-table-column prop="versions" label="版本" width="160">
+      </el-table-column>
+       <el-table-column prop="createTime" label="创建时间" width="160">
+      </el-table-column>
+      <el-table-column label="操作" width="159" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="update(scope.$index)">修改</el-button>
           <el-button
@@ -26,18 +44,12 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      class="pagination"
-      v-show="pageShow"
-      background
-      layout="prev, pager, next,total"
-      :total="pagination.total"
-      :current-page="pagination.curPage"
-      :page-count="pagination.pageNum"
-      :page-size="pagination.pageSize"
-      @current-change="paperChange"
-    >
-    </el-pagination>
+
+    <!-- 分页 -->
+    <div class="product-page">
+      <paging @pNum="pNum" :pageInfo="pageInfo"/>
+    </div>
+    
     <!-- 修改弹框 -->
     <div class="p-model-update" v-show="modelShow">
       <div class="p-model-bg"></div>
@@ -150,14 +162,14 @@
 
 <script>
 import {
-  ProductInfoFindAll,
+  ProductgetAll,
+  ProductgetById,
   ProductRemove,
-  ProductFindById,
-  ProductUpdateById,
-  ProductFindByCore,
+  ProductUpdate
 } from "../../api/index.js";
 import { MessageBox } from "element-ui";
-import HeaderTop from "../../components/Backstage/BackstageTop.vue";
+import Paging from '../../components/Backstage/Paging.vue';
+import BackstageSearch from '../../components/Backstage/BackstageSearch.vue';
 
 const COS = require("cos-js-sdk-v5");
 // 填写自己腾讯云cos中的key和id (密钥)
@@ -166,21 +178,20 @@ const cos = new COS({
   SecretKey: "C8nBI8i13oJXUAajbCVYKp2zf5E8KJ6e", // 身份秘钥
 });
 export default {
-  components: { HeaderTop },
+  components: { Paging,BackstageSearch },
   name: "ProductList",
   data() {
     return {
       tabsIndex:"0",
       ivalue: "请输入商品编码",
       search: "",
-      pageShow: true,
-      tableData: [],
-      pagination:{
-          pageNum: 1,
-          pageSize: 5,
-          curPage: 0,
-          total: 0,
+      pageInfo:{
+        pageNum:1,
+        pageSize:5,
+        pageTotal:0,
+        pageShow: true,
       },
+      tableData: [],
       labelPosition: "right",
       modelShow: false,
       oldImg:"",
@@ -208,23 +219,39 @@ export default {
         { label: "vivo", value: 2 },
         { label: "oppo", value: 3 },
       ],
-      // value: "",
-      // radio: 0,
+      multipleSelection: [],
     };
   },
   created() {
-    // 获取数据并展示
-    this.getProductList();
+    ProductgetAll(this.pageInfo.pageNum,this.pageInfo.pageSize).then((res)=>{
+      this.tableData = res.list;
+      this.pageInfo.pageTotal = res.total
+    })
   },
   methods: {
+     toggleSelection(rows) {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
+        }
+      },
+     handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
     // 获取数据并展示
-    getProductList() {
-      let {pageNum,pageSize}=this.pagination;
-      ProductInfoFindAll(pageNum,pageSize).then((res) => {
+    pNum(val) {
+       if (val == undefined) {
+            val=1;
+        }else{
+            val == val;
+        }
+      ProductgetAll(val,this.pageInfo.pageSize).then((res)=>{
         this.tableData = res.list;
-       this.pagination.total = res.total;
-        this.nameFilter();
-      });
+    })
+      
     },
     // 重命名
     nameFilter() {
@@ -235,11 +262,6 @@ export default {
         if (e.ptype == 2) e.ptype = "电视";
         if (e.ptype == 3) e.ptype = "手环";
       });
-    },
-    // 分页实现
-    paperChange(curPage) {
-      this.pagination.pageNum = curPage;
-      this.getProductList();
     },
     // 删除商品
     removeProduct(pid) {
@@ -464,9 +486,9 @@ export default {
   left: 230px;
   top: 0px;
 }
-.pagination {
+.product-page {
   position: absolute;
-  top: 520px;
+  top: 650px;
   left: 700px;
 }
 

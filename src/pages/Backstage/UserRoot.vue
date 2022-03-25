@@ -1,11 +1,15 @@
 <template>
   <div class="user-root">
     <div class="root-search">
-       <el-input placeholder="输入手机号/用户名" v-model="search" clearable>
+       <el-input placeholder="请输入用户名" v-model="search" clearable>
     <el-button slot="append" icon="el-icon-search" @click="searchInfo"></el-button>
        </el-input>
     </div>
-    <el-table :data="tableData" border  style="width: 90%; margin: auto">
+    <el-table 
+    :data="tableData" 
+    border  
+    style="width: 90%; margin: auto"
+    height="433">
       <el-table-column prop="uId" label="ID" width="150"> </el-table-column>
       <el-table-column prop="userName" label="用户名" width="200">
       </el-table-column>
@@ -27,13 +31,14 @@
       </el-table-column>
     </el-table>
     <div class="root-pagination">
-        <paging @pageRoot="pageRoot" :pageShow="pageShow"/>
+        <paging @pNum="pNum" :pageInfo="pageInfo" />
     </div>
   </div>
 </template>
 
 <script>
 import {  
+  UsergetAll,
   UserRemove,
   UsergetByName,
   UserUpdate} from '../../api/index'
@@ -49,36 +54,51 @@ export default {
       search:"",
       tableData: [],
       labelPosition: "right",
-      pageShow:true,
+      pageInfo:{
+        pageNum:1,
+        pageSize:8,
+        pageTotal:0,
+        pageShow: true,
+      },
     };
   },
   created() {
-    this.pageRoot();
+    UsergetAll(this.pageInfo.pageNum,this.pageInfo.pageSize).then((res)=>{
+      this.tableData=res.list
+      this.pageInfo.pageTotal=res.total
+    });
+    this.pNum();
   },
   methods: {
     // 获取数据
-    pageRoot(val){
-      this.tableData=val;
+    pNum(val){
+        if (val == undefined) {
+            val=1;
+        }else{
+            val == val;
+        }
+        UsergetAll(val,this.pageInfo.pageSize).then((res)=>{
+        this.tableData = res.list
+    });
     },
     // 根据id改变权限
     rootChange(rid){
       let index=rid;
       let {uId ,userName, userPwd, userSex, userPhone, userEmail,userIdentity, uCreateTime}=this.tableData[index];
       UserUpdate(uId ,userName, userPwd, userSex, userPhone, userEmail,userIdentity, uCreateTime).then((res)=>{
-        console.log(res);
       })
-
     },
 
+    //搜索用户名
     searchInfo(){
       if (this.search != "") {
          UsergetByName(this.search).then((res)=>{
         this.tableData=res;
-        this.pageShow=false;
+        this.pageInfo.pageShow=false;
       });
       }else{
         this.reload();
-        this.pageShow=true;  
+        this.pageInfo.pageShow=true;  
       }
      
     },

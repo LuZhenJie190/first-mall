@@ -73,30 +73,135 @@ export const UserUpdate = (uId, userName, userPwd, userSex, userPhone, userEmail
     }
 });
 
+export const UserRemove = (uId) => requests({
+  url: (`http://localhost:8083/user/deleteUser?uId=${uId}`),
+  method: 'get'
+});
+
+export const UserDatchDelete = (uId) => requests({
+    method: 'post',
+    url: 'http://localhost:8083/user/batchDelete',
+    data: {
+         "uIds[]" : uId,
+    },
+    transformRequest: [
+      function (data) {
+        let ret = ''
+        for (let it in data) {
+          // 如果 data[it] 是一个对象, 需要先使用 JSON.stringify, 再使用 encode
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        ret = ret.substring(0, ret.lastIndexOf('&'))
+        return ret
+      }
+    ],
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+});
+
+
 // 商品
-export const ProductInfoFindAll = (pageNum, pageSize) => requests({
-    url: (`http://localhost:8082/productInfo/findAll?pageNum=${pageNum}&pageSize=${pageSize}`),
+export const ProductgetAll = (pageNum, pageSize) => requests({
+    url: (`http://localhost:8083/product/getAllProduct?pageNum=${pageNum}&pageSize=${pageSize}`),
     method: 'get'
 });
-export const ProductAdd = (pPhoto,pCore, pName, pPrice, pColor, pVersion, pWeight, pWidth, pHeight, pSupplier, pType, pSort) => requests({
-    url: (`http://localhost:8082/productInfo/addProduct?pPhoto=${pPhoto}&pCore=${pCore}&pName=${pName}&pPrice=${pPrice}&pColor=${pColor}&pVersion=${pVersion}&pWeight=${pWeight}&pWidth=${pWidth}&pHeight=${pHeight}&pSupplier=${pSupplier}&pType=${pType}&pSort=${pSort}`),
+
+export const ProductgetById = (pid) => requests({
+    url: (`http://localhost:8083/product/getById?pid=${pid}`),
     method: 'get'
 });
-export const ProductRemove = (pId) => requests({
-    url: (`http://localhost:8082/productInfo/deleteById?pId=${pId}`),
+
+export const ProductAdd = (categoryId,brandId,title,subTitle,mainImg,price,count,createTime,updateTime,color,versions) => requests({
+    url: (`http://localhost:8083/product/insertProduct`),
+    method: 'post',
+    data: {
+        categoryId : categoryId,
+        brandId : brandId,
+        title : title,
+        subTitle : subTitle,
+        mainImg : mainImg,
+        price : price,
+        count : count,
+        createTime : createTime,
+        updateTime : updateTime,
+        color : color,
+        versions : versions
+    },
+    transformRequest: [
+      function (data) {
+        let ret = ''
+        for (let it in data) {
+          // 如果 data[it] 是一个对象, 需要先使用 JSON.stringify, 再使用 encode
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        ret = ret.substring(0, ret.lastIndexOf('&'))
+        return ret
+      }
+    ],
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+});
+
+export const ProductRemove = (pid) => requests({
+    url: (`http://localhost:8083/product/deleteProduct?pid=${pid}`),
     method: 'get'
 });
-export const ProductFindById = (pId) => requests({
-    url: (`http://localhost:8082/productInfo/findById?pId=${pId}`),
-    method: 'get'
+
+export const ProductUpdate = (pid,categoryId,brandId, title, subTitle, mainImg, price, count, createTime, updateTime, color, versions) => requests({
+    url: (`http://localhost:8083/product/updateProduct`),
+    method: 'post',
+    data: {
+        pid : pid,
+        categoryId : categoryId,
+        brandId : brandId,
+        title : title,
+        subTitle : subTitle,
+        mainImg : mainImg,
+        price : price,
+        count : count,
+        createTime : createTime,
+        updateTime : updateTime,
+        color : color,
+        versions : versions,
+    },
+    transformRequest: [
+      function (data) {
+        let ret = ''
+        for (let it in data) {
+          // 如果 data[it] 是一个对象, 需要先使用 JSON.stringify, 再使用 encode
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        ret = ret.substring(0, ret.lastIndexOf('&'))
+        return ret
+      }
+    ],
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
 });
-export const ProductUpdateById = (pId,pPhoto,pCore, pName, pPrice, pColor, pVersion, pWeight, pWidth, pHeight, pSupplier, pType, pSort) => requests({
-    url: (`http://localhost:8082/productInfo/updateById?pId=${pId}&pPhoto=${pPhoto}&pCore=${pCore}&pName=${pName}&pPrice=${pPrice}&pColor=${pColor}&pVersion=${pVersion}&pWeight=${pWeight}&pWidth=${pWidth}&pHeight=${pHeight}&pSupplier=${pSupplier}&pType=${pType}&pSort=${pSort}`),
-    method: 'get'
-});
-export const ProductFindByCore = (pCore) => requests({
-    url: (`http://localhost:8082/productInfo/findByCore?pCore=${pCore}`),
-    method: 'get'
+
+export const ProductDatchDelete = (pids) => requests({
+    method: 'post',
+    url: 'http://localhost:8083/product/batchDelete',
+    data: {
+         "pid[]" : pids,
+    },
+    transformRequest: [
+      function (data) {
+        let ret = ''
+        for (let it in data) {
+          // 如果 data[it] 是一个对象, 需要先使用 JSON.stringify, 再使用 encode
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        ret = ret.substring(0, ret.lastIndexOf('&'))
+        return ret
+      }
+    ],
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
 });
 
 // 订单

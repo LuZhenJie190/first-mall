@@ -7,7 +7,7 @@
   </el-input>
    </div>
     <div class="list-delete">
-      <el-button type="danger" @click="moreDelete">批量删除</el-button>
+      <el-button type="danger" @click="datchDelete">批量删除</el-button>
     </div>
     </div>
   </div>
@@ -15,19 +15,26 @@
 
 <script>
 import { MessageBox } from "element-ui";
+import {UserDatchDelete} from '../../api/index'
 export default {
+  inject:["reload"],
     name:'BackstageSearch',
-    props:["inputValue"],
+    props:["inputValue","multipleSelection"],
     data() {
         return {
              search:'',
+             uidList:[],
         }
     },
    methods: {
      searchInfo(){
        this.$emit('searchInput',this.search)
      },
-     moreDelete(){
+     datchDelete(){
+       this.multipleSelection.forEach(element => {
+          let uuId = element.uId;
+          this.uidList.push(uuId);
+       });
          MessageBox.confirm("是否删除选中用户?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -35,8 +42,13 @@ export default {
       })
         .then(() => {
           // 删除操作
-          MessageBox.alert("删除成功");
+          UserDatchDelete(this.uidList).then((res)=>{
+            if (res.code == 0) {
+              MessageBox.alert(`成功删除${this.uidList.length}位用户`);
+            }
+          });
           // 重新获取数据
+          this.reload();
         })
         .catch(() => {
           MessageBox.alert("已取消操作");

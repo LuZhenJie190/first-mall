@@ -16,7 +16,7 @@
             手环</el-radio
           >
         </el-form-item>
-        <el-form-item label="商品分类：">
+        <el-form-item label="商品品牌：">
           <el-select
             v-model="form.sort"
             placeholder="请选择"
@@ -34,23 +34,24 @@
         <el-form-item label="商品名称：">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="商品编码：">
+        <el-form-item label="商品简介：">
           <el-input v-model="form.core"></el-input>
         </el-form-item>
-        <el-form-item label="商品图片：">
+        <el-form-item label="商品图片：" style="width:1200px;height:180px">
           <el-upload
             class="upload-demo"
             action="#"
             :http-request="upload"
-            list-type="picture"
+             list-type="picture-card"
             :file-list=" fileList"
-            :limit="1"
+            :limit="6"
           >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <span slot="tip" class="el-upload__tip">
-                &nbsp; &nbsp; &nbsp; &nbsp;只能上传jpg/png文件
-            </span>
+          <i slot="default" class="el-icon-plus"></i>
+           <div class="el-upload__tip" slot="tip" style="margin-top:-5px; font-weight: bold">只能上传jpg/png文件，且不超过6张</div>
           </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+  <img width="100%" :src="dialogImageUrl" alt="">
+</el-dialog>
         </el-form-item>
         <el-form-item label="商品参数：">
           <div class="product-info">
@@ -58,25 +59,17 @@
               <el-form-item label="价格(￥)：">
                 <el-input v-model="form.price"></el-input>
               </el-form-item>
+               <el-form-item label="数量：">
+                <el-input v-model="form.supplier"></el-input>
+              </el-form-item>
               <el-form-item label="版本：">
                 <el-input v-model="form.version"></el-input>
-              </el-form-item>
-              <el-form-item label="宽度(mm)：">
-                <el-input v-model="form.width"></el-input>
-              </el-form-item>
-              <el-form-item label="高度(mm)：">
-                <el-input v-model="form.height"></el-input>
-              </el-form-item>
-              <el-form-item label="重量(g)：">
-                <el-input v-model="form.weight"></el-input>
               </el-form-item>
 
               <el-form-item label="颜色：">
                 <el-input v-model="form.color"></el-input>
               </el-form-item>
-              <el-form-item label="供应商：">
-                <el-input v-model="form.supplier"></el-input>
-              </el-form-item>
+             
             </el-form>
           </div>
         </el-form-item>
@@ -99,9 +92,6 @@ export default {
   name: "ProductAdd",
   data() {
     return {
-      dialogImageUrl: "",
-      dialogVisible: false,
-      disabled: false,
       fileList:[],
       form: {
         type:"",
@@ -127,6 +117,16 @@ export default {
     };
   },
   methods: {
+    handleRemove(file) {
+
+      },
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+      },
+      handleDownload(file) {
+        console.log(file);
+      },
     typeRadio(radio) {
       console.log(radio);
     },
@@ -189,7 +189,7 @@ export default {
 <style scoped>
 .addForm {
   width: 40%;
-  margin: -35px 100px auto;
+  margin: 0px 100px 0px 50px;
 }
 
 .product-info {
@@ -197,10 +197,10 @@ export default {
   margin-left: 30px;
 }
 .product-info .el-form .el-form-item {
-  margin-bottom: 10px;
+  margin-bottom: 18px;
 }
 .addForm .el-form-item {
-  margin-bottom: 10px;
+  margin-bottom: 18px;
 }
 .p_submit {
   width: 150px;
