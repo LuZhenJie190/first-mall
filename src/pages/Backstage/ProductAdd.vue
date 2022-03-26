@@ -1,87 +1,91 @@
 <template>
   <div id="add-product">
     <div class="addForm">
-      <el-form label-width="100px" v-model="form" >
-        <el-form-item label="商品类型：" >
-          <el-radio v-model="form.type" label="0" @change="typeRadio(form.type)"
-            >手机</el-radio
+      <el-form 
+      label-width="100px" 
+      :model="form" 
+      :rules="rules"
+       ref="form" >
+        <el-form-item label="商品类型：" prop="categoryId">
+          <el-radio-group  v-model="form.categoryId" >
+            <el-radio 
+          v-for="item in category" 
+          :key="item.pcid"  
+          v-model="form.categoryId" 
+          :label="item.categoryId" 
+          @change="typeRadio(form.categoryId)"
+            >{{item.categoryName}}</el-radio
           >
-          <el-radio v-model="form.type" label="1" @change="typeRadio(form.type)"
-            >笔记本</el-radio
-          >
-          <el-radio v-model="form.type" label="2" @change="typeRadio(form.type)"
-            >电视</el-radio
-          >
-          <el-radio v-model="form.type" label="3" @change="typeRadio(form.type)">
-            手环</el-radio
-          >
+          </el-radio-group>
+          
         </el-form-item>
-        <el-form-item label="商品品牌：">
+        <el-form-item label="商品品牌：" prop="brandId">
           <el-select
-            v-model="form.sort"
+            v-model="form.brandId"
             placeholder="请选择"
-            @change="sortSelect(form.sort)"
+            @change="sortSelect(form.brandId)"
           >
             <el-option
-              v-for="item in options"
-              :key="item.sort"
-              :label="item.label"
-              :value="item.sort"
+              v-for="item in brand"
+              :key="item.pbid"
+              :label="item.brandName"
+              :value="item.brandId"
             >
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品名称：">
-          <el-input v-model="form.name"></el-input>
+        <el-form-item label="商品名称：" prop="title">
+          <el-input v-model="form.title"></el-input>
         </el-form-item>
-        <el-form-item label="商品简介：">
-          <el-input v-model="form.core"></el-input>
+        <el-form-item label="商品简介：" prop="subTitle">
+          <el-input v-model="form.subTitle"></el-input>
         </el-form-item>
-        <el-form-item label="商品图片：" style="width:1200px;height:180px">
+        <el-form-item label="商品图片：" style="width:1200px;height:180px" >
           <el-upload
             class="upload-demo"
             action="#"
             :http-request="upload"
              list-type="picture-card"
             :file-list=" fileList"
-            :limit="6"
+            :limit="1"
           >
           <i slot="default" class="el-icon-plus"></i>
-           <div class="el-upload__tip" slot="tip" style="margin-top:-5px; font-weight: bold">只能上传jpg/png文件，且不超过6张</div>
+           <div class="el-upload__tip" slot="tip" style="margin-top:-5px; font-weight: bold">只能上传jpg/png文件，限定一张</div>
           </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-  <img width="100%" :src="dialogImageUrl" alt="">
-</el-dialog>
         </el-form-item>
-        <el-form-item label="商品参数：">
-          <div class="product-info">
-            <el-form label-width="100px" :inline="true">
-              <el-form-item label="价格(￥)：">
+        <el-form-item label="商品参数：" style="width:800px;" >
+          <div class="product-info" >
+              <el-form-item label="价格(￥)：" prop="price">
                 <el-input v-model="form.price"></el-input>
               </el-form-item>
-               <el-form-item label="数量：">
-                <el-input v-model="form.supplier"></el-input>
+               <el-form-item label="数量：" prop="count">
+                <el-input v-model="form.count"></el-input>
               </el-form-item>
-              <el-form-item label="版本：">
-                <el-input v-model="form.version"></el-input>
+              <el-form-item label="版本：" prop="versions">
+                <el-input v-model="form.versions"></el-input>
               </el-form-item>
-
-              <el-form-item label="颜色：">
+              <el-form-item label="颜色：" prop="color">
                 <el-input v-model="form.color"></el-input>
               </el-form-item>
-             
-            </el-form>
           </div>
         </el-form-item>
+        <el-form-item style="margin-top:-18px">
+          <el-button class="p_submit" type="primary" @click="submitForm('form')">提交</el-button>
+          <el-button  @click="resetForm('form')">重置</el-button>
+        </el-form-item>
       </el-form>
-      <el-button class="p_submit" type="primary" @click="productSubmit">提交</el-button>
+      
     </div>
   </div>
 </template>
 
 <script>
-import {ProductAdd} from "../../api/index";
+import {
+  ProductAdd,
+  ProductCategory,
+  ProductBrand} from "../../api/index";
 import { MessageBox } from 'element-ui';
+import {getnowDate} from '../../utils/index';
 const COS = require('cos-js-sdk-v5')
 // 填写自己腾讯云cos中的key和id (密钥)
 const cos = new COS({
@@ -89,77 +93,127 @@ const cos = new COS({
   SecretKey: 'C8nBI8i13oJXUAajbCVYKp2zf5E8KJ6e' // 身份秘钥
 })
 export default {
+  inject:["reload"],
   name: "ProductAdd",
   data() {
     return {
+      category:[],
+      brand:[],
       fileList:[],
+      //pid,categoryId,brandId, title, subTitle, mainImg, price, count, createTime, updateTime, color, versions
       form: {
-        type:"",
-        sort: '',
-        name: "",
-        core: "",
+        pid:"",
+        categoryId: '',
+        brandId: "",
+        title: "",
+        subTitle:"",
+        mainImg:"",
         price:"",
-        version:"",
-        width:"",
-        height:"",
-        weight:"",
+        count:"",
+        createTime:"",
+        updateTime:"",
         color:"",
-        supplier:"",
-        imgurl:"",
-      },
-      options: [
-        { label: "华为", sort: 0 },
-        { label: "小米", sort: 1 },
-        { label: "vivo", sort: 2 },
-        { label: "oppo", sort: 3 },
-      ],
+        versions:"",
+        },
+        rules: {
+          categoryId: [
+            { required: true, message: '请选择品类', trigger: 'change' }
+          ],
+          brandId: [
+            { required: true, message: '请选择品牌', trigger: 'change' }
+          ],
+          title: [
+            { required: true, message: '名称不能为空', trigger: 'blur' },
+            { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+          ],
+          subTitle:[
+            { required: true, message: '简介不能为空', trigger: 'blur' },
+            { min: 2, max:50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+          ],
+          price: [
+            {  required: true, message: '价格不能为空', trigger: 'blur' }
+          ],
+          count: [
+            { required: true, message: '数量不能为空', trigger: 'blur' }
+          ],
+          color: [
+            { required: true, message: '颜色不能为空', trigger: 'blur' }
+          ],
+          versions: [
+            { required: true, message: '版本不能为空', trigger: 'blur' },
+            { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+          ]
+        }
+      
       
     };
   },
+  created(){
+    this.getTime();
+    ProductCategory().then((res)=>{
+      this.category = res ;
+    });
+    ProductBrand().then((res)=>{
+      this.brand = res;
+    })
+  },
+  beforeDestroy(){
+    clearInterval(this.timer);
+  },
   methods: {
-    handleRemove(file) {
-
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
-      },
-      handleDownload(file) {
-        console.log(file);
-      },
+    getTime(){
+      this.timer = setInterval(() => {
+        this.form.createTime = getnowDate();
+      }, 500);
+      
+    },
     typeRadio(radio) {
       console.log(radio);
     },
     sortSelect(value) {
       console.log(value);
     },
-    // 提交表单
-    productSubmit(){
-      let {imgurl,name,price,core,color,version,weight,width,height,supplier,type,sort}=this.form;
-      if (imgurl==""||name==""||price==""||core==""||color==""||version==""
-      ||weight==""||width==""||height==""||supplier==""||type==""||sort==null) {
-        MessageBox.alert("不能为空")
-      }else{
-         ProductAdd(imgurl,core,name,price,color,version,weight,width,height,supplier,type,sort);
-         MessageBox.alert("添加成功")
-         setTimeout(() => {
-            this.form.type = null;
-            this.form.sort = null;
-            this.form.imgurl = null;
-            this.fileList=[];
-            this.form.name = null;
-            this.form.core = null;
-            this.form.price = null;
-            this.form.version = null;
-            this.form.width = null;
-            this.form.height = null;
-            this.form.weight = null;
-            this.form.color = null;
-            this.form.supplier = null;
-         }, 500);
-       
-      }
-     },
+    // // 提交表单
+    // productSubmit(){
+    //   let {categoryId,brandId, title, subTitle, mainImg, price, count, createTime, updateTime, color, versions}=this.form;
+    //      ProductAdd(categoryId,brandId, title, subTitle, mainImg, price, count, createTime, updateTime, color, versions).then((res)=>{
+    //        console.log(res);
+    //      });
+    //      MessageBox.alert("添加成功")
+    //  },
+            // 提交添加表单
+    submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+        if (valid) {
+        let {categoryId,brandId, title, subTitle, mainImg, price, count, createTime, updateTime, color, versions}=this.form;
+          if (mainImg != "") {
+             ProductAdd(categoryId,brandId, title, subTitle, mainImg, price, count, createTime, updateTime, color, versions).then((res) => {
+                  if (res.success) {
+                    MessageBox.alert(res.msg);
+                    this.$refs[formName].resetFields();
+                    this.reload();
+                  }else{
+                    MessageBox.alert(res.msg);
+                  }
+            });
+          }else{
+            MessageBox.alert("请上传图片！")
+          }
+           
+             
+        } else {
+          return false;
+        }
+      });
+      
+
+        },
+        
+        //重置表单
+        resetForm(formName) {
+        this.$refs[formName].resetFields();
+        this.reload();
+        },
     //  上传图片
       upload(res) {
         if (!res.file) {
@@ -177,7 +231,7 @@ export default {
           this.percentage = progressData.percent * 100
         }
       }, (error,data) => {
-          this.form.imgurl="http://"+data.Location
+          this.form.mainImg="http://"+data.Location
        })
     },
   }
@@ -194,17 +248,17 @@ export default {
 
 .product-info {
   width: 800px;
-  margin-left: 30px;
-}
-.product-info .el-form .el-form-item {
-  margin-bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
 }
 .addForm .el-form-item {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 .p_submit {
-  width: 150px;
-  margin-left: 200px;
+  width: 100px;
+  margin-left: 30px;
+  
 }
 .el-upload-list--picture .el-upload-list__item:focus{
   border-color: #409EFF;

@@ -204,6 +204,16 @@ export const ProductDatchDelete = (pids) => requests({
     }
 });
 
+export const ProductCategory = () => requests({
+  url: (`http://localhost:8083/cate/getAll`),
+  method: 'get'
+});
+
+export const ProductBrand = () => requests({
+  url: (`http://localhost:8083/brand/getAll`),
+  method: 'get'
+});
+
 // 订单
 export const OrderFindAll = (pageNum, pageSize) => requests({
     url: (`http://localhost:8082/orderInfo/findAll?pageNum=${pageNum}&pageSize=${pageSize}`),

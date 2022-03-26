@@ -11,7 +11,3 @@ export function getnowDate(){
             return obj; 
 
 }
-
-export function getName(obj){
-    console.log(obj);
-}

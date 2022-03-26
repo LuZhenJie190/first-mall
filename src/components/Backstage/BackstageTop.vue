@@ -31,7 +31,7 @@ export default {
         getTime() {
           this.timer = setInterval(() => {
             this.nowTime = getnowDate();
-          }, 300);
+          }, 100);
         },
         backTo(){
           this.$router.push({
