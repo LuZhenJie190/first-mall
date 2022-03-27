@@ -209,10 +209,11 @@ export const ProductCategory = () => requests({
   method: 'get'
 });
 
-export const ProductBrand = () => requests({
-  url: (`http://localhost:8083/brand/getAll`),
+export const ProductBrand = (pageNum,pageSize) => requests({
+  url: (`http://localhost:8083/brand/getAll?pageNum=${pageNum}&pageSize=${pageSize}`),
   method: 'get'
 });
+//getByBrand
 
 // 订单
 export const OrderFindAll = (pageNum, pageSize) => requests({

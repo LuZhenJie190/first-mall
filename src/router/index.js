@@ -14,6 +14,7 @@ import OrderManagement from '../pages/Backstage/OrderManagement.vue'
 import UserAdd from '../pages/Backstage/UserAdd.vue'
 import ProductAdd from '../pages/Backstage/ProductAdd.vue'
 import Home from '../pages/Backstage/Home.vue'
+import ProductCategory from '../pages/Backstage/ProductCategory.vue'
 
 
 
@@ -100,6 +101,21 @@ export default new VueRouter({
                 },
                 {
                     name:'productlist',
+                    path:'ProductList',
+                    component:ProductList,
+                    meta:{
+                        showNav:true
+                    },
+                },
+                {
+                    name:'productcategory',
+                    path:'ProductCategory',
+                    component:ProductCategory,
+                    meta:{
+                        showNav:true
+                    },
+                },
+                {
                     path:'ProductList',
                     component:ProductList,
                     meta:{

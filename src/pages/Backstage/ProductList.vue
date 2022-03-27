@@ -167,7 +167,6 @@ import {
   ProductRemove,
   ProductUpdate
 } from "../../api/index.js";
-import { MessageBox } from "element-ui";
 import Paging from '../../components/Backstage/Paging.vue';
 import BackstageSearch from '../../components/Backstage/BackstageSearch.vue';
 
@@ -180,6 +179,7 @@ const cos = new COS({
 export default {
   components: { Paging,BackstageSearch },
   name: "ProductList",
+  inject:["reload"],
   data() {
     return {
       tabsIndex:"0",
@@ -267,7 +267,7 @@ export default {
     removeProduct(pid) {
       let index = pid;
       let listIndex = this.tableData[index].pid;
-      MessageBox.confirm("此操作将永久删除此商品, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除此商品, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -275,7 +275,8 @@ export default {
         .then(() => {
           // 删除操作
           ProductRemove(listIndex);
-          MessageBox.alert("删除成功");
+         this.$alert("删除成功");
+         this.reload();
           // 重新获取数据
           this.timer = setTimeout(() => {
             this.getProductList();
@@ -337,9 +338,9 @@ export default {
         type == null ||
         sort == null
       ) {
-        MessageBox.alert("不能为空");
+        this.$alert("不能为空");
       } else {
-        MessageBox.alert("修改成功");
+        this.$alert("修改成功");
         this.fileList=[];
         this.tabsIndex="0";
         ProductUpdateById(

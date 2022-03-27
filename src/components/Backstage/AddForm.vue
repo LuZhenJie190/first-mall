@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import { MessageBox } from "element-ui";
 import { UserRegsiter } from "../../api/index.js";
 export default {
     name:'AddForm',
@@ -106,10 +105,10 @@ export default {
             let { userName, userPwd, userSex, userPhone, userEmail,userIdentity, uCreateTime } = this.form;
             UserRegsiter(userName, userPwd, userSex, userPhone, userEmail,userIdentity, uCreateTime).then((res) => {
                 if (res.success) {
-                MessageBox.alert("添加成功");
+                this.$alert("添加成功");
                 this.$refs[formName].resetFields();
                 }else{
-                MessageBox.alert(res.msg);
+                this.$alert(res.msg);
                 }
             });
             } else {

@@ -96,7 +96,6 @@ import {
   UserUpdate,
   UsergetByName,
 } from "../../api/index";
-import { MessageBox } from "element-ui";
 import Paging from '../../components/Backstage/Paging.vue';
 import BackstageSearch from '../../components/Backstage/BackstageSearch.vue';
 export default {
@@ -215,7 +214,7 @@ export default {
       const index = uid;
       const tableIndex = this.tableData[index].uId;
       // console.log(tableIndex);
-      MessageBox.confirm("此操作将永久删除用户, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -223,12 +222,9 @@ export default {
         .then(() => {
           // 删除操作
           UserRemove(tableIndex);
-          MessageBox.alert("删除成功");
+          this.$alert("删除成功");
           // 刷新页面
          this.reload();
-        })
-        .catch(() => {
-          MessageBox.alert("已取消操作");
         });
     },
     // 拿到数据并放到输入框里面
@@ -260,7 +256,7 @@ export default {
               UserUpdate(uId ,userName, userPwd, userSex, userPhone, userEmail,userIdentity, uCreateTime).then((res) => {
                   
                 if (res == "修改成功") {
-                MessageBox.alert(res);
+                this.$alert(res);
                 //关闭模态框
                 this.modelShow=false;
                 //刷新数据

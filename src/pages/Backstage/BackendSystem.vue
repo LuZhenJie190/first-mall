@@ -44,6 +44,10 @@
                 <el-menu-item index="/BackendSystem/ProductAdd" >
                 <i class="el-icon-sell"></i>
                 <span slot="title">商品发布</span></el-menu-item>
+                <el-menu-item index="/BackendSystem/ProductCategory" >
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">商品分类</span>
+                </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-menu-item index="/BackendSystem/OrderManagement">

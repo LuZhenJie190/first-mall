@@ -114,7 +114,9 @@ export default {
         updateTime:"",
         color:"",
         versions:"",
-        },
+        }, 
+        pageNum:1,
+        pageSize:100,
         rules: {
           categoryId: [
             { required: true, message: '请选择品类', trigger: 'change' }
@@ -153,8 +155,9 @@ export default {
     ProductCategory().then((res)=>{
       this.category = res ;
     });
-    ProductBrand().then((res)=>{
-      this.brand = res;
+    ProductBrand(this.pageNum,this.pageSize).then((res)=>{
+      console.log(res);
+      this.brand = res.list;
     })
   },
   beforeDestroy(){
