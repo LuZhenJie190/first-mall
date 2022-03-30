@@ -1,7 +1,11 @@
 <template>
   <div>
     <!-- 搜索 -->
-    <backstage-search @searchInput="searchInput" :inputValue="uvalue" :multipleSelection="multipleSelection"/>
+    <backstage-search 
+    @searchInput="searchInput" 
+    :inputValue="uvalue" 
+    :multipleSelection="multipleSelection"
+    :flag="flag"/>
     <el-table 
     :data="tableData" 
     border stripe style="width: 95%; margin: auto"
@@ -104,7 +108,7 @@ export default {
   name: "UserList",
   data() {
     return {
-     
+     flag:"1",
       uvalue: "请输入手机号/用户名",
       search: "",
       tableData: [],

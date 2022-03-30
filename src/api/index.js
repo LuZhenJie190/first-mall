@@ -209,11 +209,20 @@ export const ProductCategory = () => requests({
   method: 'get'
 });
 
+export const ProductCategoryGetByBrand = (categoryId) => requests({
+  url: (`http://localhost:8083/cate/getByBrand?categoryId=${categoryId}`),
+  method: 'get'
+});
+
 export const ProductBrand = (pageNum,pageSize) => requests({
   url: (`http://localhost:8083/brand/getAll?pageNum=${pageNum}&pageSize=${pageSize}`),
   method: 'get'
 });
-//getByBrand
+
+export const ProductGetTitle = (title) => requests({
+  url: (`http://localhost:8083/product/getByTitle?title=${title}`),
+  method: 'get'
+});
 
 // 订单
 export const OrderFindAll = (pageNum, pageSize) => requests({

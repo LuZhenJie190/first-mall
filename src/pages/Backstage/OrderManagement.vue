@@ -1,6 +1,5 @@
 <template>
   <div>
-    <header-top :inputValue="searchTip" @searchInput="searchInput"/>
     <el-table :data="tableData" stripe style="width: 90%; margin: auto">
       <el-table-column prop="osn" label="订单编号" width="150" fixed="left">
       </el-table-column>
@@ -122,9 +121,7 @@ import {
   OrderUpdate,
   OrderRemove,
 } from "../../api/index";
-import HeaderTop from '../../components/Backstage/BackstageTop.vue';
 export default {
-  components: { HeaderTop },
   name: "OrderManagement",
   data() {
     return {

@@ -83,7 +83,8 @@
 import {
   ProductAdd,
   ProductCategory,
-  ProductBrand} from "../../api/index";
+  ProductBrand,
+  ProductCategoryGetByBrand} from "../../api/index";
 import { MessageBox } from 'element-ui';
 import {getnowDate} from '../../utils/index';
 const COS = require('cos-js-sdk-v5')
@@ -171,7 +172,10 @@ export default {
       
     },
     typeRadio(radio) {
-      console.log(radio);
+      ProductCategoryGetByBrand(radio).then((res)=>{
+        this.brand = res[0].productBrand;
+        console.log(this.brand);
+      })
     },
     sortSelect(value) {
       console.log(value);
@@ -191,6 +195,7 @@ export default {
         let {categoryId,brandId, title, subTitle, mainImg, price, count, createTime, updateTime, color, versions}=this.form;
           if (mainImg != "") {
              ProductAdd(categoryId,brandId, title, subTitle, mainImg, price, count, createTime, updateTime, color, versions).then((res) => {
+               console.log(res);
                   if (res.success) {
                     MessageBox.alert(res.msg);
                     this.$refs[formName].resetFields();
