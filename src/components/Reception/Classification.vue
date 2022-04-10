@@ -1,9 +1,6 @@
 <template>
   <div id="classification" >
-      <div class="tabs-details" v-show="showDetails">
-         <cards-list/>
-      </div>
-      <ul class="tabs" @mouseover="isShow" @mouseout="noShow">
+      <ul class="tabs">
           <li class="tabs-li" v-for="(item,index) in imgUrl" :key="index">
               <img :src="item.url">
               <a href="">{{item.title}}</a>
@@ -13,10 +10,9 @@
 </template>
 
 <script>
-import CardsList from '../../components/Reception/CardsList.vue';
 export default {
   name: "Classification",
-components:{ CardsList},
+
     data() {
       return {
           imgUrl:[
@@ -31,12 +27,6 @@ components:{ CardsList},
   },
   methods: {
     
-     isShow(){
-         this.showDetails=true
-     },
-     noShow(){
-          this.showDetails=false
-     }
   },
 };
 </script>

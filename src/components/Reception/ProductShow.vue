@@ -1,25 +1,24 @@
 <template>
-  <div id="productshow">
+  <div class="productshow">
     <div class="title">
-      <h1>手机</h1>
+      <slot> </slot>
       <a>查看更多 <i class="el-icon-right"></i></a>
     </div>
     <div class="product-context">
-       <div class="product-left">
-         <img src="../../assets/bg1.png" alt="">
+      <div class="product-left">
+        <img src="../../assets/bg1.png" alt="" />
       </div>
-       <div class="product-right">
-          <cards-list/>
-          <cards-list/>
-          <cards-list/>
-          <cards-list/>
-          <cards-list/>
-          <cards-list/>
-          <cards-list/>
-          <cards-list/>
-       </div>
+      <div class="product-right">
+        <cards-list />
+        <cards-list />
+        <cards-list />
+        <cards-list />
+        <cards-list />
+        <cards-list />
+        <cards-list />
+        <cards-list />
+      </div>
     </div>
-     
   </div>
 </template>
 
@@ -30,47 +29,45 @@ export default {
   name: "ProductShow",
   props: ["sorts"],
   data() {
-    return {
-     
-    };
+    return {};
   },
 };
 </script>
 
 <style scoped>
-#productshow{
-  margin-top: 50px;
-}
-.product-context{
+.productshow {
+  margin-top: 60px;
   width: 100%;
-  height: 500px;
-  background: #fff;
-  display: flex;
-}
-.product-left{
-  width: 30%;
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-rows: 50px 550px;
   justify-content: center;
+  align-items: center;
 }
-.product-left img{
-  width: 340px;
-  height: 480px;
+.product-context {
+  display: grid;
+  grid-template-columns: 3fr 7fr;
+  column-gap: 10px;
 }
-.product-right{
-  flex: 1;
-  display: flex;
-  flex-wrap: wrap;
+.product-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.title{
+.product-right {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  column-gap: 10px;
+  row-gap: 10px;
+}
+.title {
   display: flex;
   justify-content: space-between;
 }
-.title h1{
+.title h1 {
   margin-bottom: 10px;
 }
-.title a{
-  position: relative;
-  bottom: -25px;
+.title a {
+  line-height: 40px;
 }
 </style>

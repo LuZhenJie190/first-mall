@@ -1,8 +1,11 @@
 <template>
   <div id="cards-list">
       <li class="card">
-         <img src="../../assets/bg1.png"/>
-         <p>123</p>
+          <div class="images">
+              <img src="../../assets/bg1.png"/>
+          </div>
+         
+         <h4>小米12PRO 白色 12G+128G</h4>
       </li>
   </div>
 </template>
@@ -24,23 +27,39 @@ export default {
     display: flex;
 }
 .card{
-    width: 200px;
-     height: 240px;
+    width: 210px;
+     height: 280px;
     display: flex;
     flex-direction: column;
-    justify-content:space-around;
-    align-items: center;
-    margin: 5px;
+    align-items:center;
+    justify-content: flex-start;
     cursor: pointer;
     background: #fff;
+    overflow: hidden;
+    transition: .3s ;
+}
+.card h4{
+    height: 50px;
+    position: relative;
+    top: 10px;
+  
+    
 }
 .card:hover{
-    box-shadow: 0px 10px 10px  gray;
-    transition: 1s ;
+    box-shadow: 0px 10px 10px  #ccc;
+    transition: .5s ;
+    transform: translateY(-10px);
     transition-timing-function: cubic-bezier(0.2,0.5,0.5,1);
+
 }
-.card img{
-    width: 180px;
-    height: 200px;
+.images{
+    width:100%;
+    height: 230px;
+    overflow: hidden;
+}
+.images img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 </style>

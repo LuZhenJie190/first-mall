@@ -1,35 +1,39 @@
 <template>
-  <div id="recommend">
-    <h1>推荐购</h1>
-    <br>
-      <el-carousel class="recommend-carousel" indicator-position="none" :autoplay="false">
-    <el-carousel-item v-for="item in 2" :key="item" class="recommend-carousel-item">
-          <ul class="recommend-list">
-      <li v-for="(item, index) in cardsDatas" :key="index">
-        <div class="recommend-detail">
-          <img :src="item.activity_posters" alt="" srcset="">
-          <p>{{item.activity_title}}</p>
-        </div>
-      </li>
-    </ul>
-    </el-carousel-item>
-  </el-carousel>
-
+  <div class="recommend">
+    <slot></slot>
+    <br />
+    <el-carousel
+      class="recommend-carousel"
+      indicator-position="none"
+      :autoplay="false"
+    >
+      <el-carousel-item
+        v-for="item in 2"
+        :key="item"
+        class="recommend-carousel-item"
+      >
+        <ul class="recommend-list">
+          <li v-for="(item, index) in cardsDatas" :key="index">
+            <div class="recommend-detail">
+              <img src="../../assets/bg1.png" alt="" srcset="" />
+              <p>{{ item.activity_title }}</p>
+            </div>
+          </li>
+        </ul>
+      </el-carousel-item>
+    </el-carousel>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   name: "Recommend",
   data() {
     return {
-      cardsDatas: [
-        {},{},{},{},{},{}
-      ],
+      cardsDatas: [{}, {}, {}, {}, {}, {}],
     };
   },
-    mounted() {
+  mounted() {
     // axios.get('http://localhost:8089/springmvc_ssm_191_war_exploded/activity/activity/actList?pageNum=1&pageSize=6').then((res)=>{
     //   this.cardsDatas=res.data
     // })
@@ -38,25 +42,24 @@ export default {
 </script>
 
 <style >
-.recommend-carousel .el-carousel__arrow--left{
-    position: absolute;
-  top: 120px;
- left:0px;
- border-radius: 0;
- width: 20px;
- height: 80px;
-}
-.recommend-carousel .el-carousel__arrow--right{
+.recommend-carousel .el-carousel__arrow--left {
   position: absolute;
   top: 120px;
- right: 0px;
- border-radius: 0;
- width: 20px;
- height: 80px;
-
+  left: 0px;
+  border-radius: 0;
+  width: 20px;
+  height: 80px;
 }
-#recommend {
-   width: 100%;
+.recommend-carousel .el-carousel__arrow--right {
+  position: absolute;
+  top: 120px;
+  right: 0px;
+  border-radius: 0;
+  width: 20px;
+  height: 80px;
+}
+.recommend {
+  width: 100%;
   height: 300px;
   margin-top: 30px;
 }
@@ -64,7 +67,6 @@ export default {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: #fff;
 }
 /* .recommend-list li:hover{
   box-shadow: 0px 0px 10px #ccc;
@@ -78,9 +80,9 @@ export default {
   flex-direction: column;
   align-items: center;
 }
-.recommend-detail img{
+.recommend-detail img {
   width: 98%;
-   height: 220px;
-   cursor: pointer;
+  height: 220px;
+  cursor: pointer;
 }
 </style>

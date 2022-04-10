@@ -1,10 +1,11 @@
 <template>
-  <div id="mobilephone">
+  <div class="mobilephone">
     <div class="wrap">
-      <bread-header :breadName="breadName1" />
+      <bread-header class="bread">手机</bread-header>
       <div class="m-tabs">
         <div class="m-title">
-          <h1>手机专区</h1>
+          <h2>手机专区</h2>
+          <el-divider></el-divider>
         </div>
         <tabs-list 
         :phoneSorts="phoneSorts" 
@@ -73,15 +74,53 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
 }
-.m-title {
-  padding: 20px;
-  border-bottom: 1px solid #ccc;
+.bread{
+  margin: 15px 0px;
 }
+
 .el-breadcrumb {
   padding-top: 50px;
 }
 .m-tabs {
-  background: #fff;
-  margin-top: 30px;
+  display: grid;
+  grid-template-rows: 120px auto;
+  /* background-color: #fff; */
+  max-width: unset;
+  /* padding: 15px; */
+  align-items: center;
+}
+.m-title{
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 15px;
+  position: relative;
+ 
+}
+
+.m-tabs /deep/ .el-tabs__nav-wrap::after{
+  position: static;
+}
+.m-tabs /deep/.el-tabs__item.is-active {
+  color: #be0f2d;
+}
+.m-tabs /deep/.el-tabs__item:hover {
+  color: #be0f2d;
+}
+.m-tabs /deep/.el-tabs__active-bar.is-top {
+  background: #be0f2d;
+}
+.m-tabs /deep/.el-tabs__item:hover{
+  color: #be0f2d ;
+}
+.m-tabs /deep/.el-tabs__nav-scroll{
+  background-color: #fff !important;
+  border-radius: 5px;
+  padding: 15px;
+  margin-top: -25px;
+}
+.m-tabs /deep/.el-tabs__content {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 0px 15px;
 }
 </style>

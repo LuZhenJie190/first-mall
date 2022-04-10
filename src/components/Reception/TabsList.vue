@@ -1,5 +1,5 @@
 <template>
-  <div id="tabs-list">
+  <div class="tabs-list">
     <el-tabs v-model="activeName">
       <el-tab-pane :label="phoneSorts[0].name">
         <div class="m-body">
@@ -52,6 +52,9 @@ export default {
 </script>
 
 <style scoped>
+.tabs-list{
+  margin-top: -20px;
+}
 .m-title {
   padding: 20px;
   border-bottom: 1px solid #ccc;
@@ -69,20 +72,14 @@ export default {
 .el-tabs__nav-wrap::after {
   background: #fff;
 }
-.el-tabs__item.is-active {
-  color: red;
-}
-.el-tabs__item:hover {
-  color: red;
-}
-.el-tabs__active-bar.is-top {
-  background: red;
-}
 .el-tabs__header {
   padding: 0px 0px 0px 25px;
 }
 .el-tabs__content {
-  background: #f5f5f5;
+  
+}
+.el-tabs__nav-scroll{
+  background-color: #fff !important;
 }
 .m-body {
   margin-top: 30px;

@@ -3,7 +3,7 @@
     <el-carousel
       :interval="4000"
       type="card"
-      height="500px"
+      height="600px"
       class="carousel-main"
     >
       <el-carousel-item class="carousel-item" v-for="(item,index) in carouseldata " :key="index">
@@ -34,7 +34,8 @@ export default {
 
 <style>
 .carousel {
-  margin: 20px 0px 20px 0px;
+ margin: 15px 0px;
+
 }
 .carousel-main h3 {
   color: #475669;

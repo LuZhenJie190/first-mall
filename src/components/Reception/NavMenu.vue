@@ -1,56 +1,90 @@
 <template>
-  <div id="navmenu">
+
+    <div :class="{ 
+      navmenu: navShow, 
+      'nav-change':fixedShow , 
+      'animate__animated animate__fadeInDown':fixedShow,
+      }" 
+      >
     <div class="wrap">
-    <el-menu
-      :default-active="activeIndex"
-      class="el-menu-demo"
-      mode="horizontal"
-      @select="handleSelect"
-    >
-      <img class="icon-logo" src="../../assets/logo2.png" alt="" />
-      <!-- <div class="line"></div> -->
-      <div class="search-input" v-show="inputShow" @mouseleave="inputHide">
-        <el-input type="text" placeholder="请输入关键字" v-model="searchMsg" />
-        <img src="../../assets/search.png" />
+      <h1 class="logo" >数码购</h1>
+      <el-menu
+        :default-active="activeIndex"
+        class="el-menu-demo"
+        mode="horizontal"
+        @select="handleSelect"
+      >
+        <!-- <img class="icon-logo" src="../../assets/logo2.png" alt="" /> -->
+        <el-menu-item index="1">
+          <router-link to="/Index" active-class="active">首页</router-link>
+        </el-menu-item>
+        <el-menu-item index="2">
+          <router-link to="/MobilePhone" active-class="active"
+            >手机</router-link
+          >
+        </el-menu-item>
+        <el-menu-item index="3"
+          ><router-link to="/Notebook"  active-class="active"
+            >笔记本</router-link
+          ></el-menu-item
+        >
+        <el-menu-item index="4"
+          ><router-link to="/Television" active-class="active"
+            >电视</router-link
+          ></el-menu-item
+        >
+        <el-menu-item index="5"
+          ><router-link to="/Bracelet" active-class="active"
+            >手环</router-link
+          ></el-menu-item
+        >
+
+        <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
+      </el-menu>
+      <div class="search-input">
+        <el-input type="text" placeholder="请输入关键字" v-model="searchMsg">
+        </el-input>
+        <img @click="mainSearch" src="../../assets/search.png" />
       </div>
-      <el-menu-item index="1">
-        <router-link to="/Index" active-class="active">首页</router-link                                                           >
-        </el-menu-item>
-      <el-menu-item index="2">
-        <router-link to="/MobilePhone" active-class="active">手机</router-link>
-        </el-menu-item>
-      <el-menu-item index="3"><router-link to="/Notebook" active-class="active">笔记本</router-link></el-menu-item>
-      <el-menu-item index="4"><router-link to="/Television" active-class="active">电视</router-link></el-menu-item>
-      <el-menu-item index="5"><router-link to="/Bracelet" active-class="active">手环</router-link></el-menu-item>
-      <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
+
       <div class="right">
-        <span class="search" @mouseenter="search">
-          <a>搜索</a>
-          <img src="../../assets/search.png" />
-        </span>
         <span class="scar">
-          <img src="../../assets/shoppingcar.png" />
+          <a>购物车</a>
+          <i class="el-icon-shopping-cart-2"></i>
         </span>
         <span class="login" @click="linkToLogin">
           <a>登录</a>
-          <img class="icon-login" src="../../assets/login.png" />
+          <i class="el-icon-user"></i>
         </span>
       </div>
-    </el-menu>
     </div>
   </div>
+
+
 </template>
 
 <script scoped>
 export default {
   name: "NavMenu",
+  props: ["scrollDistance"],
   data() {
     return {
       activeIndex: "1",
       activeIndex2: "1",
       searchMsg: "",
       inputShow: false,
+      navShow: true,
+      fixedShow:false,
     };
+  },
+  watch: {
+    scrollDistance(val) {
+      if (val >= 670) {
+        this.fixedShow = true
+      } else {
+       this.fixedShow = false
+      }
+    },
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -59,93 +93,105 @@ export default {
     search() {
       this.inputShow = true;
     },
-    inputHide() {
-      this.inputShow = false;
+    mainSearch() {
+      console.log(this.searchMsg);
     },
-    linkToLogin(){
+    linkToLogin() {
       this.$router.push({
-        path:'/Login'
-      })
-    }
+        path: "/Login",
+      });
+    },
   },
 };
 </script>
 
 <style scoped>
-.active{
-  color:red !important; 
+.active {
+  color: #be0f2d !important;
 }
-#navmenu {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+.navmenu {
+  width: 100%;
   background: #fff;
+  z-index: 100;
+   box-shadow: 0px 0px 10px #ccc;
+}
+.nav-change {
+  position: fixed;
+  top: 0; 
 }
 .wrap {
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 0px 50px;
+  display: grid;
+  grid-template-columns: 1fr 3fr 2fr 2fr;
+  height: 70px;
+  justify-content: center;
+  align-items: center;
 }
-.icon-logo {
-  float: left;
-  width: 150px;
-  height: 50px;
-  margin-right: 20px;
+.logo {
+  justify-self: start;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #be0f2d;
 }
 
 .el-menu.el-menu--horizontal {
   border-bottom: none;
-  display: flex;
-  align-items: center;
-  position: relative;
 }
 
 .el-menu--horizontal > .el-menu-item.is-active {
-  border-bottom: 2px solid red;
+  border-bottom: 2px solid #be0f2d;
 }
 .right {
-  width: 250px;
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  justify-content: center;
   align-items: center;
-  position: absolute;
-  right: 0;
 }
-.search,
+.scar,
 .login {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-self: end;
   align-items: center;
   cursor: pointer;
 }
-.search img,
-.scar img,
-.login img {
-  margin-left: 5px;
-  width: 20px;
-  height: 20px;
+
+.scar i,
+.login i {
+  transform: scale(1.4);
+  margin-left: 8px;
 }
 .search-input {
-  position: absolute;
-  right: 160px;
-  z-index: 10;
+  position: relative;
+  display: grid;
+  justify-content: center;
+  align-items: center;
 }
-.el-input__inner {
-  width: 300px;
+.search-input :focus {
+  border-color: #be0f2d !important;
 }
-.el-input__inner:focus {
-  border-color: red;
+.search-input .el-input {
+  width: 350px;
 }
 .search-input img {
   width: 20px;
   height: 20px;
   position: absolute;
-  right: 5px;
-  top: 5px;
-  padding: 5px;
+  right: 20px;
+  padding: 10px;
+  cursor: pointer;
 }
-.el-menu-item{
- padding: 0px 10px 0px 10px;
+.el-input-group__append {
+  background-color: #fff !important;
 }
-.el-menu-item a{
+.el-menu-item {
+  padding: 0px 10px 0px 10px;
+}
+.el-menu-item a {
   padding: 12px;
+}
+.el-menu.el-menu--horizontal {
+  width: 450px;
+  justify-self: center;
 }
 </style>

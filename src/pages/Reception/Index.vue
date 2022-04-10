@@ -1,14 +1,16 @@
 <template>
   <div id="index">
     <div class="wrap">
-      <Carousel :carouseldata="carouseldata" />
+      <Carousel :carouseldata="carouseldata" class="carousel" />
       <Classification />
-      <Recommend />
+      <Recommend><h1>推荐购</h1></Recommend>
       <div class="product-sort">
-        <ProductShow :sorts="sorts" />
-        <ProductShow :sorts="sorts" />
-        <ProductShow :sorts="sorts" />
-        <ProductShow :sorts="sorts" />
+        <ProductShow>
+          <h1>手机</h1>
+          </ProductShow>
+        <ProductShow><h1>笔记本</h1></ProductShow>
+        <ProductShow><h1>电视</h1></ProductShow>
+        <ProductShow><h1>手环</h1></ProductShow>
       </div>
       
     </div>
@@ -27,7 +29,6 @@
 
 <script>
 import axios from "axios";
-import NavMenu from "../../components/Reception/NavMenu.vue";
 import Carousel from "../../components/Reception/Carousel.vue";
 import Classification from "../../components/Reception/Classification.vue";
 import ProductShow from "../../components/Reception/ProductShow.vue";
@@ -37,7 +38,7 @@ import DsFooter from "../../components/Reception/DsFooter.vue";
 export default {
   name: "Index",
   components: {
-    NavMenu,
+  
     Carousel,
     Classification,
     ProductShow,
@@ -118,6 +119,10 @@ export default {
   border-right: none;
 
 }
+.carousel{
+  width: 1500px;
+  margin-left: -150px;
 
+}
 
 </style>

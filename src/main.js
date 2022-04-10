@@ -2,6 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from 'vue-router'
 import router from './router'
+// fade/zoom 等
+import 'element-ui/lib/theme-chalk/base.css';
+// collapse 展开折叠
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
+import animated from 'animate.css' 
+Vue.use(animated)
 import {
   Pagination,
   Dialog,
@@ -168,7 +174,7 @@ Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message;
-
+Vue.component(CollapseTransition.name, CollapseTransition)
 
 
   new Vue({
