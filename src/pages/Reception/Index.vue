@@ -5,20 +5,17 @@
       <Classification />
       <Recommend><h1>推荐购</h1></Recommend>
       <div class="product-sort">
-        <ProductShow>
-          <h1>手机</h1>
-          </ProductShow>
+        <ProductShow><h1>手机</h1></ProductShow>
         <ProductShow><h1>笔记本</h1></ProductShow>
         <ProductShow><h1>电视</h1></ProductShow>
         <ProductShow><h1>手环</h1></ProductShow>
       </div>
-      
     </div>
     <div class="index-footer">
       <ul class="footer-list">
         <li class="footer-list-item" v-for="item in footer" :key="item.id">
-          <img :src="item.imgurl" alt="">
-          <span>{{item.title}}</span>
+          <img :src="item.imgurl" alt="" />
+          <span>{{ item.title }}</span>
           <div class="line"></div>
         </li>
       </ul>
@@ -38,7 +35,6 @@ import DsFooter from "../../components/Reception/DsFooter.vue";
 export default {
   name: "Index",
   components: {
-  
     Carousel,
     Classification,
     ProductShow,
@@ -54,16 +50,32 @@ export default {
         { id: "04", title: "手环" },
       ],
       carouseldata: [
-        {id:"01",imgurl:require("../../assets/bg1.png")},
-        {id:"02",imgurl:require("../../assets/bg1.png")},
-        {id:"03",imgurl:require("../../assets/bg1.png")},
-        {id:"04",imgurl:require("../../assets/bg1.png")},
+        { id: "01", imgurl: require("../../assets/bg1.png") },
+        { id: "02", imgurl: require("../../assets/bg1.png") },
+        { id: "03", imgurl: require("../../assets/bg1.png") },
+        { id: "04", imgurl: require("../../assets/bg1.png") },
       ],
-       footer: [
-        {id:"01",imgurl:require("../../assets/7w.png"),title:"7天无理由"},
-        {id:"02",imgurl:require("../../assets/15t.png"),title:"15天包退还"},
-        {id:"03",imgurl:require("../../assets/baoyou.png"),title:"满199包邮"},
-        {id:"04",imgurl:require("../../assets/weixiu.png"),title:"维修服务"},
+      footer: [
+        {
+          id: "01",
+          imgurl: require("../../assets/7w.png"),
+          title: "7天无理由",
+        },
+        {
+          id: "02",
+          imgurl: require("../../assets/15t.png"),
+          title: "15天包退还",
+        },
+        {
+          id: "03",
+          imgurl: require("../../assets/baoyou.png"),
+          title: "满199包邮",
+        },
+        {
+          id: "04",
+          imgurl: require("../../assets/weixiu.png"),
+          title: "维修服务",
+        },
       ],
     };
   },
@@ -85,7 +97,7 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
 }
-.index-footer{
+.index-footer {
   width: 100%;
   height: 100px;
   background: #fff;
@@ -93,36 +105,32 @@ export default {
   bottom: -30px;
   border-bottom: 1px solid #eee;
 }
-.footer-list{
+.footer-list {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   margin: 50px 0px 0px 80px;
   height: 100px;
 }
-.footer-list-item img{
+.footer-list-item img {
   width: 50px;
   height: 50px;
 }
-.footer-list-item span{
+.footer-list-item span {
   margin-left: 50px;
 }
-.footer-list-item{
+.footer-list-item {
   display: flex;
   align-items: center;
-   width: 250px;
-   height: 30px;
+  width: 250px;
+  height: 30px;
   border-right: 1px solid #ccc;
-
 }
-.footer-list li:last-child{
+.footer-list li:last-child {
   border-right: none;
-
 }
-.carousel{
+.carousel {
   width: 1500px;
   margin-left: -150px;
-
 }
-
 </style>

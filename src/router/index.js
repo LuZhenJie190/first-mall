@@ -6,6 +6,7 @@ import MobilePhone from '../pages/Reception/MobilePhone.vue'
 import Television from '../pages/Reception/Television.vue'
 import Notebook from '../pages/Reception/Notebook.vue'
 import Bracelet from '../pages/Reception/Bracelet.vue'
+import PersonalCenter from '../pages/Reception/PersonalCenter.vue'
 import BackendSystem from '../pages/Backstage/BackendSystem.vue'
 import UserList from '../pages/Backstage/UserList.vue'
 import UserRoot from '../pages/Backstage/UserRoot.vue'
@@ -65,6 +66,11 @@ export default new VueRouter({
             name:'notebook',
             path:'/Notebook',
             component:Notebook
+        },
+        {
+            name:'personalCenter',
+            path:'/PersonalCenter',
+            component:PersonalCenter
         },
         {
             name:'backendSystem',

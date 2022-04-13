@@ -1,55 +1,56 @@
 <template>
   <div class="login">
     <div class="login-context">
-      <div class="loginfrom">
-        <div class="login-left">
-          <img src="../../assets/bg1.png" alt="" />
+      <!-- 表单 -->
+      <login-form>
+        <template slot="title">
+          <div class="btn-register" @click="linkToRegister">
+          <a
+            >立即注册<i class="el-icon-right"></i
+          ></a>
         </div>
-        <div class="login-right">
-          <h1 class="t-login">帐号登录</h1>
-          <!-- <div class="login-form">
-
-          </div> -->
-          <el-form ref="form" 
-          :model="form" 
-          label-width="80px"
-          class="login-form">
-            <el-form-item label="用户名：">
-              <el-input v-model="form.name"></el-input>
-            </el-form-item>
-            <el-form-item label="密码：">
-              <el-input v-model="form.password"></el-input>
-            </el-form-item>
-            <a class="forgetpwd" href="">忘记密码</a>
-            <el-form-item>
-              <el-button type="danger" class="loginbtn" @click="login"
-                >登录</el-button
-              >
-            </el-form-item>
-          </el-form>
-          <el-divider>其他登录方式</el-divider>
-          <div class="login-type">
-            <ul>
-              <li v-for="(item, index) in type" :key="index">
-                <img :src="item.img" alt="">
-              </li>
-            </ul>
+        </template>
+        <template slot="form">
+          <div :class="{ 'login-right' : true, 'animate__animated animate__bounceOutRight' : anShow}">
+            <h1 class="t-login">帐号登录</h1>
+            <el-form
+              ref="form"
+              :model="form"
+              label-width="80px"
+              class="login-form"
+            >
+              <el-form-item label="用户名：">
+                <el-input v-model="form.name" placeholder="请输入手机号"></el-input>
+              </el-form-item>
+              <el-form-item label="密码：">
+                <el-input v-model="form.password"  placeholder="请输入密码"></el-input>
+              </el-form-item>
+              <a class="forgetpwd" href="">忘记密码</a>
+              <el-form-item>
+                <el-button type="danger" class="loginbtn" @click="login"
+                  >登录</el-button
+                >
+              </el-form-item>
+            </el-form>
+            <el-divider>其他登录方式</el-divider>
+            <div class="login-type">
+              <ul>
+                <li v-for="(item, index) in type" :key="index">
+                  <img :src="item.img" alt="" />
+                </li>
+              </ul>
+            </div>
           </div>
-          <a class="linkToregister" @click="linkToRegister"
-            >还没有账户？立即注册
-            <i class="el-icon-right"></i>
-          </a>
-        </div>
-      </div>
+        </template>
+      </login-form>
     </div>
-    <ds-footer class="login-footer" />
   </div>
 </template>
 
 <script>
-import DsFooter from "../../components/Reception/DsFooter.vue";
+import LoginForm from "../../components/LoginForm.vue";
 export default {
-  components: { DsFooter },
+  components: { LoginForm },
   name: "Login",
   data() {
     return {
@@ -57,19 +58,25 @@ export default {
         name: "",
         password: "",
       },
-      type:[
-        {img:require('../../assets/wx.png')},
-        {img:require('../../assets/zfb.png')},
-        {img:require('../../assets/QQ.png')},
-
-      ]
+      type: [
+        { img: require("../../assets/wx.png") },
+        { img: require("../../assets/zfb.png") },
+        { img: require("../../assets/QQ.png") },
+      ],
+      anShow: false,
     };
   },
   methods: {
-    linkToRegister() {
-      this.$router.push({
+    linkToRegister() { 
+      this.anShow = true
+      setTimeout(() => {
+       
+         this.$router.push({
         path: "/Register",
       });
+      }, 500);
+     
+
     },
     linkToIndex() {
       this.$router.push({
@@ -103,16 +110,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.demo-ruleForm {
-  position: relative;
-  top: 80px;
-  right: 25px;
-}
-/* .bg-login{
-  width: 100%;
-  height: 100vh;
-  object-fit: cover;
-} */
+
 .loginfrom {
   width: 900px;
   height: 550px;
@@ -124,10 +122,65 @@ export default {
   overflow: hidden;
   position: relative;
 }
-.login-left img {
+.login-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.login-bg {
   width: 100%;
   height: 100%;
+  background-image: url("../../assets/login_image.jpg");
+  background-position: -732px -360px;
+  background-repeat: no-repeat;
   object-fit: cover;
+  transition: 0.5s;
+}
+.btn-register:hover {
+  opacity: 1;
+  transition: 0.5s;
+}
+.btn-register:hover + .login-bg {
+  transition: 0.5s;
+  filter: blur(5px);
+}
+.btn-register {
+  border: none;
+  background: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 200px;
+  padding: 20px;
+  opacity: 0.7;
+  transition: 0.5s;
+  z-index: 20;
+  cursor: pointer;
+  position: absolute;
+}
+.btn-register a {
+  font-weight: 600;
+  font-size: 25px;
+  color: #000;
+}
+.btn-register i {
+  background: #be0f2d;
+  border-radius: 100%;
+  color: #fff;
+  margin-top: 30px;
+  transform: scale(2, 2);
+}
+.focus {
+  width: 105%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(238, 238, 238, 0.705);
+  /* filter: blur(1px); */
+  z-index: 10;
 }
 .login-right {
   display: grid;
@@ -152,11 +205,11 @@ export default {
   display: flex;
   justify-content: space-evenly;
 }
-.login-type li{
+.login-type li {
   width: 50px;
   height: 50px;
 }
-.login-type li img{
+.login-type li img {
   width: 40px;
   height: 40px;
 }
@@ -168,6 +221,7 @@ export default {
   bottom: 80px;
   right: 0;
   font-size: small;
+  color: #000;
 }
 .linkToregister {
   position: absolute;
