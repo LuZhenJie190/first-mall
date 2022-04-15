@@ -7,6 +7,8 @@ import Television from '../pages/Reception/Television.vue'
 import Notebook from '../pages/Reception/Notebook.vue'
 import Bracelet from '../pages/Reception/Bracelet.vue'
 import PersonalCenter from '../pages/Reception/PersonalCenter.vue'
+import ShoppingCart from '../pages/Reception/ShoppingCart.vue'
+
 import BackendSystem from '../pages/Backstage/BackendSystem.vue'
 import UserList from '../pages/Backstage/UserList.vue'
 import UserRoot from '../pages/Backstage/UserRoot.vue'
@@ -71,6 +73,14 @@ export default new VueRouter({
             name:'personalCenter',
             path:'/PersonalCenter',
             component:PersonalCenter
+        },
+        {
+            name:'shoppingCart',
+            path:'/ShoppingCart',
+            component:ShoppingCart,
+            meta:{
+                showNav:true
+            }
         },
         {
             name:'backendSystem',

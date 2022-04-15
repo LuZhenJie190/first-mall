@@ -5,14 +5,14 @@
     <div class="container"> 
       <aside class="conter-left">
         <h2>个人中心</h2>
-        <el-menu default-active="2" class="el-menu-vertical-demo">
-          <el-menu-item index="1" class="menu-item">
+        <el-menu default-active="2" class="el-menu-vertical-demo" :router="true">
+          <el-menu-item index="/PersonalCenter" class="menu-item">
             <span slot="title">个人信息</span>
           </el-menu-item>
-          <el-menu-item index="2" class="menu-item">
+          <el-menu-item index="/MyOrder" class="menu-item">
             <span slot="title">我的订单</span>
           </el-menu-item>
-          <el-menu-item index="3" class="menu-item">
+          <el-menu-item index="/ShoppingCart" class="menu-item">
             <span slot="title">我的购物车</span>
           </el-menu-item>
         </el-menu>

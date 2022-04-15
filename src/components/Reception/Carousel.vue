@@ -32,7 +32,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .carousel {
  margin: 15px 0px;
 

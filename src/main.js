@@ -85,7 +85,8 @@ import {
   Loading,
   MessageBox,
   Message,
-  Notification
+  Notification,
+  Empty
 } from 'element-ui';
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
@@ -164,6 +165,7 @@ Vue.use(Calendar);
 Vue.use(Backtop);
 Vue.use(PageHeader);
 Vue.use(CascaderPanel);
+Vue.use(Empty)
 
 Vue.use(Loading.directive);
 

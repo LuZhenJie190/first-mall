@@ -41,7 +41,7 @@ export default {
 };
 </script>
 
-<style >
+<style>
 .recommend-carousel .el-carousel__arrow--left {
   position: absolute;
   top: 120px;

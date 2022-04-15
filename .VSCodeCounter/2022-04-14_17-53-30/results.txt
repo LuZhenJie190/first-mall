@@ -1,0 +1,86 @@
+Date : 2022-04-14 17:53:30
+Directory : e:\digital-shopping
+Total : 47 files,  33888 codes, 127 comments, 237 blanks, all 34252 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          2 |     28,584 |          0 |          2 |     28,586 |
+| Vue        |         36 |      4,662 |        105 |        189 |      4,956 |
+| JavaScript |          7 |        607 |         21 |         39 |        667 |
+| Markdown   |          1 |         19 |          0 |          6 |         25 |
+| HTML       |          1 |         16 |          1 |          1 |         18 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                             | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                |         47 |     33,888 |        127 |        237 |     34,252 |
+| public                                                           |          1 |         16 |          1 |          1 |         18 |
+| src                                                              |         41 |      5,240 |        125 |        226 |      5,591 |
+| src\api                                                          |          2 |        237 |         18 |         22 |        277 |
+| src\components                                                   |         15 |      1,229 |         22 |         68 |      1,319 |
+| src\components\Backstage                                         |          5 |        418 |          7 |         22 |        447 |
+| src\components\Reception                                         |          9 |        729 |         15 |         44 |        788 |
+| src\pages                                                        |         20 |      3,336 |         76 |        114 |      3,526 |
+| src\pages\Backstage                                              |          9 |      2,040 |         70 |         68 |      2,178 |
+| src\pages\Reception                                              |         11 |      1,296 |          6 |         46 |      1,348 |
+| src\router                                                       |          1 |        153 |          0 |          5 |        158 |
+| src\utils                                                        |          1 |         11 |          0 |          3 |         14 |
++------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                         | language   | code       | comment    | blank      | total      |
++------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| e:\digital-shopping\README.md                                    | Markdown   |         19 |          0 |          6 |         25 |
+| e:\digital-shopping\babel.config.js                              | JavaScript |         15 |          0 |          1 |         16 |
+| e:\digital-shopping\package-lock.json                            | JSON       |     28,534 |          0 |          1 |     28,535 |
+| e:\digital-shopping\package.json                                 | JSON       |         50 |          0 |          1 |         51 |
+| e:\digital-shopping\public\index.html                            | HTML       |         16 |          1 |          1 |         18 |
+| e:\digital-shopping\src\App.vue                                  | Vue        |         97 |          7 |          7 |        111 |
+| e:\digital-shopping\src\api\index.js                             | JavaScript |        223 |          9 |         20 |        252 |
+| e:\digital-shopping\src\api\request.js                           | JavaScript |         14 |          9 |          2 |         25 |
+| e:\digital-shopping\src\components\Backstage\AddForm.vue         | Vue        |        122 |          2 |          6 |        130 |
+| e:\digital-shopping\src\components\Backstage\BackstageSearch.vue | Vue        |         87 |          2 |          3 |         92 |
+| e:\digital-shopping\src\components\Backstage\BackstageTop.vue    | Vue        |         61 |          1 |          4 |         66 |
+| e:\digital-shopping\src\components\Backstage\Paging.vue          | Vue        |         45 |          2 |          4 |         51 |
+| e:\digital-shopping\src\components\Backstage\ProductCollapse.vue | Vue        |        103 |          0 |          5 |        108 |
+| e:\digital-shopping\src\components\LoginForm.vue                 | Vue        |         82 |          0 |          2 |         84 |
+| e:\digital-shopping\src\components\Reception\BreadHeader.vue     | Vue        |         16 |          0 |          2 |         18 |
+| e:\digital-shopping\src\components\Reception\CardsList.vue       | Vue        |         55 |          1 |          9 |         65 |
+| e:\digital-shopping\src\components\Reception\Carousel.vue        | Vue        |         59 |          6 |          7 |         72 |
+| e:\digital-shopping\src\components\Reception\Classification.vue  | Vue        |         58 |          0 |          5 |         63 |
+| e:\digital-shopping\src\components\Reception\DsFooter.vue        | Vue        |         22 |          0 |          3 |         25 |
+| e:\digital-shopping\src\components\Reception\NavMenu.vue         | Vue        |        273 |          1 |         10 |        284 |
+| e:\digital-shopping\src\components\Reception\ProductShow.vue     | Vue        |         71 |          0 |          2 |         73 |
+| e:\digital-shopping\src\components\Reception\Recommend.vue       | Vue        |         79 |          7 |          2 |         88 |
+| e:\digital-shopping\src\components\Reception\TabsList.vue        | Vue        |         96 |          0 |          4 |        100 |
+| e:\digital-shopping\src\main.js                                  | JavaScript |        177 |          2 |          7 |        186 |
+| e:\digital-shopping\src\pages\Backstage\BackendSystem.vue        | Vue        |        112 |          0 |          5 |        117 |
+| e:\digital-shopping\src\pages\Backstage\Home.vue                 | Vue        |        187 |          5 |          6 |        198 |
+| e:\digital-shopping\src\pages\Backstage\OrderManagement.vue      | Vue        |        352 |         10 |          2 |        364 |
+| e:\digital-shopping\src\pages\Backstage\ProductAdd.vue           | Vue        |        243 |         15 |         16 |        274 |
+| e:\digital-shopping\src\pages\Backstage\ProductCategory.vue      | Vue        |        169 |          1 |          5 |        175 |
+| e:\digital-shopping\src\pages\Backstage\ProductList.vue          | Vue        |        497 |         20 |          7 |        524 |
+| e:\digital-shopping\src\pages\Backstage\UserAdd.vue              | Vue        |         44 |          2 |          5 |         51 |
+| e:\digital-shopping\src\pages\Backstage\UserList.vue             | Vue        |        317 |         14 |         15 |        346 |
+| e:\digital-shopping\src\pages\Backstage\UserRoot.vue             | Vue        |        119 |          3 |          7 |        129 |
+| e:\digital-shopping\src\pages\Reception\Bracelet.vue             | Vue        |         85 |          0 |          3 |         88 |
+| e:\digital-shopping\src\pages\Reception\Index.vue                | Vue        |        133 |          0 |          3 |        136 |
+| e:\digital-shopping\src\pages\Reception\Login.vue                | Vue        |        227 |          3 |          6 |        236 |
+| e:\digital-shopping\src\pages\Reception\MobilePhone.vue          | Vue        |        119 |          2 |          5 |        126 |
+| e:\digital-shopping\src\pages\Reception\MyOrder.vue              | Vue        |         10 |          0 |          3 |         13 |
+| e:\digital-shopping\src\pages\Reception\Notebook.vue             | Vue        |         85 |          0 |          3 |         88 |
+| e:\digital-shopping\src\pages\Reception\PersonalCenter.vue       | Vue        |        194 |          0 |          5 |        199 |
+| e:\digital-shopping\src\pages\Reception\ProductDetails.vue       | Vue        |         10 |          0 |          3 |         13 |
+| e:\digital-shopping\src\pages\Reception\Register.vue             | Vue        |        338 |          1 |          9 |        348 |
+| e:\digital-shopping\src\pages\Reception\ShoppingCart.vue         | Vue        |         10 |          0 |          3 |         13 |
+| e:\digital-shopping\src\pages\Reception\Television.vue           | Vue        |         85 |          0 |          3 |         88 |
+| e:\digital-shopping\src\router\index.js                          | JavaScript |        153 |          0 |          5 |        158 |
+| e:\digital-shopping\src\utils\index.js                           | JavaScript |         11 |          0 |          3 |         14 |
+| e:\digital-shopping\vue.config.js                                | JavaScript |         14 |          1 |          1 |         16 |
+| Total                                                            |            |     33,888 |        127 |        237 |     34,252 |
++------------------------------------------------------------------+------------+------------+------------+------------+------------+

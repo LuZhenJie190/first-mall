@@ -2,7 +2,8 @@
   <div class="app">
     <nav-menu 
     v-if="!$route.meta.showNav"
-    :scrollDistance = 'scrollDistance'/>
+    :scrollDistance = 'scrollDistance'
+   />
     <router-view v-if="isRouterAlive" />
     <div class="back">
       <el-button v-show="backTop" @click="goback"
@@ -35,6 +36,10 @@ export default {
   mounted() {
     //   绑定滚动事件
     window.addEventListener("scroll", this.scrollToTop, true);
+
+    if(this.$router.path == '/PersonalCenter'){
+      this.activeIndex = '0'
+    }
   },
   methods: {
     //返回顶部
