@@ -1,9 +1,9 @@
 <template>
   <div class="cart">
     <div class="top">
-      <div class="container" style="  height: 100px;">
+      <div class="container" style="height: 100px">
         <div class="left">
-          <h1>数码购</h1>
+          <h1 @click="goShopping">数码购</h1>
           <p>温馨提示：产品是否购买成功，以最终下单为准哦，请尽快结算</p>
         </div>
         <div class="right">
@@ -21,13 +21,13 @@
               >
             </el-dropdown-menu>
           </el-dropdown>
-          <a class="order">我的订单</a>
+          <a class="order" @click="goOrder">我的订单</a>
         </div>
       </div>
       <el-divider class="line"></el-divider>
     </div>
     <div class="content">
-      <div class="container" v-show="tableData.length > 0 ">
+      <div class="container" v-show="tableData.length > 0">
         <el-table
           ref="multipleTable"
           :data="tableData"
@@ -73,15 +73,17 @@
       <el-empty
         class="empty"
         description="您的购物车还是空的！"
-       v-show="tableData.length == 0"
+        v-show="tableData.length == 0"
       >
-        <button class="btn-pay" style="height: 60px" @click="goShopping">马上去购物</button>
+        <button class="btn-pay" style="height: 60px" @click="goShopping">
+          马上去购物
+        </button>
       </el-empty>
     </div>
-    <div class="bottom" v-show="tableData.length > 0 ">
+    <div class="bottom" v-show="tableData.length > 0">
       <div class="b-container">
         <div class="b-left">
-          <a style="color:#be0f2d" @click="goShopping">继续购物</a> 
+          <a style="color: #be0f2d" @click="goShopping">继续购物</a>
           <p>已选择<i class="num">0</i>件</p>
         </div>
         <div class="b-right">
@@ -106,24 +108,27 @@ export default {
   data() {
     return {
       tableData: [
-{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }
-       ],
+        {
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
+          date: "2016-05-04",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1517 弄",
+        },
+        {
+          date: "2016-05-01",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1519 弄",
+        },
+        {
+          date: "2016-05-03",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1516 弄",
+        },
+      ],
       multipleSelection: [],
       emptyChange: false,
     };
@@ -134,7 +139,7 @@ export default {
     },
     goPersonal() {
       this.$router.push({
-        path: "/PersonalCenter",
+        path: "/PersonalMenu/PersonalIndex",
       });
     },
     goCart() {
@@ -142,9 +147,14 @@ export default {
         path: "/ShoppingCart",
       });
     },
-    goShopping(){
-       this.$router.push({
+    goShopping() {
+      this.$router.push({
         path: "/Index",
+      });
+    },
+    goOrder() {
+      this.$router.push({
+        path: "/PersonalMenu/MainOrder",
       });
     },
     toggleSelection(rows) {
@@ -241,7 +251,7 @@ export default {
   width: 80px;
   height: 100px;
 }
-.content i:hover{
+.content i:hover {
   color: #be0f2d;
 }
 .bottom {

@@ -2,14 +2,16 @@
   <div class="backend-system">
     <el-container>
       <el-header>
-          <backstage-top/>
+        <backstage-top />
       </el-header>
       <el-container>
         <el-aside>
           <el-menu
             default-active="1"
             class="el-menu-vertical-demo"
-            :router="true">
+            :router="true"
+            :unique-opened="true"
+          >
             <el-menu-item index="/BackendSystem/Home">
               <i class="el-icon-house"></i>
               <span slot="title">首页</span>
@@ -25,11 +27,13 @@
                   <span slot="title">用户列表</span>
                 </el-menu-item>
                 <el-menu-item index="/BackendSystem/UserRoot">
-                <i class="el-icon-setting"></i>
-                  <span slot="title">用户权限</span></el-menu-item>
+                  <i class="el-icon-setting"></i>
+                  <span slot="title">用户权限</span></el-menu-item
+                >
                 <el-menu-item index="/BackendSystem/UserAdd">
-                <i class="el-icon-plus"></i>
-                  <span slot="title">添加用户</span></el-menu-item>
+                  <i class="el-icon-plus"></i>
+                  <span slot="title">添加用户</span></el-menu-item
+                >
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="3">
@@ -39,14 +43,37 @@
               </template>
               <el-menu-item-group>
                 <el-menu-item index="/BackendSystem/ProductList">
-                <i class="el-icon-notebook-2"></i>
-                  <span slot="title">商品列表</span></el-menu-item>
-                <el-menu-item index="/BackendSystem/ProductAdd" >
-                <i class="el-icon-sell"></i>
-                <span slot="title">商品发布</span></el-menu-item>
-                <el-menu-item index="/BackendSystem/ProductCategory" >
+                  <i class="el-icon-notebook-2"></i>
+                  <span slot="title">商品列表</span></el-menu-item
+                >
+                <el-menu-item index="/BackendSystem/ProductSet">
+                  <i class="el-icon-setting"></i>
+                  <span slot="title">商品设置</span></el-menu-item
+                >
+
+                <el-menu-item index="/BackendSystem/ProductAdd">
+                  <i class="el-icon-sell"></i>
+                  <span slot="title">商品发布</span></el-menu-item
+                >
+                <el-menu-item index="/BackendSystem/ProductCategory">
                   <i class="el-icon-menu"></i>
                   <span slot="title">商品分类</span>
+                </el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="4">
+              <template slot="title">
+                <i class="el-icon-set-up"></i>
+                <span slot="title">首页展示管理</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="/BackendSystem/CarouselSet">
+                  <i class="el-icon-picture-outline"></i>
+                  <span slot="title">轮播图设置</span>
+                </el-menu-item>
+                <el-menu-item index="/BackendSystem/RecommendlSet">
+                  <i class="el-icon-c-scale-to-original"></i>
+                  <span slot="title">每日推荐设置</span>
                 </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
@@ -65,7 +92,7 @@
 </template>
 
 <script>
-import BackstageTop from '../../components/Backstage/BackstageTop.vue';
+import BackstageTop from "../../components/Backstage/BackstageTop.vue";
 export default {
   components: { BackstageTop },
   name: "BackendSystem",
@@ -93,7 +120,6 @@ html {
   background: #fff;
   border-radius: 5px;
 }
-
 
 .el-aside {
   width: 230px !important;

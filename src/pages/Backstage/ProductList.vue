@@ -1,12 +1,13 @@
 <template>
-  <div>
+  <div class="product-list">
     <!-- 搜索和批量删除按钮 -->
     <backstage-search
       @searchInput="searchInput"
       :inputValue="ivalue"
       :multipleSelection="multipleSelection"
       :flag="flag"
-    />
+    >
+    </backstage-search>
     <!-- 表格 -->
     <el-table
       :data="tableData"
@@ -18,10 +19,10 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="50" />
-      <el-table-column prop="pid" label="商品ID" width="100" fixed="left"/>
-      <el-table-column prop="categoryId" label="品类" width="100"/>
-      <el-table-column prop="brandId" label="品牌" width="100"/>
-      <el-table-column prop="title" label="名称" width="150"/>
+      <el-table-column prop="pid" label="商品ID" width="100" fixed="left" />
+      <el-table-column prop="categoryId" label="品类" width="100" />
+      <el-table-column prop="brandId" label="品牌" width="100" />
+      <el-table-column prop="title" label="名称" width="150" />
       <el-table-column prop="mainImg" label="主图" width="105">
         <template slot-scope="scope">
           <img
@@ -31,11 +32,11 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="price" label="价格(￥)" width="160"/>
-      <el-table-column prop="count" label="数量" width="160"/>
-      <el-table-column prop="color" label="颜色" width="160"/>
-      <el-table-column prop="versions" label="版本" width="160"/>
-      <el-table-column prop="createTime" label="创建时间" width="160"/>
+      <el-table-column prop="price" label="价格(￥)" width="160" />
+      <el-table-column prop="count" label="数量" width="160" />
+      <el-table-column prop="color" label="颜色" width="160" />
+      <el-table-column prop="versions" label="版本" width="160" />
+      <el-table-column prop="createTime" label="创建时间" width="160" />
       <el-table-column label="操作" width="159" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="update(scope.$index)">修改</el-button>
@@ -64,29 +65,12 @@
             <el-form label-width="100px" v-model="form">
               <el-form-item label="商品类型：" style="width: 300px">
                 <el-radio
+                  v-for="cateid in categoryList"
+                  :key="cateid.categoryId"
                   v-model="form.categoryId"
-                  label="1001"
+                  :label="String(cateid.categoryId)"
                   @change="typeRadio(form.categoryId)"
-                  >手机</el-radio
-                >
-                <el-radio
-                  v-model="form.categoryId"
-                  label="1002"
-                  @change="typeRadio(form.categoryId)"
-                  >笔记本</el-radio
-                >
-                <el-radio
-                  v-model="form.categoryId"
-                  label="1003"
-                  @change="typeRadio(form.categoryId)"
-                  >电视</el-radio
-                >
-                <el-radio
-                  v-model="form.categoryId"
-                  label="1004"
-                  @change="typeRadio(form.categoryId)"
-                >
-                  手环</el-radio
+                  >{{ cateid.categoryName }}</el-radio
                 >
               </el-form-item>
               <el-form-item label="商品品牌：">
@@ -97,7 +81,7 @@
                 >
                   <el-option
                     v-for="item in brandList"
-                    :key="item.pcid"
+                    :key="item.pbid"
                     :label="item.brandName"
                     :value="item.brandId"
                   >
@@ -121,8 +105,6 @@
           </el-tab-pane>
           <el-tab-pane label="商品图片" name="1">
             <el-image :src="form.mainImg"></el-image>
-            <!-- ------------------------------------------------ -->
-            <!-- :http-request="upload" -->
             <el-upload
               class="upload-demo"
               action="#"
@@ -170,6 +152,7 @@ import {
   ProductCategory,
   ProductBrand,
   ProductGetTitle,
+  ProductCategoryGetByBrand,
 } from "../../api/index.js";
 import Paging from "../../components/Backstage/Paging.vue";
 import BackstageSearch from "../../components/Backstage/BackstageSearch.vue";
@@ -177,9 +160,12 @@ import BackstageSearch from "../../components/Backstage/BackstageSearch.vue";
 const COS = require("cos-js-sdk-v5");
 // 填写自己腾讯云cos中的key和id (密钥)
 const cos = new COS({
-  SecretId: "AKID50f4D5g1i8H9l6AxUllUx93g28xVmnXz", // 腾讯云份识别ID自己扫码查询
-  SecretKey: "C8nBI8i13oJXUAajbCVYKp2zf5E8KJ6e", // 身份秘钥
+  // 腾讯云份识别ID自己扫码查询
+  SecretId: "AKID50f4D5g1i8H9l6AxUllUx93g28xVmnXz",
+  // 身份秘钥
+  SecretKey: "C8nBI8i13oJXUAajbCVYKp2zf5E8KJ6e",
 });
+
 export default {
   components: { Paging, BackstageSearch },
   name: "ProductList",
@@ -198,6 +184,7 @@ export default {
       },
       tableData: [],
       brandList: [],
+      categoryList: [],
       labelPosition: "right",
       modelShow: false,
       oldImg: "",
@@ -218,30 +205,38 @@ export default {
         color: "",
         versions: "",
       },
-      // 下拉框分类选择
-      options: [
-        { label: "华为", value: 0 },
-        { label: "小米", value: 1 },
-        { label: "vivo", value: 2 },
-        { label: "oppo", value: 3 },
-      ],
       multipleSelection: [],
     };
   },
+  filters: {
+    bbname(val) {
+      console.log(val);
+      // if (val == 201) {
+      //   val = "华为";
+      // }
+    },
+  },
   created() {
+    // 获取商品信息
     ProductgetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then((res) => {
       this.tableData = res.list;
       this.pageInfo.pageTotal = res.total;
       this.nameFilter();
     });
+    // 获取分类
     ProductCategory().then((res) => {
-      console.log(res);
-      this.brandList = res;
+      this.categoryList = res;
     });
   },
   methods: {
+    // 点击分类重新获取品牌
     typeRadio(radio) {
-      // console.log(radio);
+      ProductCategoryGetByBrand(radio).then((res) => {
+        this.brandList = res[0].productBrand;
+      });
+    },
+    sortSelect(brand) {
+      // console.log(brand);
     },
     toggleSelection(rows) {
       if (rows) {
@@ -281,8 +276,10 @@ export default {
       //品牌名
       ProductBrand(1, 1000).then((res) => {
         res.list.forEach((e) => {
-          this.tableData.forEach((el) => {
-            if (el.brandId == e.brandId) el.brandId = e.brandName;
+          console.log("e", e);
+          this.tableData.forEach((ele) => {
+            console.log("ele", ele);
+            if (ele.brandId == e.brandId) ele.brandId = e.brandName;
           });
         });
       });
@@ -299,7 +296,10 @@ export default {
         .then(() => {
           // 删除操作
           ProductRemove(listIndex);
-          this.$alert("删除成功");
+          this.$message({
+            message: "修改成功",
+            type: "success",
+          });
           this.reload();
           // 重新获取数据
           this.timer = setTimeout(() => {
@@ -311,8 +311,9 @@ export default {
     // 修改按钮
     update(pid) {
       let index = pid;
+      // 获取当前的id
       let listIndex = this.tableData[index].pid;
-      console.log(listIndex);
+      // 根据ID获取数据
       ProductgetById(listIndex).then((res) => {
         this.form.categoryId = res.categoryId;
         this.form.brandId = res.brandId;
@@ -325,7 +326,19 @@ export default {
         this.form.color = res.color;
         this.form.count = res.count;
         this.form.createTime = res.createTime;
+
+        // 根据第一次加载的分类获取品牌
+        ProductCategoryGetByBrand(this.form.categoryId).then((res) => {
+          this.brandList = res[0].productBrand;
+          // 命名格式化
+          this.brandList.forEach((e) => {
+            if (this.form.brandId == e.brandId) {
+              this.form.brandId = e.brandName;
+            }
+          });
+        });
       });
+      // 模态框显示
       this.modelShow = true;
     },
     // 确定修改信息，提交表单
@@ -355,7 +368,11 @@ export default {
       ) {
         this.$alert("不能为空");
       } else {
-        this.$alert("修改成功");
+        // this.$alert("修改成功");
+        this.$message({
+          message: "修改成功",
+          type: "success",
+        });
         this.fileList = [];
         this.tabsIndex = "0";
         ProductUpdate(
@@ -437,10 +454,10 @@ export default {
 };
 </script>
 
-<style>
-.el-table--border::after,
-.el-table--group::after,
-.el-table::before {
+<style scoped>
+.product-list /deep/ .el-table--border::after,
+.product-list /deep/ .el-table--group::after,
+.product-list /deep/ .el-table::before {
   z-index: 0;
 }
 .p-model-bg {
@@ -463,7 +480,7 @@ export default {
   left: 500px;
   z-index: 5;
 }
-.p-model-context .el-form {
+.product-list /deep/.el-form {
   position: relative;
   top: 50px;
   right: 50px;
@@ -471,7 +488,7 @@ export default {
   height: 500px;
   margin: auto;
 }
-.p-model-context .el-icon-circle-close {
+.product-list /deep/.el-icon-circle-close {
   transform: scale(2, 2);
   position: absolute;
   right: 15px;
@@ -480,22 +497,21 @@ export default {
   cursor: pointer;
   z-index: 10;
 }
-.p-model-context .el-icon-circle-close:hover {
+.product-list /deep/.el-icon-circle-close:hover {
   color: #f56c6c;
 }
-.p-model-context .el-tabs__nav-scroll {
+.product-list /deep/.el-tabs__nav-scroll {
   margin-top: 20px;
 }
-.p-model-context .el-tabs--left .el-tabs__nav-wrap.is-left::after {
+.product-list /deep/.el-tabs--left .el-tabs__nav-wrap.is-left::after {
   height: 0px;
 }
-
-.p-model-context .el-tabs {
+.product-list /deep/.el-tabs {
   height: 80% !important;
   margin-top: 20px;
 }
 
-.p-model-context .el-image {
+.product-list /deep/.el-image {
   position: relative;
   top: 25px;
   left: 50px;
@@ -504,10 +520,10 @@ export default {
   border: 1px solid #eee;
   border-radius: 5px;
 }
-.p-model-context .el-form {
+.product-list /deep/.el-form {
   margin-top: -30px;
 }
-.p-model-context .upload-demo {
+.product-list /deep/.upload-demo {
   padding: 40px 50px 0px 50px;
 }
 .p-update-btn {

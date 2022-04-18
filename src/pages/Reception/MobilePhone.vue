@@ -7,12 +7,7 @@
           <h2>手机专区</h2>
           <el-divider></el-divider>
         </div>
-        <tabs-list 
-        :phoneSorts="phoneSorts" 
-        :commodities1='commodities1'
-        :commodities2='commodities2'
-        :commodities3='commodities3'
-        :commodities4='commodities4' />
+        <tabs-list :products="phoneData" />
       </div>
     </div>
     <ds-footer />
@@ -28,41 +23,42 @@ export default {
   name: "MobilePhone",
   data() {
     return {
-      breadName1: "手机",
-      phoneSorts: [
-        { name: "1" },
-        { name: "2" },
-        { name: "3" },
-        { name: "4" },
-        { name: "5" },
-      ],
-      commodities1: [
-          {
-            imgurl: require("../../assets/bg1.png"),
-          title: "1",
-          date: "2121-01-21",
-          }
-      ],
-            commodities2: [
-          {
-            imgurl: require("../../assets/bg1.png"),
-          title: "2",
-          date: "2121-01-21",
-          }
-      ],
-            commodities3: [
-          {
-            imgurl: require("../../assets/bg1.png"),
-          title: "3",
-          date: "2121-01-21",
-          }
-      ],
-            commodities4: [
-          {
-            imgurl: require("../../assets/bg1.png"),
-          title: "4",
-          date: "2121-01-21",
-          }
+      phoneData: [
+        {
+          brand: "小米",
+          productList: [
+            { title: "小米12pro", price: 1235 },
+            { title: "小米13pro", price: 1222 },
+            { title: "小米14pro", price: 13335 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米13pro", price: 1222 },
+            { title: "小米14pro", price: 13335 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米13pro", price: 1222 },
+            { title: "小米14pro", price: 13335 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米13pro", price: 1222 },
+            { title: "小米14pro", price: 13335 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米15pro", price: 1215 },
+            { title: "小米15pro", price: 1215 },
+          ],
+        },
+        {
+          brand: "华为",
+          productList: [
+            { title: "华为12pro", price: 1235 },
+            { title: "华为13pro", price: 1222 },
+            { title: "华为14pro", price: 13335 },
+            { title: "华为15pro", price: 1215 },
+          ],
+        },
       ],
     };
   },
@@ -74,7 +70,7 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
 }
-.bread{
+.bread {
   margin: 15px 0px;
 }
 
@@ -89,38 +85,10 @@ export default {
   /* padding: 15px; */
   align-items: center;
 }
-.m-title{
+.m-title {
   background-color: #fff;
   border-radius: 5px;
   padding: 15px;
   position: relative;
- 
-}
-
-.m-tabs /deep/ .el-tabs__nav-wrap::after{
-  position: static;
-}
-.m-tabs /deep/.el-tabs__item.is-active {
-  color: #be0f2d;
-}
-.m-tabs /deep/.el-tabs__item:hover {
-  color: #be0f2d;
-}
-.m-tabs /deep/.el-tabs__active-bar.is-top {
-  background: #be0f2d;
-}
-.m-tabs /deep/.el-tabs__item:hover{
-  color: #be0f2d ;
-}
-.m-tabs /deep/.el-tabs__nav-scroll{
-  background-color: #fff !important;
-  border-radius: 5px;
-  padding: 15px;
-  margin-top: -25px;
-}
-.m-tabs /deep/.el-tabs__content {
-  background-color: #fff;
-  border-radius: 5px;
-  padding: 0px 15px;
 }
 </style>

@@ -5,8 +5,8 @@
       <Classification />
       <Recommend><h1>推荐购</h1></Recommend>
       <div class="product-sort">
-        <ProductShow><h1>手机</h1></ProductShow>
-        <ProductShow><h1>笔记本</h1></ProductShow>
+        <ProductShow :products="phoneData"><h1>手机</h1></ProductShow>
+        <ProductShow :products="notebookData"><h1>笔记本</h1></ProductShow>
         <ProductShow><h1>电视</h1></ProductShow>
         <ProductShow><h1>手环</h1></ProductShow>
       </div>
@@ -54,6 +54,26 @@ export default {
         { id: "02", imgurl: require("../../assets/bg1.png") },
         { id: "03", imgurl: require("../../assets/bg1.png") },
         { id: "04", imgurl: require("../../assets/bg1.png") },
+      ],
+      phoneData: [
+        { title: "小米12pro", price: 1235 },
+        { title: "小米13pro", price: 1222 },
+        { title: "小米14pro", price: 13335 },
+        { title: "小米15pro", price: 1215 },
+        { title: "小米15pro", price: 1215 },
+        { title: "小米15pro", price: 1215 },
+        { title: "小米13pro", price: 1222 },
+        { title: "小米14pro", price: 13335 },
+      ],
+      notebookData: [
+        { title: "小米笔记本", price: 1235 },
+        { title: "红米笔记本", price: 1222 },
+        { title: "华为笔记本", price: 13335 },
+        { title: "联想笔记本", price: 1215 },
+        { title: "小米15pro", price: 1215 },
+        { title: "小米15pro", price: 1215 },
+        { title: "小米13pro", price: 1222 },
+        { title: "小米14pro", price: 13335 },
       ],
       footer: [
         {

@@ -7,18 +7,14 @@
     }"
   >
     <div class="wrap">
-      <h1 class="logo">数码购</h1>
-      <el-menu
-        class="el-menu-demo"
-        mode="horizontal"
-        @select="handleSelect"
-      >
+      <h1 class="logo" @click="goIndex">数码购</h1>
+      <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect">
         <!-- <img class="icon-logo" src="../../assets/logo2.png" alt="" /> -->
         <el-menu-item index="1">
-          <router-link to="/Index"  active-class="active">首页</router-link>
+          <router-link to="/Index" active-class="active">首页</router-link>
         </el-menu-item>
-        <el-menu-item index="2" >
-          <router-link  to="/MobilePhone" active-class="active"
+        <el-menu-item index="2">
+          <router-link to="/MobilePhone" active-class="active"
             >手机</router-link
           >
         </el-menu-item>
@@ -90,35 +86,28 @@ export default {
   props: ["scrollDistance"],
   data() {
     return {
-      activeIndex: '0',
+      activeIndex: "0",
       searchMsg: "",
       inputShow: false,
       navShow: true,
       fixedShow: false,
       userMenu: true,
-      a:'',
+      a: "",
     };
   },
   watch: {
     scrollDistance(val) {
-      if (val >= 670) {
+      if (val >= 80) {
         this.fixedShow = true;
       } else {
         this.fixedShow = false;
       }
     },
   },
-// created() {
-//   this.activeIndex = '1'
-//   this.a = this.$router.options.routes.forEach(element => {
-//     console.log(element);
-//     if (element.path =='/PersonalCenter') {
-//       this.activeIndex = '0'
-//     }
-//   });
- 
-// },
   methods: {
+    goIndex() {
+      this.$router.push({ path: "/Index" });
+    },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
@@ -138,15 +127,14 @@ export default {
     },
     goPersonal() {
       this.$router.push({
-        path: "/PersonalCenter",
+        path: "/PersonalMenu/PersonalIndex",
       });
-            this.activeIndex = '0';  
     },
-    goCart(){
-       this.$router.push({
+    goCart() {
+      this.$router.push({
         path: "/ShoppingCart",
       });
-    }
+    },
   },
 };
 </script>
@@ -154,8 +142,8 @@ export default {
 <style scoped>
 .active {
   color: #be0f2d !important;
-  border-bottom:3px solid #be0f2d;
-  transition: .3s;
+  border-bottom: 3px solid #be0f2d;
+  transition: 0.3s;
 }
 .navmenu {
   width: 100%;
@@ -182,13 +170,14 @@ export default {
 }
 .el-menu.el-menu--horizontal a:hover {
   color: #be0f2d;
-  transition: .3s;
+  transition: 0.3s;
 }
 .logo {
   justify-self: start;
   font-weight: 600;
   letter-spacing: 1px;
   color: #be0f2d;
+  cursor: pointer;
 }
 
 .el-menu.el-menu--horizontal {
@@ -213,7 +202,7 @@ export default {
   align-items: center;
   cursor: pointer;
 }
-.login{
+.login {
   display: none;
 }
 .scar i,
