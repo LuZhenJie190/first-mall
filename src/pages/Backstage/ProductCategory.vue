@@ -1,8 +1,8 @@
 <template>
   <div class="product-category">
-    <el-table :data="tableData" style="width: 90%">
-      <el-table-column label="商品类型" sortable prop="categoryName"/>
-      <el-table-column label="商品品牌" sortable prop="brandName"/>
+    <el-table :data="tableData" height="510">
+      <el-table-column label="商品类型" sortable prop="categoryName" />
+      <el-table-column label="商品品牌" sortable prop="brandName" />
       <el-table-column label="品牌图标" prop="brandImg">
         <template slot-scope="scope">
           <img
@@ -14,7 +14,7 @@
       </el-table-column>
       <el-table-column align="right">
         <template slot="header" slot-scope="">
-          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+          <BackstageSearch class="search" />
         </template>
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
@@ -30,7 +30,7 @@
       </el-table-column>
     </el-table>
     <div class="product-page">
-      <paging @pNum="pNum" :pageInfo="pageInfo" />
+      <Paging @pNum="pNum" :pageInfo="pageInfo" />
     </div>
   </div>
 </template>
@@ -41,9 +41,7 @@ import {
   ProductBrand,
   ProductCategoryGetBrand,
 } from "../../api/index";
-import Paging from "../../components/Backstage/Paging.vue";
 export default {
-  components: { Paging },
   name: "ProductCategory",
   data() {
     return {
@@ -115,9 +113,7 @@ export default {
 
 <style scoped>
 .product-category {
-  width: 90%;
-  margin: 10px auto;
-  display: flex;
+  padding: 0px 20px;
 }
 .collapse {
   display: flex;
@@ -168,8 +164,11 @@ export default {
   margin: 5px;
 }
 .product-page {
-  position: absolute;
-  top: 650px;
-  left: 700px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+.search /deep/ .list-delete {
+  display: none !important;
 }
 </style>

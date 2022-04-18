@@ -83,7 +83,7 @@ export default {
   border-left: none;
 }
 .backstage-search {
-  width: 95%;
+  width: 100%;
   height: 50px;
   margin: auto;
   display: flex;

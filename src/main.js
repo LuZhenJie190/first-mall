@@ -6,7 +6,7 @@ import router from './router'
 import 'element-ui/lib/theme-chalk/base.css';
 // collapse 展开折叠
 import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
-import animated from 'animate.css' 
+import animated from 'animate.css'
 Vue.use(animated)
 import {
   Pagination,
@@ -94,7 +94,7 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 Vue.use(VueRouter),
-Vue.use(Pagination);
+  Vue.use(Pagination);
 Vue.use(Dialog);
 Vue.use(Autocomplete);
 Vue.use(Dropdown);
@@ -182,11 +182,14 @@ Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message;
 Vue.component(CollapseTransition.name, CollapseTransition)
 
-
-  new Vue({
-    
-    render: h => h(App),
-    
-    router,
-    
-  }).$mount('#app')
+// 注册全局组件
+import BackstageSearch from './components/Backstage/BackstageSearch.vue'
+import Paging from './components/Backstage/Paging.vue'
+// 后台搜索组件
+Vue.component(BackstageSearch.name, BackstageSearch);
+// 后台分页组件
+Vue.component(Paging.name, Paging);
+new Vue({
+  render: h => h(App),
+  router,
+}).$mount('#app')

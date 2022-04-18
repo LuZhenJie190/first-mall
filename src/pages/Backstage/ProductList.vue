@@ -1,19 +1,18 @@
 <template>
   <div class="product-list">
     <!-- 搜索和批量删除按钮 -->
-    <backstage-search
+    <BackstageSearch
       @searchInput="searchInput"
       :inputValue="ivalue"
       :multipleSelection="multipleSelection"
       :flag="flag"
     >
-    </backstage-search>
+    </BackstageSearch>
     <!-- 表格 -->
     <el-table
       :data="tableData"
       stripe
       border
-      style="width: 95%; margin: auto"
       ref="multipleTable"
       height="490"
       @selection-change="handleSelectionChange"
@@ -52,7 +51,7 @@
 
     <!-- 分页 -->
     <div class="product-page">
-      <paging @pNum="pNum" :pageInfo="pageInfo" />
+      <Paging @pNum="pNum" :pageInfo="pageInfo" />
     </div>
 
     <!-- 修改弹框 -->
@@ -154,8 +153,6 @@ import {
   ProductGetTitle,
   ProductCategoryGetByBrand,
 } from "../../api/index.js";
-import Paging from "../../components/Backstage/Paging.vue";
-import BackstageSearch from "../../components/Backstage/BackstageSearch.vue";
 
 const COS = require("cos-js-sdk-v5");
 // 填写自己腾讯云cos中的key和id (密钥)
@@ -167,7 +164,6 @@ const cos = new COS({
 });
 
 export default {
-  components: { Paging, BackstageSearch },
   name: "ProductList",
   inject: ["reload"],
   data() {
@@ -208,14 +204,7 @@ export default {
       multipleSelection: [],
     };
   },
-  filters: {
-    bbname(val) {
-      console.log(val);
-      // if (val == 201) {
-      //   val = "华为";
-      // }
-    },
-  },
+
   created() {
     // 获取商品信息
     ProductgetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then((res) => {
@@ -455,6 +444,9 @@ export default {
 </script>
 
 <style scoped>
+.product-list {
+  padding: 20px;
+}
 .product-list /deep/ .el-table--border::after,
 .product-list /deep/ .el-table--group::after,
 .product-list /deep/ .el-table::before {
@@ -533,8 +525,8 @@ export default {
   top: 10px;
 }
 .product-page {
-  position: absolute;
-  top: 650px;
-  left: 700px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
 }
 </style>

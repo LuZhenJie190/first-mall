@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="user-list">
     <!-- 搜索 -->
-    <backstage-search
+    <BackstageSearch
       @searchInput="searchInput"
       :inputValue="uvalue"
       :multipleSelection="multipleSelection"
@@ -11,7 +11,6 @@
       :data="tableData"
       border
       stripe
-      style="width: 95%; margin: auto"
       ref="multipleTable"
       height="485"
       @selection-change="handleSelectionChange"
@@ -40,7 +39,7 @@
 
     <!-- 分页 -->
     <div class="pagination">
-      <paging @pNum="pNum" :pageInfo="pageInfo"></paging>
+      <Paging @pNum="pNum" :pageInfo="pageInfo" />
     </div>
 
     <!-- 修改模态框 -->
@@ -102,10 +101,7 @@ import {
   UserUpdate,
   UsergetByName,
 } from "../../api/index";
-import Paging from "../../components/Backstage/Paging.vue";
-import BackstageSearch from "../../components/Backstage/BackstageSearch.vue";
 export default {
-  components: { Paging, BackstageSearch },
   inject: ["reload"],
   name: "UserList",
   data() {
@@ -315,15 +311,18 @@ export default {
 </script>
 
 <style scoped>
+.user-list {
+  padding: 20px;
+}
 .btn-prev,
 .btn-next {
   background: #ccc !important;
   color: #000 !important;
 }
 .pagination {
-  position: absolute;
-  top: 650px;
-  left: 700px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
 }
 .model-bg {
   width: 100%;

@@ -61,22 +61,6 @@
                 </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-submenu index="4">
-              <template slot="title">
-                <i class="el-icon-set-up"></i>
-                <span slot="title">首页展示管理</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="/BackendSystem/CarouselSet">
-                  <i class="el-icon-picture-outline"></i>
-                  <span slot="title">轮播图设置</span>
-                </el-menu-item>
-                <el-menu-item index="/BackendSystem/RecommendlSet">
-                  <i class="el-icon-c-scale-to-original"></i>
-                  <span slot="title">每日推荐设置</span>
-                </el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
             <el-menu-item index="/BackendSystem/OrderManagement">
               <i class="el-icon-tickets"></i>
               <span slot="title">订单管理</span>

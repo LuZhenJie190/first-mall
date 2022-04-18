@@ -1,6 +1,6 @@
 <template>
-    <div class="paging">
-         <el-pagination
+  <div class="paging">
+    <el-pagination
       background
       layout="prev, pager, next ,total"
       :total="this.pageInfo.pageTotal"
@@ -11,41 +11,34 @@
       v-show="this.pageInfo.pageShow"
     >
     </el-pagination>
-    </div>
+  </div>
 </template>
 
 <script>
-import {
-  UsergetAll,
-  ProductgetAll,
-} from "../../api/index";
 export default {
-    name:"Paging",
-    props:["pageInfo"],
-    data() {
-        return {
-            tableData:[],
-            curPage: 1,
-            total:0,
-            pNum: 1,
-            // pageSize: 8,
-        }
+  name: "Paging",
+  props: ["pageInfo"],
+  data() {
+    return {
+      tableData: [],
+      curPage: 1,
+      total: 0,
+      pNum: 1,
+    };
+  },
+  created() {
+    this.pNum = this.pageInfo.pageNum;
+  },
+  methods: {
+    // 把当前显示页数赋值给pageNum
+    paper(curPage) {
+      console.log(curPage);
+      this.pNum = curPage;
+      this.$emit("pNum", this.pNum);
     },
-    created() {
-        this.pNum=this.pageInfo.pageNum
-    },
-    methods:{
-            // 把当前显示页数赋值给pageNum
-            paper(curPage) {
-            console.log(curPage);
-            this.pNum = curPage;
-            this.$emit("pNum",this.pNum);
-
-            },
-    }
-}
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

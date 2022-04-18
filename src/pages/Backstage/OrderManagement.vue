@@ -31,18 +31,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      class="pagination"
-      v-show="pageShow"
-      background
-      layout="prev, pager, next,total"
-      :total="pagination.total"
-      :current-page="pagination.curPage"
-      :page-count="pagination.pageNum"
-      :page-size="pagination.pageSize"
-      @current-change="paperChange"
-    >
-    </el-pagination>
+    <Paging @pNum="pNum" :pageInfo="pageInfo" />
     <!-- 修改模态框 -->
     <div class="o-model-update" v-show="modelShow">
       <div class="o-model-bg"></div>
@@ -138,11 +127,11 @@ export default {
       searchTip: "请输入手机号",
       search: "",
       pageShow: true,
-      pagination: {
+      pageInfo: {
         pageNum: 1,
         pageSize: 5,
-        curPage: 0,
-        total: 0,
+        pageTotal: 0,
+        pageShow: true,
       },
       form: {
         oid: "",
@@ -167,21 +156,20 @@ export default {
   methods: {
     // 获取数据
     getOrderList() {
-      let { pageNum, pageSize } = this.pagination;
+      let { pageNum, pageSize } = this.pageInfo;
       OrderFindAll(pageNum, pageSize).then((res) => {
         // console.log(res);
         this.tableData = res.list;
-        this.pagination.total = res.total;
+        this.pageInfo.pageTotal = res.total;
         this.tableData.filter((e) => {
           e.ostatus == 0 ? (e.ostatus = "未支付") : (e.ostatus = "已支付");
           e.opaytype == 0 ? (e.opaytype = "微信") : (e.opaytype = "支付宝");
         });
       });
     },
-    // 分页实现
-    paperChange(curPage) {
-      this.pagination.pageNum = curPage;
-      this.getProductList();
+    // 获取数据并展示
+    pNum(val) {
+      console.log(val);
     },
     mShow() {
       this.modelShow = false;
