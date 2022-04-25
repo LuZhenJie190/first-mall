@@ -22,6 +22,7 @@ import ProductAdd from '../pages/Backstage/ProductAdd.vue'
 import Home from '../pages/Backstage/Home.vue'
 import ProductCategory from '../pages/Backstage/ProductCategory.vue'
 import ProductSet from '../pages/Backstage/ProductSet.vue'
+import ProductDetail from '../pages/Backstage/ProductDetail.vue'
 
 
 
@@ -188,6 +189,14 @@ export default new VueRouter({
                     name: 'productset',
                     path: 'ProductSet',
                     component: ProductSet,
+                    meta: {
+                        showNav: true
+                    },
+                },
+                {
+                    name: 'productdetail',
+                    path: 'ProductDetail',
+                    component: ProductDetail,
                     meta: {
                         showNav: true
                     },

@@ -55,13 +55,17 @@ export default {
     };
   },
   created() {
-    UsergetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then((res) => {
-      this.tableData = res.list;
-      this.pageInfo.pageTotal = res.total;
-    });
+    this.getUserRootList();
     this.pNum();
   },
   methods: {
+    // 获取用户权限列表
+    getUserRootList() {
+      UsergetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then((res) => {
+        this.tableData = res.data.list;
+        this.pageInfo.pageTotal = res.data.total;
+      });
+    },
     // 获取数据
     pNum(val) {
       if (val == undefined) {
@@ -70,7 +74,7 @@ export default {
         val == val;
       }
       UsergetAll(val, this.pageInfo.pageSize).then((res) => {
-        this.tableData = res.list;
+        this.tableData = res.data.list;
       });
     },
     // 根据id改变权限
@@ -102,12 +106,11 @@ export default {
     searchInput(val) {
       if (val != "") {
         UsergetByName(val).then((res) => {
-          this.tableData = res;
-          this.pageInfo.pageShow = false;
+          this.tableData = res.data.list;
+          this.pageInfo.pageTotal = res.data.total;
         });
       } else {
-        this.reload();
-        this.pageInfo.pageShow = true;
+        this.getUserRootList();
       }
     },
   },

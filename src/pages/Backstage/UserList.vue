@@ -107,7 +107,7 @@ export default {
   data() {
     return {
       flag: "1",
-      uvalue: "请输入手机号/用户名",
+      uvalue: "请输入用户名",
       search: "",
       tableData: [],
       pageInfo: {
@@ -162,15 +162,20 @@ export default {
     };
   },
   created() {
-    UsergetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then((res) => {
-      this.tableData = res.list;
-      this.pageInfo.pageTotal = res.total;
-    });
+    this.getUserList();
     this.pNum();
 
     //  this.userData();
   },
   methods: {
+    // 获取用户列表
+    getUserList() {
+      UsergetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then((res) => {
+        this.tableData = res.data.list;
+        this.pageInfo.pageTotal = res.data.total;
+        this.reName();
+      });
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
@@ -191,7 +196,7 @@ export default {
         val == val;
       }
       UsergetAll(val, this.pageInfo.pageSize).then((res) => {
-        this.tableData = res.list;
+        this.tableData = res.data.list;
         this.reName();
       });
     },
@@ -230,7 +235,8 @@ export default {
           type: "success",
         });
         // 刷新页面
-        this.reload();
+        // this.reload();
+        this.getUserList();
       });
     },
     // 拿到数据并放到输入框里面
@@ -239,14 +245,14 @@ export default {
       var index = uid;
       var tableIndex = this.tableData[index].uId;
       UsergetById(tableIndex).then((res) => {
-        this.form.uId = res.uId;
-        this.form.userName = res.userName;
-        this.form.userPwd = res.userPwd;
-        this.form.userSex = res.userSex;
-        this.form.userPhone = res.userPhone;
-        this.form.userEmail = res.userEmail;
-        this.form.userIdentity = res.userIdentity;
-        this.form.uCreateTime = res.uCreateTime;
+        this.form.uId = res.data.uId;
+        this.form.userName = res.data.userName;
+        this.form.userPwd = res.data.userPwd;
+        this.form.userSex = res.data.userSex;
+        this.form.userPhone = res.data.userPhone;
+        this.form.userEmail = res.data.userEmail;
+        this.form.userIdentity = res.data.userIdentity;
+        this.form.uCreateTime = res.data.uCreateTime;
       });
     },
     // 模态框隐藏
@@ -257,35 +263,18 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let {
-            uId,
-            userName,
-            userPwd,
-            userSex,
-            userPhone,
-            userEmail,
-            userIdentity,
-            uCreateTime,
-          } = this.form;
-          UserUpdate(
-            uId,
-            userName,
-            userPwd,
-            userSex,
-            userPhone,
-            userEmail,
-            userIdentity,
-            uCreateTime
-          ).then((res) => {
-            if (res == "修改成功") {
+          UserUpdate(this.form).then((res) => {
+            console.log(res);
+            if (res.code == 200) {
               this.$message({
-                message: res,
+                message: "修改成功",
                 type: "success",
               });
               //关闭模态框
               this.modelShow = false;
               //刷新数据
-              this.reload();
+              // this.reload();
+              this.getUserList();
             }
           });
         } else {
@@ -298,12 +287,15 @@ export default {
       this.search = val;
       if (this.search != "") {
         UsergetByName(this.search).then((res) => {
-          this.tableData = res;
-          this.pageInfo.pageShow = false;
+          console.log(res);
+          this.tableData = res.data.list;
+          this.pageInfo.pageTotal = res.data.total;
+          // this.pageInfo.pageShow = false;
         });
       } else {
-        this.reload();
-        this.pageInfo.pageShow = true;
+        // this.reload();
+        this.getUserList();
+        // this.pageInfo.pageShow = true;
       }
     },
   },

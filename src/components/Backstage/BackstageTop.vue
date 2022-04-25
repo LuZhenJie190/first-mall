@@ -1,24 +1,27 @@
 <template>
   <div class="backstage-top">
-      <div class="sys-header">
-        <h1>数码购后台管理系统</h1>
-        <span class="now-time">北京时间 : {{ nowTime }}</span>
-        <span class="quit">
-          <p>您好，管理员名称</p>
-          <el-button type="primary" plain size="mini" @click="backTo">退出</el-button>
-        </span>
-      </div>
+    <div class="sys-header">
+      <h1>数码购后台管理系统</h1>
+      <span class="now-time">北京时间 : {{ nowTime }}</span>
+      <span class="quit">
+        <p>管理员：{{ name }}</p>
+        <el-button type="primary" plain size="mini" @click="backTo"
+          >退出</el-button
+        >
+      </span>
+    </div>
   </div>
 </template>
 
 <script>
 import { getnowDate } from "../../utils/index";
 export default {
-  name:'BackstageTop',
+  name: "BackstageTop",
   data() {
-      return {
-            nowTime:'',
-      }
+    return {
+      nowTime: "",
+      name: localStorage.getItem("uname"),
+    };
   },
   created() {
     this.getTime();
@@ -26,21 +29,20 @@ export default {
   beforeDestroy() {
     clearInterval(this.timer);
   },
-   methods: {
-        // 获取当前时间
-        getTime() {
-          this.timer = setInterval(() => {
-            this.nowTime = getnowDate();
-          }, 100);
-        },
-        backTo(){
-          this.$router.push({
-            path:"/Index"
-          })
-        }
-   },
-
-}
+  methods: {
+    // 获取当前时间
+    getTime() {
+      this.timer = setInterval(() => {
+        this.nowTime = getnowDate();
+      }, 100);
+    },
+    backTo() {
+      this.$router.push({
+        path: "/Index",
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -62,5 +64,4 @@ export default {
 .quit p {
   margin-right: 15px;
 }
-
 </style>

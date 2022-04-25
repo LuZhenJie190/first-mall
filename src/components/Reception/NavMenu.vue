@@ -50,18 +50,18 @@
           <i class="el-icon-shopping-cart-2"></i>
           <a @click="goCart">购物车</a>
         </span>
-        <div class="login" @click="linkToLogin">
+        <div class="login" @click="linkToLogin" v-show="uname == null">
           <i class="el-icon-user"></i>
           <a>登录</a>
         </div>
-        <el-dropdown @command="handleCommand">
+        <el-dropdown @command="handleCommand" v-show="uname != null">
           <span class="el-dropdown-link">
-            <a>下拉菜单下拉菜单</a
+            <a>{{ uname }}</a
             ><i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="a" class="ditem"
-              ><a @click="goPersonal">个人中心</a></el-dropdown-item
+              ><a>个人中心</a></el-dropdown-item
             >
             <el-dropdown-item command="b" class="ditem"
               ><a>退出登录</a></el-dropdown-item
@@ -84,6 +84,7 @@
 export default {
   name: "NavMenu",
   props: ["scrollDistance"],
+  inject: ["reload"],
   data() {
     return {
       activeIndex: "0",
@@ -92,8 +93,11 @@ export default {
       navShow: true,
       fixedShow: false,
       userMenu: true,
-      a: "",
+      uname: localStorage.getItem("uname"),
     };
+  },
+  mounted() {
+    console.log(this.uname);
   },
   watch: {
     scrollDistance(val) {
@@ -102,6 +106,9 @@ export default {
       } else {
         this.fixedShow = false;
       }
+    },
+    "$route.path": function () {
+      this.uname = localStorage.getItem("uname");
     },
   },
   methods: {
@@ -123,13 +130,22 @@ export default {
       });
     },
     handleCommand(command) {
-      console.log(command);
+      if (command == "a") {
+        this.$router.push({
+          path: "/PersonalMenu/PersonalIndex",
+        });
+      } else if (command == "b") {
+        localStorage.clear();
+        this.$router.push({
+          path: "/Index",
+        });
+      }
     },
-    goPersonal() {
-      this.$router.push({
-        path: "/PersonalMenu/PersonalIndex",
-      });
-    },
+    // goPersonal() {
+    //   this.$router.push({
+    //     path: "/PersonalMenu/PersonalIndex",
+    //   });
+    // },
     goCart() {
       this.$router.push({
         path: "/ShoppingCart",
@@ -203,7 +219,7 @@ export default {
   cursor: pointer;
 }
 .login {
-  display: none;
+  /* display: none; */
 }
 .scar i,
 .login i {

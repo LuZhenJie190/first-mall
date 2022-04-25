@@ -5,13 +5,16 @@
       <login-form>
         <template slot="title">
           <div class="btn-register" @click="linkToLogin">
-            <a
-              >前往登录<i class="el-icon-right"></i
-            ></a>
+            <a>前往登录<i class="el-icon-right"></i></a>
           </div>
         </template>
         <template slot="form">
-          <div :class="{ 'login-right' : true, 'animate__animated animate__bounceOutLeft' : anShow}">
+          <div
+            :class="{
+              'login-right': true,
+              'animate__animated animate__bounceOutLeft': anShow,
+            }"
+          >
             <h1 class="r-title1">用户注册</h1>
             <div class="r-form">
               <el-form
@@ -123,7 +126,7 @@ export default {
       active: 0,
       input: "",
       value1: "",
-      anShow:false,
+      anShow: false,
     };
   },
   methods: {
@@ -133,12 +136,10 @@ export default {
     linkToLogin() {
       this.anShow = true;
       setTimeout(() => {
-         
-         this.$router.push({
-        path: "/Login",
-      });
+        this.$router.push({
+          path: "/Login",
+        });
       }, 500);
-     
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -163,6 +164,11 @@ export default {
 </script>
 
 <style scoped>
+.login /deep/ .addform .sex,
+.login /deep/ .addform .ctime,
+.login /deep/ .addform .reset {
+  display: none;
+}
 .login {
   background: #fff;
 }
@@ -325,8 +331,8 @@ export default {
 }
 
 .r-form {
- align-self: flex-start;
- width: 400px;
+  align-self: flex-start;
+  width: 400px;
 }
 .r-title1 {
 }
@@ -338,11 +344,10 @@ export default {
 .rebtn {
   margin-left: -100px;
 }
-.rebtn .el-button{
+.rebtn .el-button {
   width: 100px;
   margin-left: 20px;
 }
 .el-form {
-  
 }
 </style>

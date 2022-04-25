@@ -1,9 +1,6 @@
 <template>
   <div class="app">
-    <nav-menu 
-    v-if="!$route.meta.showNav"
-    :scrollDistance = 'scrollDistance'
-   />
+    <nav-menu v-if="!$route.meta.showNav" :scrollDistance="scrollDistance" />
     <router-view v-if="isRouterAlive" />
     <div class="back">
       <el-button v-show="backTop" @click="goback"
@@ -19,7 +16,7 @@
 import NavMenu from "./components/Reception/NavMenu.vue";
 
 export default {
-  components: {NavMenu },
+  components: { NavMenu },
   name: "App",
   provide() {
     return {
@@ -30,16 +27,12 @@ export default {
     return {
       backTop: false,
       isRouterAlive: true,
-      scrollDistance:0,
+      scrollDistance: 0,
     };
   },
   mounted() {
     //   绑定滚动事件
     window.addEventListener("scroll", this.scrollToTop, true);
-
-    if(this.$router.path == '/PersonalCenter'){
-      this.activeIndex = '0'
-    }
   },
   methods: {
     //返回顶部

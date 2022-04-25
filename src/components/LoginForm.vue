@@ -2,7 +2,7 @@
   <div class="loginform">
     <div class="loginfrom">
       <div class="login-left">
-          <slot name="title"></slot>
+        <slot name="title"></slot>
         <div class="login-bg"></div>
       </div>
       <slot name="form"></slot>
@@ -13,6 +13,10 @@
 <script>
 export default {
   name: "LoginForm",
+
+  data() {
+    return {};
+  },
 };
 </script>
 
