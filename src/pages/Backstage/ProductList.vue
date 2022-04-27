@@ -86,7 +86,12 @@
 
     <!-- 修改弹框 -->
     <el-dialog title="修改商品" :visible.sync="dialogTableVisible">
-      <el-tabs tab-position="left" style="height: 200px" v-model="tabsIndex">
+      <el-tabs
+        tab-position="left"
+        style="height: 200px"
+        v-model="tabsIndex"
+        v-loading="loading1"
+      >
         <el-tab-pane label="基本信息" name="0">
           <el-form label-width="100px" v-model="form">
             <el-form-item label="商品类型：">
@@ -143,7 +148,9 @@
               >选取文件</el-button
             >
             <span slot="tip" class="el-upload__tip">
-              &nbsp; &nbsp; &nbsp; &nbsp;只能上传jpg/png文件
+              &nbsp; &nbsp; &nbsp; &nbsp;只能上传jpg/png文件<i
+                >(限制一张，如已选择图片，请务必删除后重新选择)</i
+              >
             </span>
           </el-upload>
         </el-tab-pane>
@@ -210,6 +217,8 @@ export default {
         mainImg: "",
         createTime: "",
         updateTime: "",
+        isCarousel: "",
+        isRecommend: "",
       },
 
       multipleSelection: [],
@@ -217,6 +226,8 @@ export default {
       carousel: true,
       recommend: false,
       loading: true,
+      loading1: true,
+
       dialogTableVisible: false,
       cateNames: [],
     };
@@ -279,25 +290,26 @@ export default {
     nameFilter() {
       this.loading = true;
       //分类名
-      this.tableData.forEach((e) => {
-        e.categoryId == 1001 ? (e.categoryId = "手机") : "";
-        e.categoryId == 1002 ? (e.categoryId = "笔记本") : "";
-        e.categoryId == 1003 ? (e.categoryId = "电视") : "";
-        e.categoryId == 1004 ? (e.categoryId = "手环") : "";
-      });
-
+      if (this.tableData != undefined) {
+        this.tableData.forEach((e) => {
+          e.categoryId == 1001 ? (e.categoryId = "手机") : "";
+          e.categoryId == 1002 ? (e.categoryId = "笔记本") : "";
+          e.categoryId == 1003 ? (e.categoryId = "电视") : "";
+          e.categoryId == 1004 ? (e.categoryId = "手环") : "";
+        });
+      }
       //品牌名
-
       ProductBrand().then((res) => {
         res.data.list.forEach((e) => {
           this.tableData.forEach((el) => {
             if (el.brandId == e.brandId) {
               el.brandId = e.brandName;
-              this.loading = false;
+              // this.loading = false;
             }
           });
         });
       });
+      this.loading = false;
     },
     // 商品详情
     detail(pid) {
@@ -323,26 +335,28 @@ export default {
           // 删除操作
           ProductRemove(listIndex);
           this.$message({
-            message: "修改成功",
+            message: "删除成功",
             type: "success",
           });
           this.reload();
           // 重新获取数据
-          this.timer = setTimeout(() => {
-            this.getProductList();
-          }, 500);
+          this.getProductList();
         })
         .catch(() => {});
     },
     // 修改按钮
     update(pid) {
+      // 显示dialog
+      this.dialogTableVisible = true;
+      // 显示等待动画
+      this.loading1 = true;
+      this.fileList = [];
       let index = pid;
       // 获取当前的id
       let listIndex = this.tableData[index].pid;
       // 根据ID获取数据
       ProductGetInfoById(listIndex).then((res) => {
         let pData = res.data.list[0];
-        console.log(pData);
         this.form.categoryId = pData.categoryId;
         this.form.brandId = pData.brandId;
         this.form.pid = pData.pid;
@@ -350,7 +364,8 @@ export default {
         this.form.title = pData.title;
         this.form.subTitle = pData.subTitle;
         this.form.createTime = pData.createTime;
-
+        this.form.isCarousel = pData.isCarousel;
+        this.form.isRecommend = pData.isRecommend;
         //根据第一次加载的分类获取品牌;
         ProductBrandGetByCate(this.form.categoryId).then((res) => {
           this.brandList = res.data[0].productBrand;
@@ -360,69 +375,30 @@ export default {
               this.form.brandId = e.brandName;
             }
           });
+          this.loading1 = false;
         });
       });
-      // 模态框显示
-      this.dialogTableVisible = true;
     },
+
     // 确定修改信息，提交表单
     updateInfo() {
-      let {
-        pid,
-        categoryId,
-        brandId,
-        title,
-        subTitle,
-        mainImg,
-        price,
-        count,
-        createTime,
-        updateTime,
-        color,
-        versions,
-      } = this.form;
-      if (
-        title == "" ||
-        mainImg == "" ||
-        price == "" ||
-        count == "" ||
-        color == "" ||
-        versions == "" ||
-        createTime == ""
-      ) {
+      if (this.form.title == "" || this.form.createTime == "") {
         this.$alert("不能为空");
       } else {
-        // this.$alert("修改成功");
+        // 重置图片列表
+        this.fileList = [];
+        // 重置选项
+        this.tabsIndex = "0";
+        this.form.mainImg = this.oldImg;
+        ProductUpdate(this.form);
         this.$message({
           message: "修改成功",
           type: "success",
         });
-        this.fileList = [];
-        this.tabsIndex = "0";
-        ProductUpdate(
-          pid,
-          categoryId,
-          brandId,
-          title,
-          subTitle,
-          mainImg,
-          price,
-          count,
-          createTime,
-          updateTime,
-          color,
-          versions
-        ).then((res) => {
-          console.log(res);
-        });
-        ProductgetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then(
-          (res) => {
-            this.tableData = res.list;
-            this.nameFilter();
-          }
-        );
-        this.reload();
-        this.modelShow = false;
+        // 重新获取数据
+        this.getProductList();
+        // 模态框显示
+        this.dialogTableVisible = false;
       }
     },
     // 关闭模态框
@@ -584,7 +560,7 @@ export default {
   border-radius: 5px;
 }
 .product-list /deep/ .upload-demo {
-  width: 400px;
+  width: 500px;
   height: 145px;
   padding: 20px 0px 0px 30px;
 }

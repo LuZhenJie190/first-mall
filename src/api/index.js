@@ -89,78 +89,52 @@ export const ProductDetail = (pid) => requests({
 
 // 添加商品
 export const ProductAdd = (params) => requests({
-  url: (`http://localhost:8083/product/insertProduct`),
-  method: 'post',
-  data: {
-    categoryId: categoryId,
-    brandId: brandId,
-    title: title,
-    subTitle: subTitle,
-    mainImg: mainImg,
-    price: price,
-    count: count,
-    createTime: createTime,
-    updateTime: updateTime,
-    color: color,
-    versions: versions
-  },
-  transformRequest: [
-    function (data) {
-      let ret = ''
-      for (let it in data) {
-        // 如果 data[it] 是一个对象, 需要先使用 JSON.stringify, 再使用 encode
-        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-      }
-      ret = ret.substring(0, ret.lastIndexOf('&'))
-      return ret
-    }
-  ],
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
+  url: (`product/insertProduct`),
+  method: 'POST',
+  data: params,
 });
+// 批量添加展示图片
+export const ProductImageAdd = (params) => requests({
+  url: (`productImage/insertBatch`),
+  method: 'POST',
+  data: params,
+})
 
+// 批量添加商品参数
+export const ProductParamsAdd = (params) => requests({
+  url: (`productParams/insertBatch`),
+  method: 'POST',
+  data: params,
+});
+// 删除商品参数
+export const ProductParamsDelete = (pmId) => requests({
+  url: (`productParams/delete?pmId=${pmId}`),
+  method: 'DELETE',
+})
+// 修改商品参数
+export const ProductParamsUpdate = (params) => requests({
+  url: (`productParams/update`),
+  method: 'PUT',
+  data: params
+})
+
+// 商品删除
 export const ProductRemove = (pid) => requests({
-  url: (`http://localhost:8083/product/deleteProduct?pid=${pid}`),
-  method: 'get'
+  url: (`product/deleteProduct?pid=${pid}`),
+  method: 'DELETE'
 });
 
-export const ProductUpdate = (pid, categoryId, brandId, title, subTitle, mainImg, price, count, createTime, updateTime, color, versions) => requests({
-  url: (`http://localhost:8083/product/updateProduct`),
-  method: 'post',
-  data: {
-    pid: pid,
-    categoryId: categoryId,
-    brandId: brandId,
-    title: title,
-    subTitle: subTitle,
-    mainImg: mainImg,
-    price: price,
-    count: count,
-    createTime: createTime,
-    updateTime: updateTime,
-    color: color,
-    versions: versions,
-  },
-  transformRequest: [
-    function (data) {
-      let ret = ''
-      for (let it in data) {
-        // 如果 data[it] 是一个对象, 需要先使用 JSON.stringify, 再使用 encode
-        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-      }
-      ret = ret.substring(0, ret.lastIndexOf('&'))
-      return ret
-    }
-  ],
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
+// 商品修改
+export const ProductUpdate = (params) => requests({
+  url: (`product/updateProduct`),
+  method: 'PUT',
+  data: params,
 });
 
+// 商品批量删除
 export const ProductDatchDelete = (pids) => requests({
-  method: 'post',
-  url: 'http://localhost:8083/product/batchDelete',
+  method: 'DELETE',
+  url: 'product/batchDelete',
   data: {
     "pid[]": pids,
   },
