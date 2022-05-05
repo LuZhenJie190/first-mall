@@ -18,60 +18,38 @@
 import DsFooter from "../../components/Reception/DsFooter.vue";
 import TabsList from "../../components/Reception/TabsList.vue";
 import BreadHeader from "../../components/Reception/BreadHeader.vue";
+import { ProductGetByCate } from "../../api/index.js";
 export default {
   components: { DsFooter, TabsList, BreadHeader },
   name: "MobilePhone",
   data() {
     return {
-      phoneData: [
-        {
-          brand: "小米",
-          productList: [
-            { title: "小米12pro", price: 1235 },
-            { title: "小米13pro", price: 1222 },
-            { title: "小米14pro", price: 13335 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米13pro", price: 1222 },
-            { title: "小米14pro", price: 13335 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米13pro", price: 1222 },
-            { title: "小米14pro", price: 13335 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米13pro", price: 1222 },
-            { title: "小米14pro", price: 13335 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米15pro", price: 1215 },
-            { title: "小米15pro", price: 1215 },
-          ],
-        },
-        {
-          brand: "华为",
-          productList: [
-            { title: "华为12pro", price: 1235 },
-            { title: "华为13pro", price: 1222 },
-            { title: "华为14pro", price: 13335 },
-            { title: "华为15pro", price: 1215 },
-          ],
-        },
-      ],
+      phoneData: [],
     };
+  },
+  created() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      ProductGetByCate(1001).then((res) => {
+        this.phoneData = res.data[0].productBrand;
+      });
+    },
   },
 };
 </script>
 
 <style scoped>
+.mobilephone {
+  background-color: #f5f5f5;
+}
 .wrap {
   max-width: 1200px;
   margin: 0 auto;
 }
 .bread {
-  margin: 15px 0px;
+  padding: 15px 0px;
 }
 
 .el-breadcrumb {

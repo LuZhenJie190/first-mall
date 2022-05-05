@@ -11,6 +11,8 @@ import PersonalMenu from '../pages/Reception/person/PersonalMenu.vue'
 import PersonalIndex from '../pages/Reception/person/Index.vue'
 import MainInfo from '../pages/Reception/person/MainInfo.vue'
 import MainOrder from '../pages/Reception/person/MainOrder.vue'
+import ProductInfo from "../pages/Reception/ProductInfo.vue"
+import CheckOrder from "../pages/Reception/CheckOrder.vue"
 
 import BackendSystem from '../pages/Backstage/BackendSystem.vue'
 import UserList from '../pages/Backstage/UserList.vue'
@@ -25,7 +27,10 @@ import ProductSet from '../pages/Backstage/ProductSet.vue'
 import ProductDetail from '../pages/Backstage/ProductDetail.vue'
 
 
-
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
 
 export default new VueRouter({
     routes: [{
@@ -73,6 +78,11 @@ export default new VueRouter({
             path: '/Notebook',
             component: Notebook
         },
+        {
+            name: 'productinfo',
+            path: '/ProductInfo',
+            component: ProductInfo
+        },
 
         // 个人中心
         {
@@ -102,6 +112,14 @@ export default new VueRouter({
             name: 'shoppingCart',
             path: '/ShoppingCart',
             component: ShoppingCart,
+            meta: {
+                showNav: true
+            }
+        },
+        {
+            name: 'checkorder',
+            path: '/CheckOrder',
+            component: CheckOrder,
             meta: {
                 showNav: true
             }

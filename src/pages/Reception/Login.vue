@@ -128,6 +128,8 @@ export default {
         console.log(res);
         if (res.code == 200) {
           localStorage.setItem("uname", res.data.userName);
+          localStorage.setItem("uid", res.data.uId);
+
           if (res.data.userIdentity == 1) {
             this.$router.push({ path: "/BackendSystem/home" });
           } else {

@@ -7,6 +7,10 @@ import 'element-ui/lib/theme-chalk/base.css';
 // collapse 展开折叠
 import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 import animated from 'animate.css'
+import VueAreaLinkage from 'vue-area-linkage';
+import 'vue-area-linkage/dist/index.css'; // v2 or higher
+import store from "./store/index"
+Vue.use(VueAreaLinkage)
 Vue.use(animated)
 import {
   Pagination,
@@ -88,13 +92,19 @@ import {
   Notification,
   Empty,
   Descriptions,
-  DescriptionsItem
+  DescriptionsItem,
+  Skeleton,
+  SkeletonItem,
+
 } from 'element-ui';
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 Vue.use(VueRouter),
   Vue.use(Pagination);
+Vue.use(Skeleton);
+Vue.use(SkeletonItem);
+
 Vue.use(Dialog);
 Vue.use(Autocomplete);
 Vue.use(Dropdown);
@@ -192,4 +202,5 @@ Vue.component(Paging.name, Paging);
 new Vue({
   render: h => h(App),
   router,
+  store
 }).$mount('#app')

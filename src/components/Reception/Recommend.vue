@@ -2,46 +2,52 @@
   <div class="recommend">
     <slot></slot>
     <br />
-    <el-carousel
-      class="recommend-carousel"
-      indicator-position="none"
-      :autoplay="false"
+    <vue-seamless-scroll
+      :data="recommendData1"
+      :class-option="classOption"
+      class="warp"
     >
-      <el-carousel-item
-        v-for="item in 2"
-        :key="item"
-        class="recommend-carousel-item"
-      >
-        <ul class="recommend-list">
-          <li v-for="(item, index) in cardsDatas" :key="index">
-            <div class="recommend-detail">
-              <img src="../../assets/bg1.png" alt="" srcset="" />
-              <p>{{ item.activity_title }}</p>
-            </div>
-          </li>
-        </ul>
-      </el-carousel-item>
-    </el-carousel>
+      <ul class="recommend-list">
+        <li v-for="(item, index) in recommendData" :key="index">
+          <div class="recommend-detail">
+            <img :src="item.mainImg" alt="" srcset="" />
+            <p>{{ item.title }}</p>
+          </div>
+        </li>
+      </ul>
+    </vue-seamless-scroll>
   </div>
 </template>
 
 <script>
+import vueSeamlessScroll from "vue-seamless-scroll";
 export default {
   name: "Recommend",
+  components: {
+    vueSeamlessScroll,
+  },
+  props: ["recommendData"],
   data() {
     return {
-      cardsDatas: [{}, {}, {}, {}, {}, {}],
+      recommendData1: [],
+      classOption: {
+        limitMoveNum: 2,
+        direction: 3,
+      },
     };
   },
-  mounted() {
-    // axios.get('http://localhost:8089/springmvc_ssm_191_war_exploded/activity/activity/actList?pageNum=1&pageSize=6').then((res)=>{
-    //   this.cardsDatas=res.data
-    // })
+  watch: {
+    recommendData: {
+      deep: true,
+      handler(newVal, oldVal) {
+        this.recommendData1 = this.recommendData;
+      },
+    },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .recommend-carousel .el-carousel__arrow--left {
   position: absolute;
   top: 120px;
@@ -62,16 +68,13 @@ export default {
   width: 100%;
   height: 300px;
   margin-top: 30px;
+  overflow: hidden;
 }
 .recommend-list {
   display: flex;
   justify-content: space-around;
   align-items: center;
 }
-/* .recommend-list li:hover{
-  box-shadow: 0px 0px 10px #ccc;
-  transition: 0.5s;
-} */
 .recommend-detail {
   width: 190px;
   height: 260px;

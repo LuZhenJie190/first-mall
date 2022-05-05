@@ -1,82 +1,147 @@
 <template>
-  <div
-    :class="{
-      navmenu: navShow,
-      'nav-change': fixedShow,
-      'animate__animated animate__fadeInDown': fixedShow,
-    }"
-  >
-    <div class="wrap">
-      <h1 class="logo" @click="goIndex">数码购</h1>
-      <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect">
-        <!-- <img class="icon-logo" src="../../assets/logo2.png" alt="" /> -->
-        <el-menu-item index="1">
-          <router-link to="/Index" active-class="active">首页</router-link>
-        </el-menu-item>
-        <el-menu-item index="2">
-          <router-link to="/MobilePhone" active-class="active"
-            >手机</router-link
+  <div>
+    <div class="navmenu">
+      <div class="wrap">
+        <h1 class="logo" @click="goIndex">数码购</h1>
+        <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect">
+          <!-- <img class="icon-logo" src="../../assets/logo2.png" alt="" /> -->
+          <el-menu-item index="1">
+            <router-link to="/Index" active-class="active">首页</router-link>
+          </el-menu-item>
+          <el-menu-item index="2">
+            <router-link to="/MobilePhone" active-class="active"
+              >手机</router-link
+            >
+          </el-menu-item>
+          <el-menu-item index="3"
+            ><router-link to="/Notebook" active-class="active"
+              >笔记本</router-link
+            ></el-menu-item
           >
-        </el-menu-item>
-        <el-menu-item index="3"
-          ><router-link to="/Notebook" active-class="active"
-            >笔记本</router-link
-          ></el-menu-item
-        >
-        <el-menu-item index="4"
-          ><router-link to="/Television" active-class="active"
-            >电视</router-link
-          ></el-menu-item
-        >
-        <el-menu-item index="5"
-          ><router-link to="/Bracelet" active-class="active"
-            >手环</router-link
-          ></el-menu-item
-        >
+          <el-menu-item index="4"
+            ><router-link to="/Television" active-class="active"
+              >电视</router-link
+            ></el-menu-item
+          >
+          <el-menu-item index="5"
+            ><router-link to="/Bracelet" active-class="active"
+              >手环</router-link
+            ></el-menu-item
+          >
 
-        <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
-      </el-menu>
-      <div class="search-input">
-        <input type="text" v-model="searchMsg" />
-        <i class="el-icon-search"></i>
-        <button>搜索</button>
-        <!-- <el-input type="text" placeholder="请输入关键字" v-model="searchMsg">
+          <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
+        </el-menu>
+        <div class="search-input">
+          <input type="text" v-model="searchMsg" />
+          <i class="el-icon-search"></i>
+          <button>搜索</button>
+          <!-- <el-input type="text" placeholder="请输入关键字" v-model="searchMsg">
         </el-input>
         <img @click="mainSearch" src="../../assets/search.png" /> -->
-      </div>
-
-      <div class="right">
-        <span class="scar">
-          <i class="el-icon-shopping-cart-2"></i>
-          <a @click="goCart">购物车</a>
-        </span>
-        <div class="login" @click="linkToLogin" v-show="uname == null">
-          <i class="el-icon-user"></i>
-          <a>登录</a>
         </div>
-        <el-dropdown @command="handleCommand" v-show="uname != null">
-          <span class="el-dropdown-link">
-            <a>{{ uname }}</a
-            ><i class="el-icon-arrow-down el-icon--right"></i>
+
+        <div class="right">
+          <span class="scar">
+            <i class="el-icon-shopping-cart-2"></i>
+            <a @click="goCart">购物车</a>
           </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="a" class="ditem"
-              ><a>个人中心</a></el-dropdown-item
-            >
-            <el-dropdown-item command="b" class="ditem"
-              ><a>退出登录</a></el-dropdown-item
-            >
-          </el-dropdown-menu>
-        </el-dropdown>
-        <!-- <div class="container"></div> -->
-        <!-- <div class="user-menu">
-          <ul>
-            <li><a href="#">个人中心</a></li>
-            <li><a href="#">退出登录</a></li>
-          </ul>
-        </div> -->
+          <div class="login" @click="linkToLogin" v-show="uname == null">
+            <i class="el-icon-user"></i>
+            <a>登录</a>
+          </div>
+          <el-dropdown @command="handleCommand" v-show="uname != null">
+            <span class="el-dropdown-link">
+              <a>{{ uname }}</a
+              ><i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="a" class="ditem"
+                ><a>个人中心</a></el-dropdown-item
+              >
+              <el-dropdown-item command="b" class="ditem"
+                ><a>退出登录</a></el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
     </div>
+
+    <transition
+      enter-active-class="animate__animated animate__fadeInDown"
+      leave-active-class="animate__animated animate__fadeOut"
+    >
+      <div class="navmenu" ref="nav" v-show="fixedShow">
+        <div class="wrap">
+          <h1 class="logo" @click="goIndex">数码购</h1>
+          <el-menu
+            class="el-menu-demo"
+            mode="horizontal"
+            @select="handleSelect"
+          >
+            <!-- <img class="icon-logo" src="../../assets/logo2.png" alt="" /> -->
+            <el-menu-item index="1">
+              <router-link to="/Index" active-class="active">首页</router-link>
+            </el-menu-item>
+            <el-menu-item index="2">
+              <router-link to="/MobilePhone" active-class="active"
+                >手机</router-link
+              >
+            </el-menu-item>
+            <el-menu-item index="3"
+              ><router-link to="/Notebook" active-class="active"
+                >笔记本</router-link
+              ></el-menu-item
+            >
+            <el-menu-item index="4"
+              ><router-link to="/Television" active-class="active"
+                >电视</router-link
+              ></el-menu-item
+            >
+            <el-menu-item index="5"
+              ><router-link to="/Bracelet" active-class="active"
+                >手环</router-link
+              ></el-menu-item
+            >
+
+            <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
+          </el-menu>
+          <div class="search-input">
+            <input type="text" v-model="searchMsg" />
+            <i class="el-icon-search"></i>
+            <button>搜索</button>
+            <!-- <el-input type="text" placeholder="请输入关键字" v-model="searchMsg">
+        </el-input>
+        <img @click="mainSearch" src="../../assets/search.png" /> -->
+          </div>
+
+          <div class="right">
+            <span class="scar">
+              <i class="el-icon-shopping-cart-2"></i>
+              <a @click="goCart">购物车</a>
+            </span>
+            <div class="login" @click="linkToLogin" v-show="uname == null">
+              <i class="el-icon-user"></i>
+              <a>登录</a>
+            </div>
+            <el-dropdown @command="handleCommand" v-show="uname != null">
+              <span class="el-dropdown-link">
+                <a>{{ uname }}</a
+                ><i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="a" class="ditem"
+                  ><a>个人中心</a></el-dropdown-item
+                >
+                <el-dropdown-item command="b" class="ditem"
+                  ><a>退出登录</a></el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -97,12 +162,14 @@ export default {
     };
   },
   mounted() {
-    console.log(this.uname);
+    // console.log(this.uname);
   },
   watch: {
     scrollDistance(val) {
       if (val >= 80) {
         this.fixedShow = true;
+        this.$refs.nav.style.position = "fixed";
+        this.$refs.nav.style.top = "0px";
       } else {
         this.fixedShow = false;
       }
@@ -163,13 +230,11 @@ export default {
 }
 .navmenu {
   width: 100%;
+  height: 70px;
   background: #fff;
-  z-index: 100;
+  z-index: 999;
   box-shadow: 0px 0px 10px #ccc;
-}
-.nav-change {
-  position: fixed;
-  top: 0;
+  position: relative;
 }
 .wrap {
   padding: 0px 50px;

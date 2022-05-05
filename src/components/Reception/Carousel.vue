@@ -8,21 +8,25 @@
     >
       <el-carousel-item
         class="carousel-item"
-        v-for="(item, index) in carouseldata"
+        v-for="(item, index) in carouselData.slice(0, 4)"
         :key="index"
       >
-        <img class="carousel-img" :src="item.imgurl" />
+        <img class="carousel-img" :src="item.mainImg" />
       </el-carousel-item>
     </el-carousel>
   </div>
 </template>
 
 <script>
+import { ProductgetAll } from "../../api/index";
 export default {
   name: "Carousel",
-  props: ["carouseldata"],
+  props: ["carouselData"],
   data() {
     return {};
+  },
+  created() {
+    // console.log(this.carouselData);
   },
 };
 </script>

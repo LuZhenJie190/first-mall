@@ -80,26 +80,8 @@ export default {
     // 根据id改变权限
     rootChange(rid) {
       let index = rid;
-      let {
-        uId,
-        userName,
-        userPwd,
-        userSex,
-        userPhone,
-        userEmail,
-        userIdentity,
-        uCreateTime,
-      } = this.tableData[index];
-      UserUpdate(
-        uId,
-        userName,
-        userPwd,
-        userSex,
-        userPhone,
-        userEmail,
-        userIdentity,
-        uCreateTime
-      ).then((res) => {});
+
+      UserUpdate(this.tableData[index]).then((res) => {});
     },
 
     //搜索用户名

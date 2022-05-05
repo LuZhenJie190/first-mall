@@ -19,8 +19,20 @@
     >
       <el-table-column type="selection" width="50" />
       <el-table-column prop="pid" label="商品ID" width="100" />
-      <el-table-column prop="categoryId" label="品类" width="100" />
-      <el-table-column prop="brandId" label="品牌" width="100" />
+      <el-table-column
+        prop="categoryId"
+        label="品类"
+        width="100"
+        sortable
+        :formatter="formatCate"
+      />
+      <el-table-column
+        prop="brandId"
+        label="品牌"
+        width="100"
+        sortable
+        :formatter="formatBrand"
+      />
       <el-table-column prop="mainImg" label="主图" width="105">
         <template slot-scope="scope">
           <img
@@ -30,7 +42,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="名称" width="200" />
+      <el-table-column prop="title" label="名称" width="180" />
       <el-table-column prop="subTitle" label="简介" width="200" />
       <el-table-column
         prop="createTime"
@@ -40,9 +52,10 @@
       >
         <template slot-scope="scope">
           <el-switch
-            v-model="scope.row.carousel"
+            v-model="scope.row.isCarousel"
             :active-value="1"
             :inactive-value="0"
+            @change="carouselChange(scope.$index)"
           />
         </template>
       </el-table-column>
@@ -54,7 +67,7 @@
       >
         <template slot-scope="scope">
           <el-switch
-            v-model="scope.row.recommend"
+            v-model="scope.row.isRecommend"
             :active-value="1"
             :inactive-value="0"
           />
@@ -86,38 +99,14 @@
 
     <!-- 修改弹框 -->
     <el-dialog title="修改商品" :visible.sync="dialogTableVisible">
-      <el-tabs
-        tab-position="left"
-        style="height: 200px"
-        v-model="tabsIndex"
-        v-loading="loading1"
-      >
+      <el-tabs tab-position="left" style="height: 200px" v-model="tabsIndex">
         <el-tab-pane label="基本信息" name="0">
           <el-form label-width="100px" v-model="form">
             <el-form-item label="商品类型：">
-              <el-radio
-                v-for="cateid in categoryList"
-                :key="cateid.categoryId"
-                v-model="form.categoryId"
-                :label="String(cateid.categoryId)"
-                @change="typeRadio(form.categoryId)"
-                >{{ cateid.categoryName }}</el-radio
-              >
+              <el-tag>{{ form.categoryId | cateName }}</el-tag>
             </el-form-item>
             <el-form-item label="商品品牌：">
-              <el-select
-                v-model="form.brandId"
-                placeholder="请选择"
-                @change="sortSelect(form.brandId)"
-              >
-                <el-option
-                  v-for="item in brandList"
-                  :key="item.pbid"
-                  :label="item.brandName"
-                  :value="item.brandId"
-                >
-                </el-option>
-              </el-select>
+              <el-tag type="success">{{ form.brandId | cateName }}</el-tag>
             </el-form-item>
             <el-form-item label="商品名称：">
               <el-input v-model="form.title"></el-input>
@@ -203,7 +192,6 @@ export default {
       brandList: [],
       categoryList: [],
       labelPosition: "right",
-      modelShow: false,
       oldImg: "",
       // 上传图片的缩略图展示列表
       fileList: [],
@@ -226,8 +214,6 @@ export default {
       carousel: true,
       recommend: false,
       loading: true,
-      loading1: true,
-
       dialogTableVisible: false,
       cateNames: [],
     };
@@ -240,7 +226,22 @@ export default {
       this.categoryList = res.data;
     });
   },
-
+  filters: {
+    cateName(val) {
+      if (val == 1001) return "手机";
+      if (val == 1002) return "笔记本";
+      if (val == 1003) return "电视";
+      if (val == 1004) return "手环";
+      if (val == 101) return "小米";
+      if (val == 102) return "华为";
+      if (val == 103) return "VIVO";
+      if (val == 104) return "OPPO";
+      if (val == 201) return "xxx";
+      if (val == 202) return "aaa";
+      if (val == 301) return "ccc";
+      if (val == 401) return "sss";
+    },
+  },
   methods: {
     // 获取商品列表
     getProductList() {
@@ -248,19 +249,18 @@ export default {
         (res) => {
           this.tableData = res.data.list;
           this.pageInfo.pageTotal = res.data.total;
-          this.nameFilter();
+          this.loading = false;
         }
       );
     },
     // 点击分类重新获取品牌
     typeRadio(radio) {
+      this.form.brandId = "";
       ProductBrandGetByCate(radio).then((res) => {
         this.brandList = res.data[0].productBrand;
       });
     },
-    sortSelect(brand) {
-      // console.log(brand);
-    },
+    sortSelect(brand) {},
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
@@ -283,34 +283,9 @@ export default {
       }
       ProductgetAll(val, this.pageInfo.pageSize).then((res) => {
         this.tableData = res.data.list;
-        this.nameFilter();
       });
     },
-    // 重命名
-    nameFilter() {
-      this.loading = true;
-      //分类名
-      if (this.tableData != undefined) {
-        this.tableData.forEach((e) => {
-          e.categoryId == 1001 ? (e.categoryId = "手机") : "";
-          e.categoryId == 1002 ? (e.categoryId = "笔记本") : "";
-          e.categoryId == 1003 ? (e.categoryId = "电视") : "";
-          e.categoryId == 1004 ? (e.categoryId = "手环") : "";
-        });
-      }
-      //品牌名
-      ProductBrand().then((res) => {
-        res.data.list.forEach((e) => {
-          this.tableData.forEach((el) => {
-            if (el.brandId == e.brandId) {
-              el.brandId = e.brandName;
-              // this.loading = false;
-            }
-          });
-        });
-      });
-      this.loading = false;
-    },
+
     // 商品详情
     detail(pid) {
       let i = pid;
@@ -333,53 +308,35 @@ export default {
       })
         .then(() => {
           // 删除操作
-          ProductRemove(listIndex);
+          ProductRemove(listIndex).then((res) => {
+            // 重新获取数据
+            this.getProductList();
+          });
           this.$message({
             message: "删除成功",
             type: "success",
           });
-          this.reload();
-          // 重新获取数据
-          this.getProductList();
         })
         .catch(() => {});
     },
+
     // 修改按钮
     update(pid) {
       // 显示dialog
       this.dialogTableVisible = true;
-      // 显示等待动画
-      this.loading1 = true;
       this.fileList = [];
-      let index = pid;
-      // 获取当前的id
-      let listIndex = this.tableData[index].pid;
       // 根据ID获取数据
-      ProductGetInfoById(listIndex).then((res) => {
-        let pData = res.data.list[0];
-        this.form.categoryId = pData.categoryId;
-        this.form.brandId = pData.brandId;
-        this.form.pid = pData.pid;
-        this.form.mainImg = pData.mainImg;
-        this.form.title = pData.title;
-        this.form.subTitle = pData.subTitle;
-        this.form.createTime = pData.createTime;
-        this.form.isCarousel = pData.isCarousel;
-        this.form.isRecommend = pData.isRecommend;
-        //根据第一次加载的分类获取品牌;
-        ProductBrandGetByCate(this.form.categoryId).then((res) => {
-          this.brandList = res.data[0].productBrand;
-          // 命名格式化
-          this.brandList.forEach((e) => {
-            if (this.form.brandId == e.brandId) {
-              this.form.brandId = e.brandName;
-            }
-          });
-          this.loading1 = false;
-        });
-      });
+      let pData = this.tableData[pid];
+      this.form.categoryId = pData.categoryId;
+      this.form.brandId = pData.brandId;
+      this.form.pid = pData.pid;
+      this.form.mainImg = pData.mainImg;
+      this.form.title = pData.title;
+      this.form.subTitle = pData.subTitle;
+      this.form.createTime = pData.createTime;
+      this.form.isCarousel = pData.isCarousel;
+      this.form.isRecommend = pData.isRecommend;
     },
-
     // 确定修改信息，提交表单
     updateInfo() {
       if (this.form.title == "" || this.form.createTime == "") {
@@ -401,12 +358,38 @@ export default {
         this.dialogTableVisible = false;
       }
     },
-    // 关闭模态框
-    mShow() {
-      this.modelShow = false;
-      this.fileList = [];
-      this.tabsIndex = "0";
+
+    // 分类格式化
+    formatCate(row, column) {
+      if (row.categoryId == 1001) return "手机";
+      if (row.categoryId == 1002) return "笔记本";
+      if (row.categoryId == 1003) return "电视";
+      if (row.categoryId == 1004) return "手环";
     },
+
+    // 品牌格式化
+    formatBrand(row, column) {
+      if (row.brandId == 101) return "小米";
+      if (row.brandId == 102) return "华为";
+      if (row.brandId == 103) return "VIVO";
+      if (row.brandId == 104) return "OPPO";
+      if (row.brandId == 201) return "xxx";
+      if (row.brandId == 202) return "aaa";
+      if (row.brandId == 301) return "ccc";
+      if (row.brandId == 401) return "sss";
+    },
+
+    carouselChange(val) {
+      ProductUpdate(this.tableData[val]).then((res) => {
+        if (res.code == 200) {
+          this.getProductList();
+        }
+      });
+    },
+    recommendChange(val) {
+      console.log(val);
+    },
+
     //  上传图片到腾讯云对象储存
     upload(res) {
       if (!res.file) {
@@ -432,22 +415,16 @@ export default {
     },
     // 搜索商品编号
     searchInput(val) {
-      console.log(val);
+      this.loading = true;
       this.search = val;
       if (this.search != "") {
         ProductGetTitle(this.search).then((res) => {
-          this.tableData = res;
-          this.nameFilter();
-          this.pageInfo.pageShow = false;
+          this.tableData = res.data.list;
+          this.pageInfo.pageTotal = res.data.total;
+          this.loading = false;
         });
       } else {
-        ProductgetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then(
-          (res) => {
-            this.tableData = res.list;
-            this.nameFilter();
-          }
-        );
-        this.pageInfo.pageShow = true;
+        this.getProductList();
       }
     },
     // 筛选商品
@@ -457,8 +434,11 @@ export default {
           // 不是空就获取数据
           if (res != "") {
             this.tableData = res[0].product;
-            this.nameFilter();
+            this.loading = true;
             this.pageInfo.pageShow = false;
+            setTimeout(() => {
+              this.loading = false;
+            }, 500);
           } else {
             this.tableData = [];
             this.pageInfo.pageShow = false;
@@ -486,26 +466,6 @@ export default {
 .product-list /deep/ .el-table::before {
   z-index: 0;
 }
-/* .p-model-bg {
-  width: 100%;
-  height: 100%;
-  background: #ccc;
-  opacity: 0.5;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 3;
-}
-.p-model-context {
-  width: 40%;
-  height: 460px;
-  background: #fff;
-  border-radius: 10px;
-  position: absolute;
-  top: 100px;
-  left: 500px;
-  z-index: 5;
-} */
 .product-list /deep/.el-form {
   position: relative;
   top: 30px;

@@ -1,0 +1,8 @@
+import Vue from "vue";
+import Vuex from "vuex";
+Vue.use(Vuex)
+import product from "../store/product/index"
+
+export default new Vuex.Store({
+    product
+})

@@ -103,8 +103,8 @@
                 v-for="(item, index) in paramList"
                 :key="index"
               >
-                <li>{{ item.color }}</li>
-                <li>{{ item.version }}</li>
+                <li>{{ item.pmColor }}</li>
+                <li>{{ item.pmVersion }}</li>
                 <li>{{ item.price }}</li>
                 <li>{{ item.stock }}</li>
                 <i @click="deleteParam(index)" class="el-icon-close dd"></i>

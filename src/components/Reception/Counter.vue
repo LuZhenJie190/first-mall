@@ -14,16 +14,20 @@
 <script>
 export default {
   name: "Counter",
+  props: ["number"],
   data() {
-      return {
-          num:1
-      }
+    return {
+      num: 1,
+    };
   },
-  methods:{
-      handleChange(value) {
-        console.log(value);
-      }
-  }
+  created() {
+    console.log(this.number);
+  },
+  methods: {
+    handleChange(value) {
+      console.log(value);
+    },
+  },
 };
 </script>
 

@@ -150,6 +150,10 @@ export default {
     // 添加参数
     insert() {
       this.dialogTableVisible = true;
+      this.form.pmColor = "";
+      this.form.pmVersion = "";
+      this.form.price = "";
+      this.form.stock = "";
     },
     // 确定添加
     addParams() {

@@ -1,14 +1,41 @@
 <template>
   <div id="index">
     <div class="wrap">
-      <Carousel :carouseldata="carouseldata" class="carousel" />
+      <Carousel :carouselData="carouselData" class="carousel" />
       <Classification />
-      <Recommend><h1>推荐购</h1></Recommend>
+      <Recommend :recommendData="recommendData"><h1>推荐购</h1></Recommend>
       <div class="product-sort">
-        <ProductShow :products="phoneData"><h1>手机</h1></ProductShow>
-        <ProductShow :products="notebookData"><h1>笔记本</h1></ProductShow>
-        <ProductShow><h1>电视</h1></ProductShow>
-        <ProductShow><h1>手环</h1></ProductShow>
+        <ProductShow :products="phoneData">
+          <template slot="pTitle">
+            <h1>手机</h1>
+          </template>
+          <template slot="pImage">
+            <img src="../../assets/login_bg.jpg" />
+          </template>
+        </ProductShow>
+        <ProductShow :products="notebookData">
+          <template slot="pTitle">
+            <h1>笔记本</h1>
+          </template>
+          <template slot="pImage">
+            <img src="../../assets/login_bg.jpg" />
+          </template>
+        </ProductShow>
+        <ProductShow :products="tvData">
+          <template slot="pTitle">
+            <h1>电视</h1>
+          </template>
+          <template slot="pImage">
+            <img src="../../assets/login_bg.jpg" />
+          </template>
+        </ProductShow>
+        <ProductShow :products="braceletData">
+          <template slot="pTitle">
+            <h1>手环</h1>
+          </template>
+          <template slot="pImage">
+            <img src="../../assets/login_bg.jpg" /> </template
+        ></ProductShow>
       </div>
     </div>
     <div class="index-footer">
@@ -31,7 +58,7 @@ import Classification from "../../components/Reception/Classification.vue";
 import ProductShow from "../../components/Reception/ProductShow.vue";
 import Recommend from "../../components/Reception/Recommend.vue";
 import DsFooter from "../../components/Reception/DsFooter.vue";
-
+import { ProductgetAll, ProductGetByCate } from "../../api/index";
 export default {
   name: "Index",
   components: {
@@ -49,32 +76,10 @@ export default {
         { id: "03", title: "电视" },
         { id: "04", title: "手环" },
       ],
-      carouseldata: [
-        { id: "01", imgurl: require("../../assets/bg1.png") },
-        { id: "02", imgurl: require("../../assets/bg1.png") },
-        { id: "03", imgurl: require("../../assets/bg1.png") },
-        { id: "04", imgurl: require("../../assets/bg1.png") },
-      ],
-      phoneData: [
-        { title: "小米12pro", price: 1235 },
-        { title: "小米13pro", price: 1222 },
-        { title: "小米14pro", price: 13335 },
-        { title: "小米15pro", price: 1215 },
-        { title: "小米15pro", price: 1215 },
-        { title: "小米15pro", price: 1215 },
-        { title: "小米13pro", price: 1222 },
-        { title: "小米14pro", price: 13335 },
-      ],
-      notebookData: [
-        { title: "小米笔记本", price: 1235 },
-        { title: "红米笔记本", price: 1222 },
-        { title: "华为笔记本", price: 13335 },
-        { title: "联想笔记本", price: 1215 },
-        { title: "小米15pro", price: 1215 },
-        { title: "小米15pro", price: 1215 },
-        { title: "小米13pro", price: 1222 },
-        { title: "小米14pro", price: 13335 },
-      ],
+      phoneData: [],
+      notebookData: [],
+      tvData: [],
+      braceletData: [],
       footer: [
         {
           id: "01",
@@ -97,17 +102,41 @@ export default {
           title: "维修服务",
         },
       ],
+      carouselData: [],
+      recommendData: [],
     };
   },
-  mounted() {
-    axios
-      .get(
-        "http://localhost:8089/springmvc_ssm_191_war_exploded/advertising/advertising/list?type=0"
-      )
-      .then((res) => {
-        console.log(res);
-        this.carouseldata = res.data;
+  created() {
+    ProductgetAll(1, 1000).then((res) => {
+      // console.log(res);
+      // for (let index = 0; index < 8; index++) {
+      //   this.phoneData[index] = res.data.list[index];
+      //   ProductDetail(res.data.list[index].pid).then((res) => {
+      //     this.phoneData[index].price = res.data[0].productParams[0].price;
+      //   });
+      // }
+      res.data.list.forEach((element) => {
+        if (element.isCarousel) {
+          this.carouselData.push(element);
+        }
+        if (element.isRecommend) {
+          this.recommendData.push(element);
+        }
       });
+    });
+    this.getSomeData();
+  },
+  methods: {
+    getSomeData() {
+      for (let index = 1001; index < 1004; index++) {
+        ProductGetByCate(index).then((res) => {
+          index == 1001 ? (this.phoneData = res.data) : [];
+          index == 1002 ? (this.notebookData = res.data) : [];
+          index == 1003 ? (this.tvData = res.data) : [];
+          index == 1004 ? (this.braceletData = res.data) : [];
+        });
+      }
+    },
   },
 };
 </script>

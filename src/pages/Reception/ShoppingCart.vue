@@ -1,31 +1,6 @@
 <template>
   <div class="cart">
-    <div class="top">
-      <div class="container" style="height: 100px">
-        <div class="left">
-          <h1 @click="goShopping">数码购</h1>
-          <p>温馨提示：产品是否购买成功，以最终下单为准哦，请尽快结算</p>
-        </div>
-        <div class="right">
-          <el-dropdown @command="handleCommand">
-            <span class="el-dropdown-link">
-              <a>下拉菜单下拉菜单</a
-              ><i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown" class="down-menu">
-              <el-dropdown-item command="a" class="ditem"
-                ><a @click="goPersonal">个人中心</a></el-dropdown-item
-              >
-              <el-dropdown-item command="b" class="ditem"
-                ><a>退出登录</a></el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </el-dropdown>
-          <a class="order" @click="goOrder">我的订单</a>
-        </div>
-      </div>
-      <el-divider class="line"></el-divider>
-    </div>
+    <cart-header></cart-header>
     <div class="content">
       <div class="container" v-show="tableData.length > 0">
         <el-table
@@ -37,29 +12,31 @@
         >
           <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column width="110">
-            <template>
-              <img src="../../assets/bg1.png" />
+            <template slot-scope="scope">
+              <img :src="scope.row.productImg" />
             </template>
           </el-table-column>
           <el-table-column label="商品名称" width="400">
-            <template slot-scope="scope">{{ scope.row.date }}</template>
+            <template slot-scope="scope">{{ scope.row.productTitle }}</template>
           </el-table-column>
-          <el-table-column prop="name" label="单价" width="120">
-            <template>
-              <p>12000元</p>
+          <el-table-column prop="productPrice" label="单价" width="120">
+          </el-table-column>
+          <el-table-column label="数量" width="250">
+            <template slot-scope="scope">
+              <div @mousedown="hIndex(scope.$index, scope.row)">
+                <el-input-number
+                  v-model="scope.row.productNumber"
+                  @change="handleChange"
+                  :min="1"
+                  :max="10"
+                ></el-input-number>
+              </div>
             </template>
           </el-table-column>
-          <el-table-column prop="address" label="数量" width="250">
-            <template>
-              <counter></counter>
+          <el-table-column label="小计" width="120">
+            <template slot-scope="scope">
+              <p>{{ scope.row.total }}</p>
             </template>
-          </el-table-column>
-          <el-table-column
-            prop="address"
-            label="小计"
-            width="120"
-            show-overflow-tooltip
-          >
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -84,11 +61,17 @@
       <div class="b-container">
         <div class="b-left">
           <a style="color: #be0f2d" @click="goShopping">继续购物</a>
-          <p>已选择<i class="num">0</i>件</p>
+          <p>
+            已选择<i class="num">{{ multipleSelection.length }}</i
+            >件
+          </p>
         </div>
         <div class="b-right">
-          <p>合计：<i class="num" style="font-size: 30px">0</i>元</p>
-          <button class="btn-pay">去结算</button>
+          <p>
+            合计：<i class="num" style="font-size: 30px">{{ allTotal }}</i
+            >元
+          </p>
+          <button class="btn-pay" @click="goPay">去结算</button>
         </div>
       </div>
     </div>
@@ -97,49 +80,76 @@
 </template>
 
 <script>
-import Counter from "../../components/Reception/Counter.vue";
+// import Counter from "../../components/Reception/Counter.vue";
 import DsFooter from "../../components/Reception/DsFooter.vue";
+import { CartById } from "../../api/index";
+import CartHeader from "../../components/Reception/CartHeader.vue";
 export default {
   name: "ShoppingCart",
   components: {
-    Counter,
     DsFooter,
+    CartHeader,
   },
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      tableData: [],
       multipleSelection: [],
       emptyChange: false,
+      number: "",
+      rowData: "",
+      total: "",
     };
   },
-  methods: {
-    handleCommand(command) {
-      console.log(command);
+  watch: {
+    number: {
+      handler(newVal, oldVal) {
+        // 价格初始值
+        this.rowData.total = this.total;
+        // 乘数量
+        let result = this.rowData.total * newVal;
+        this.rowData.total = result;
+      },
     },
-    goPersonal() {
-      this.$router.push({
-        path: "/PersonalMenu/PersonalIndex",
+  },
+  computed: {
+    // 总价格
+    allTotal() {
+      let sum = 0;
+      this.multipleSelection.forEach((e) => {
+        sum += e.total;
+      });
+      return sum;
+    },
+  },
+  created() {
+    this.getCartData();
+  },
+  methods: {
+    goPay() {
+      if (this.multipleSelection != "") {
+        this.$router.push({
+          name: "checkorder",
+          params: {
+            cart: this.multipleSelection,
+          },
+        });
+      } else {
+        this.$alert("请选择商品");
+      }
+    },
+    handleChange(value) {
+      this.number = value;
+    },
+    hIndex(index, row) {
+      this.rowData = row;
+      if (this.number < 2) {
+        this.total = row.total;
+      }
+    },
+    getCartData() {
+      CartById(localStorage.getItem("uid")).then((res) => {
+        console.log(res);
+        this.tableData = res.data;
       });
     },
     goCart() {
@@ -152,11 +162,7 @@ export default {
         path: "/Index",
       });
     },
-    goOrder() {
-      this.$router.push({
-        path: "/PersonalMenu/MainOrder",
-      });
-    },
+
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
@@ -168,6 +174,7 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      console.log(this.multipleSelection);
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -184,56 +191,7 @@ export default {
   max-width: 1200px;
   margin: auto;
 }
-.top {
-  width: 100%;
-  height: 100px;
-  line-height: 100px;
-  background-color: #fff;
-  position: fixed;
-  top: 0;
-  z-index: 50;
-}
-.left {
-  float: left;
-  display: grid;
-  grid-template-columns: 100px auto;
-}
-.left h1 {
-  color: #be0f2d;
-  font-size: 30px;
-  font-weight: 500;
-}
-.left p,
-.order {
-  margin-top: 7px;
-  color: #757575;
-}
-.right {
-  float: right;
-}
-.ditem {
-  cursor: pointer;
-}
-.ditem:hover {
-  color: #000;
-  background-color: #eee;
-  transition: 0.5s;
-}
-.down-menu {
-  margin-top: -20px !important;
-}
-.order {
-  border-left: 1px solid #757575;
-  padding-left: 15px;
-  margin-left: 15px;
-}
-.line {
-  margin: 0;
-  background-color: #be0f2d;
-  height: 2px;
-}
 .content {
-  margin-top: 100px;
   min-height: 370px;
   padding: 38px 0;
 }
@@ -271,8 +229,7 @@ export default {
   font-style: normal;
   padding: 0 5px;
 }
-.b-left,
-.b-right {
+.b-left {
   display: grid;
   grid-template-columns: 100px auto;
   height: 100%;
@@ -283,13 +240,18 @@ export default {
 }
 .b-right {
   float: right;
+  display: flex;
+}
+.b-right p {
+  line-height: 50px;
+  margin-right: 20px;
 }
 .btn-pay {
   border: none;
   background-color: #be0f2d;
   color: white;
-  height: 100%;
-  padding: 0 80px;
+  height: 50px;
+  padding: 0px 80px;
   letter-spacing: 3px;
   margin-left: 10px;
   cursor: pointer;

@@ -1,23 +1,27 @@
 <template>
   <div class="productshow">
     <div class="title">
-      <slot> </slot>
+      <slot name="pTitle"></slot>
       <a>查看更多 <i class="el-icon-right"></i></a>
     </div>
     <div class="product-context">
       <div class="product-left">
-        <img src="../../assets/bg1.png" alt="" />
+        <slot name="pImage"></slot>
       </div>
       <div class="product-right">
-        <cards-list class="card" v-for="(p1, index) in products" :key="index">
+        <cards-list
+          class="card"
+          v-for="(p1, index) in recommendData"
+          :key="index"
+        >
           <template slot="image">
-            <img class="images cardimg" src="../../assets/bg1.png" />
+            <img class="images cardimg" :src="p1.mainImg" />
           </template>
           <template slot="title">
             <h3>{{ p1.title }}</h3>
           </template>
           <template slot="price">
-            <h4 class="price">{{ p1.price }} 元</h4>
+            <h4 class="price">{{ p1.productParams[0].price }} 元</h4>
           </template>
         </cards-list>
       </div>
@@ -32,11 +36,22 @@ export default {
   name: "ProductShow",
   props: ["sorts", "products"],
   data() {
-    return {};
+    return {
+      recommendData: [],
+    };
   },
-  mounted() {
-    console.log(this.products);
+  created() {},
+  watch: {
+    // 监听props的数据，解决无法读取到父组件数据的问题
+    products: {
+      deep: true,
+      handler(newVal, oldVal) {
+        this.recommendData = this.products[0].productBrand[0].product;
+        console.log(this.recommendData);
+      },
+    },
   },
+  methods: {},
 };
 </script>
 
@@ -64,6 +79,7 @@ export default {
   grid-template-columns: 3fr 7fr;
   column-gap: 10px;
 }
+
 .product-left img {
   width: 100%;
   height: 100%;

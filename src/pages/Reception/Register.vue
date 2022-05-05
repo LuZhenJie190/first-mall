@@ -25,37 +25,37 @@
                 label-width="100px"
                 class="demo-ruleForm"
               >
-                <el-form-item label="用户名:" prop="pass">
+                <el-form-item label="用户名:" prop="userName">
                   <el-input
-                    type="password"
-                    v-model="ruleForm.pass"
+                    type="text"
+                    v-model="ruleForm.userName"
                     autocomplete="off"
                   ></el-input>
                 </el-form-item>
-                <el-form-item label="密码:" prop="pass">
+                <el-form-item label="密码:" prop="pwd">
                   <el-input
                     type="password"
-                    v-model="ruleForm.pass"
+                    v-model="ruleForm.pwd"
                     autocomplete="off"
                   ></el-input>
                 </el-form-item>
-                <el-form-item label="确认密码:" prop="checkPass">
+                <el-form-item label="确认密码:" prop="userPwd">
                   <el-input
                     type="password"
-                    v-model="ruleForm.checkPass"
+                    v-model="ruleForm.userPwd"
                     autocomplete="off"
                   ></el-input>
                 </el-form-item>
-                <el-form-item label="手机号:" prop="age">
-                  <el-input v-model.number="ruleForm.age"></el-input>
+                <el-form-item label="手机号:" prop="userPhone">
+                  <el-input v-model.number="ruleForm.userPhone"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱:" prop="age">
-                  <el-input v-model.number="ruleForm.age"></el-input>
+                <el-form-item label="邮箱:" prop="userEmail">
+                  <el-input type="text" v-model="ruleForm.userEmail"></el-input>
                 </el-form-item>
 
                 <el-form-item>
                   <div class="rebtn">
-                    <el-button type="primary" @click="submitForm('ruleForm')"
+                    <el-button type="danger" @click="submitForm('ruleForm')"
                       >提交</el-button
                     >
                     <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -72,33 +72,49 @@
 
 <script>
 import LoginForm from "../../components/LoginForm.vue";
+import {
+  phoneValidation,
+  emailValidation,
+  getnowDate,
+} from "../../utils/index";
+import { UserRegsiter } from "../../api/index";
 export default {
   components: { LoginForm },
   name: "Register",
 
   data() {
-    var checkAge = (rule, value, callback) => {
+    // 自定义验证规则
+    // 手机号
+    var validatePhone = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error("年龄不能为空"));
+        callback(new Error("手机号不能为空"));
       }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error("请输入数字值"));
-        } else {
-          if (value < 18) {
-            callback(new Error("必须年满18岁"));
-          } else {
-            callback();
-          }
-        }
-      }, 1000);
+      if (!phoneValidation(value)) {
+        callback(new Error("手机号不合法"));
+      } else {
+        callback();
+      }
     };
+
+    // 邮箱
+    var validateEmail = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("邮箱不能为空"));
+      }
+      if (!emailValidation(value)) {
+        callback(new Error("邮箱格式不合法"));
+      } else {
+        callback();
+      }
+    };
+
+    // 确认密码
     var validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码"));
       } else {
-        if (this.ruleForm.checkPass !== "") {
-          this.$refs.ruleForm.validateField("checkPass");
+        if (this.ruleForm.userPwd !== "") {
+          this.$refs.ruleForm.validateField("userPwd");
         }
         callback();
       }
@@ -106,7 +122,7 @@ export default {
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== this.ruleForm.pass) {
+      } else if (value !== this.ruleForm.pwd) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
@@ -114,14 +130,23 @@ export default {
     };
     return {
       ruleForm: {
-        pass: "",
-        checkPass: "",
-        age: "",
+        userName: "",
+        pwd: "",
+        userPwd: "",
+        userSex: "",
+        userPhone: "",
+        userEmail: "",
+        userIdentity: "",
+        uCreateTime: "",
       },
       rules: {
-        pass: [{ validator: validatePass, trigger: "blur" }],
-        checkPass: [{ validator: validatePass2, trigger: "blur" }],
-        age: [{ validator: checkAge, trigger: "blur" }],
+        userName: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+        ],
+        pwd: [{ validator: validatePass, trigger: "blur" }],
+        userPwd: [{ validator: validatePass2, trigger: "blur" }],
+        userPhone: [{ validator: validatePhone, trigger: "blur" }],
+        userEmail: [{ validator: validateEmail, trigger: "blur" }],
       },
       active: 0,
       input: "",
@@ -130,9 +155,6 @@ export default {
     };
   },
   methods: {
-    next() {
-      if (this.active++ > 2) this.active = 0;
-    },
     linkToLogin() {
       this.anShow = true;
       setTimeout(() => {
@@ -141,19 +163,35 @@ export default {
         });
       }, 500);
     },
+    // 提交表单
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          this.ruleForm.uCreateTime = getnowDate();
+          UserRegsiter(this.ruleForm).then((res) => {
+            console.log(res);
+            if (res.code == 200) {
+              this.$alert(`${res.message},请前往登录`, {
+                confirmButtonText: "确定",
+                callback: () => {
+                  this.$router.push({ path: "/Login" });
+                },
+              });
+            } else {
+              this.$alert(`${res.message}`);
+            }
+          });
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
+    // 重置表单
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+
     linkToIndex() {
       this.$router.push({
         path: "/Index",
@@ -169,6 +207,16 @@ export default {
 .login /deep/ .addform .reset {
   display: none;
 }
+.login
+  /deep/
+  .el-form-item.is-required:not(.is-no-asterisk)
+  > .el-form-item__label:before {
+  content: "";
+}
+.login /deep/ .el-input__inner:focus {
+  border: 1px solid #be0f2d;
+}
+
 .login {
   background: #fff;
 }

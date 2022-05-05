@@ -2,16 +2,20 @@
   <div class="tabs-list">
     <el-tabs v-model="activeName">
       <el-tab-pane
-        :label="p1.brand"
-        v-for="(p1, index) in products"
-        :key="index"
+        :label="p1.brandName"
+        v-for="(p1, index) in phoneData"
+        :key="p1.brandId"
       >
         <div class="m-body">
           <ul class="m-list">
-            <li v-for="(p2, index) in p1.productList" :key="index">
+            <li
+              v-for="(p2, index) in p1.product"
+              :key="p2.pid"
+              @click="goDetail(index)"
+            >
               <cards-list>
                 <template slot="image">
-                  <img class="images" src="../../assets/bg1.png" />
+                  <img class="images" :src="p2.mainImg" />
                 </template>
                 <template slot="title">
                   <h3>{{ p2.title }}</h3>
@@ -20,7 +24,7 @@
                   <p>123</p>
                 </template>
                 <template slot="price">
-                  <h4 class="price">{{ p2.price }} 元</h4>
+                  <h4 class="price">{{ p2.productParams[0].price }} 元</h4>
                 </template>
               </cards-list>
             </li>
@@ -37,13 +41,30 @@ export default {
   name: "TabsList",
   components: { CardsList },
   props: ["products"],
-  mounted() {
-    console.log(this.products);
-  },
   data() {
     return {
       activeName: 0,
+      phoneData: [],
     };
+  },
+  watch: {
+    products: {
+      handler(newValue, oldValue) {
+        this.phoneData = this.products;
+        // console.log(this.phoneData);
+      },
+    },
+  },
+  methods: {
+    goDetail(index) {
+      // console.log(this.phoneData[this.activeName].product[index]);
+      this.$router.push({
+        name: "productinfo",
+        params: {
+          details: this.phoneData[this.activeName].product[index],
+        },
+      });
+    },
   },
 };
 </script>

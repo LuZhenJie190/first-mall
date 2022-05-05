@@ -178,33 +178,87 @@ export const ProductGetByBrand = (brandId) => requests({
   method: 'GET'
 });
 
-export const ProductGetTitle = (title) => requests({
-  url: (`http://localhost:8083/product/getByTitle?title=${title}`),
-  method: 'get'
+// 分类查商品
+export const ProductGetByCate = (categoryId) => requests({
+  url: (`cate/getByProduct?categoryId=${categoryId}`),
+  method: 'GET'
+});
+
+// 查价格
+export const ProductGetPrice = (params) => requests({
+  url: (`productParams/getPrice`),
+  method: 'POST',
+  data: params
+});
+
+// 颜色或版本查询
+export const ProductGetCV = (params) => requests({
+  url: (`productParams/getParams`),
+  method: 'POST',
+  data: params
+});
+
+// 购物车添加
+export const CartInsert = (params) => requests({
+  url: (`shoppingCart/insert`),
+  method: 'POST',
+  data: params
+});
+
+// 购物车查询
+export const CartById = (userId) => requests({
+  url: (`shoppingCart/CartById?userId=${userId}`),
+  method: 'GET',
+});
+
+// 地址查询
+export const AddressById = (userId) => requests({
+  url: (`userAddress/getById?userId=${userId}`),
+  method: 'GET',
+});
+
+// 地址添加
+export const AddressInsert = (params) => requests({
+  url: (`userAddress/insertAddress`),
+  method: 'POST',
+  data: params
+});
+
+// 地址修改
+export const AddressUpdate = (params) => requests({
+  url: (`userAddress/update`),
+  method: 'PUT',
+  data: params
+});
+
+// 地址删除
+export const AddressDelete = (uaId) => requests({
+  url: (`userAddress/deleteById?uaId=${uaId}`),
+  method: 'DELETE',
 });
 
 // 订单
 export const OrderFindAll = (pageNum, pageSize) => requests({
   url: (`http://localhost:8082/orderInfo/findAll?pageNum=${pageNum}&pageSize=${pageSize}`),
-  method: 'get'
+  method: 'GET'
 });
 export const OrderFindById = (oId) => requests({
   url: (`http://localhost:8082/orderInfo/findById?oId=${oId}`),
-  method: 'get'
+  method: 'GET'
 });
 export const OrderFindByPhone = (oPhone) => requests({
   url: (`http://localhost:8082/orderInfo/findByPhone?oPhone=${oPhone}`),
-  method: 'get'
+  method: 'GET'
 });
 export const OrderAdd = (oSn, oPcore, oPname, oPnumber, oPrice, oPaytime, oUname, oPhone, oAddress, oPaytype, oStatus) => requests({
   url: (`http://localhost:8082/orderInfo/addOrder?oSn=${oSn}&oPcore=${oPcore}&oPname=${oPname}&oPnumber=${oPnumber}&oPrice=${oPrice}&oPaytime=${oPaytime}&oUname=${oUname}&oPhone=${oPhone}&oAddress=${oAddress}&oPaytype=${oPaytype}&oStatus=${oStatus}`),
-  method: 'get'
+  method: 'GET'
 });
 export const OrderUpdate = (oId, oSn, oPcore, oPname, oPnumber, oPrice, oTime, oUname, oPhone, oAddress, oPaytype, oStatus) => requests({
   url: (`http://localhost:8082/orderInfo/update?oId=${oId}&oSn=${oSn}&oPcore=${oPcore}&oPname=${oPname}&oPnumber=${oPnumber}&oPrice=${oPrice}&oTime=${oTime}&oUname=${oUname}&oPhone=${oPhone}&oAddress=${oAddress}&oPaytype=${oPaytype}&oStatus=${oStatus}`),
-  method: 'get'
+  method: 'GET'
 });
 export const OrderRemove = (oId) => requests({
   url: (`http://localhost:8082/orderInfo/deleteById?oId=${oId}`),
-  method: 'get'
+  method: 'GET'
 });
