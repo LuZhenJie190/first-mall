@@ -1,3 +1,4 @@
+// 获取当前时间
 export function getnowDate() {
     let nowDate = new Date();
     let year = nowDate.getFullYear();
@@ -11,10 +12,12 @@ export function getnowDate() {
 
 }
 
+// 手机号正则
 export function phoneValidation(p) {
     return /^1[3-9][0-9]{9}$/.test(p);
 }
 
+// 邮箱正则
 export function emailValidation(p) {
     return /^\w{5,12}@[a-z0-9A-Z]{1,3}\.com$/.test(p);
 }

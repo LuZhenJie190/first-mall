@@ -7,25 +7,25 @@
       </el-form-item>
 
       <el-form-item label="用户名：">
-        <p v-show="!update">用户名</p>
-        <el-input v-show="update"></el-input>
+        <p v-show="!update">{{ userData.userName }}</p>
+        <el-input v-show="update" v-model="form.userName"></el-input>
       </el-form-item>
 
       <el-form-item label="性别：">
-        <p v-show="!update">性别</p>
-        <el-radio-group v-model="form.resource" v-show="update">
-          <el-radio label="男"></el-radio>
-          <el-radio label="女"></el-radio>
+        <p v-show="!update">{{ userData.userSex | sex() }}</p>
+        <el-radio-group v-model="form.userSex" v-show="update">
+          <el-radio :label="1">男</el-radio>
+          <el-radio :label="0">女</el-radio>
         </el-radio-group>
       </el-form-item>
 
       <el-form-item label="手机号：">
-        <p>1231231321</p>
+        <p>{{ userData.userPhone }}</p>
       </el-form-item>
 
       <el-form-item label="邮箱：">
-        <p v-show="!update">邮箱</p>
-        <el-input v-show="update"></el-input>
+        <p v-show="!update">{{ userData.userEmail }}</p>
+        <el-input v-show="update" v-model="form.userEmail"></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -41,28 +41,60 @@
 </template>
 
 <script>
+import { UsergetById, UserUpdate } from "../../../api/index";
 export default {
   name: "MainInfo",
   data() {
     return {
+      userData: "",
       update: false,
       form: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: "",
+        uId: localStorage.getItem("uid"),
+        userName: "",
+        userSex: "",
+        userPhone: "",
+        userEmail: "",
+        userPwd: "",
+        userIdentity: "",
+        uCreateTime: "",
       },
     };
   },
+  filters: {
+    sex(val) {
+      if (val == 0) return "女";
+      if (val == 1) return "男";
+    },
+  },
+  created() {
+    this.getUserData();
+  },
   methods: {
+    getUserData() {
+      UsergetById(this.form.uId).then((res) => {
+        res.data.list.forEach((element) => {
+          this.userData = element;
+        });
+      });
+    },
     userUpdate() {
       this.update = true;
+      this.form.userName = this.userData.userName;
+      this.form.userSex = this.userData.userSex;
+      this.form.userPhone = this.userData.userPhone;
+      this.form.userEmail = this.userData.userEmail;
+      this.form.Pwd = this.userData.userPwd;
+      this.form.userIdentity = this.userData.userIdentity;
+      this.form.uCreateTime = this.userData.uCreateTime;
     },
     isUpdate() {
+      UserUpdate(this.form).then((res) => {
+        if (res.code == 200) {
+          this.$alert("修改成功");
+          this.getUserData();
+          localStorage.setItem("uname", this.form.userName);
+        }
+      });
       this.update = false;
     },
   },

@@ -3,13 +3,8 @@
     <cart-header></cart-header>
     <div class="content">
       <div class="container" v-show="tableData.length > 0">
-        <el-table
-          ref="multipleTable"
-          :data="tableData"
-          tooltip-effect="dark"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"
+          @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column width="110">
             <template slot-scope="scope">
@@ -24,12 +19,8 @@
           <el-table-column label="数量" width="250">
             <template slot-scope="scope">
               <div @mousedown="hIndex(scope.$index, scope.row)">
-                <el-input-number
-                  v-model="scope.row.productNumber"
-                  @change="handleChange"
-                  :min="1"
-                  :max="10"
-                ></el-input-number>
+                <el-input-number v-model="scope.row.productNumber" @change="handleChange" :min="1" :max="10">
+                </el-input-number>
               </div>
             </template>
           </el-table-column>
@@ -40,18 +31,12 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <a @click="handleDelete(scope.$index, scope.row)"
-                ><i class="el-icon-close"></i
-              ></a>
+              <a @click="handleDelete(scope.$index, scope.row)"><i class="el-icon-close"></i></a>
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <el-empty
-        class="empty"
-        description="您的购物车还是空的！"
-        v-show="tableData.length == 0"
-      >
+      <el-empty class="empty" description="您的购物车还是空的！" v-show="tableData.length == 0">
         <button class="btn-pay" style="height: 60px" @click="goShopping">
           马上去购物
         </button>
@@ -62,14 +47,12 @@
         <div class="b-left">
           <a style="color: #be0f2d" @click="goShopping">继续购物</a>
           <p>
-            已选择<i class="num">{{ multipleSelection.length }}</i
-            >件
+            已选择<i class="num">{{ multipleSelection.length }}</i>件
           </p>
         </div>
         <div class="b-right">
           <p>
-            合计：<i class="num" style="font-size: 30px">{{ allTotal }}</i
-            >元
+            合计：<i class="num" style="font-size: 30px">{{ allTotal }}</i>元
           </p>
           <button class="btn-pay" @click="goPay">去结算</button>
         </div>
@@ -187,65 +170,85 @@ export default {
 .empty {
   min-height: 420px;
 }
+
 .container {
   max-width: 1200px;
   margin: auto;
 }
+
 .content {
   min-height: 370px;
   padding: 38px 0;
 }
+
 .content .el-table {
   padding: 15px;
 }
+
 .content .has-gutter {
   height: 70px !important;
 }
+
 .content .el-table__row {
   height: 120px;
   font-size: 16px;
 }
+
 .content img {
   width: 80px;
   height: 100px;
 }
+
 .content i:hover {
   color: #be0f2d;
 }
+
 .bottom {
   height: 50px;
   background-color: #f5f5f5;
+  position: sticky;
+  bottom: 20px;
+  z-index: 999;
+
 }
+
 .b-container {
   background-color: #fff;
   width: 1180px;
   height: 50px;
   margin: auto;
   padding: 10px;
+  box-shadow: 0px -5px 5px #f5f5f5;
 }
+
 .bottom .num {
   color: #be0f2d;
   font-size: 16px;
   font-style: normal;
   padding: 0 5px;
 }
+
 .b-left {
   display: grid;
   grid-template-columns: 100px auto;
   height: 100%;
   align-items: center;
 }
+
 .b-left {
   float: left;
 }
+
 .b-right {
   float: right;
   display: flex;
 }
+
 .b-right p {
   line-height: 50px;
   margin-right: 20px;
 }
+
 .btn-pay {
   border: none;
   background-color: #be0f2d;

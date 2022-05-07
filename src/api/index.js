@@ -68,7 +68,33 @@ export const UserDatchDelete = (uId) => requests({
   }
 });
 
+// 地址查询
+export const AddressById = (userId) => requests({
+  url: (`userAddress/getById?userId=${userId}`),
+  method: 'GET',
+});
 
+// 地址添加
+export const AddressInsert = (params) => requests({
+  url: (`userAddress/insertAddress`),
+  method: 'POST',
+  data: params
+});
+
+// 地址修改
+export const AddressUpdate = (params) => requests({
+  url: (`userAddress/update`),
+  method: 'PUT',
+  data: params
+});
+
+// 地址删除
+export const AddressDelete = (uaId) => requests({
+  url: (`userAddress/deleteById?uaId=${uaId}`),
+  method: 'DELETE',
+});
+
+// -------------------------------------------------------------------------------------------------------------
 // 商品
 export const ProductgetAll = (pageNum, pageSize) => requests({
   url: (`product/getAllProduct?pageNum=${pageNum}&pageSize=${pageSize}`),
@@ -211,54 +237,44 @@ export const CartById = (userId) => requests({
   method: 'GET',
 });
 
-// 地址查询
-export const AddressById = (userId) => requests({
-  url: (`userAddress/getById?userId=${userId}`),
+// -------------------------------------------------------------------------------------------------------------
+// 订单
+// 查询参数/查询订单
+export const OrderGetParams = (userId) => requests({
+  url: (`order/getParams?userId=${userId}`),
   method: 'GET',
 });
 
-// 地址添加
-export const AddressInsert = (params) => requests({
-  url: (`userAddress/insertAddress`),
+// 添加
+export const OrderInsert = (params) => requests({
+  url: (`order/insert`),
   method: 'POST',
   data: params
 });
 
-// 地址修改
-export const AddressUpdate = (params) => requests({
-  url: (`userAddress/update`),
+// 修改
+export const OrderUpdate = (params) => requests({
+  url: (`order/update`),
   method: 'PUT',
   data: params
 });
 
-// 地址删除
-export const AddressDelete = (uaId) => requests({
-  url: (`userAddress/deleteById?uaId=${uaId}`),
+// 删除
+export const OrderDelete = (oid) => requests({
+  url: (`order/deleteById?oid = ${oid}`),
   method: 'DELETE',
 });
 
-// 订单
-export const OrderFindAll = (pageNum, pageSize) => requests({
-  url: (`http://localhost:8082/orderInfo/findAll?pageNum=${pageNum}&pageSize=${pageSize}`),
-  method: 'GET'
+
+// 参数批量添加
+export const OrderParamsInsertBatch = (params) => requests({
+  url: (`orderParams/insertBatch`),
+  method: 'POST',
+  data: params
 });
-export const OrderFindById = (oId) => requests({
-  url: (`http://localhost:8082/orderInfo/findById?oId=${oId}`),
-  method: 'GET'
-});
-export const OrderFindByPhone = (oPhone) => requests({
-  url: (`http://localhost:8082/orderInfo/findByPhone?oPhone=${oPhone}`),
-  method: 'GET'
-});
-export const OrderAdd = (oSn, oPcore, oPname, oPnumber, oPrice, oPaytime, oUname, oPhone, oAddress, oPaytype, oStatus) => requests({
-  url: (`http://localhost:8082/orderInfo/addOrder?oSn=${oSn}&oPcore=${oPcore}&oPname=${oPname}&oPnumber=${oPnumber}&oPrice=${oPrice}&oPaytime=${oPaytime}&oUname=${oUname}&oPhone=${oPhone}&oAddress=${oAddress}&oPaytype=${oPaytype}&oStatus=${oStatus}`),
-  method: 'GET'
-});
-export const OrderUpdate = (oId, oSn, oPcore, oPname, oPnumber, oPrice, oTime, oUname, oPhone, oAddress, oPaytype, oStatus) => requests({
-  url: (`http://localhost:8082/orderInfo/update?oId=${oId}&oSn=${oSn}&oPcore=${oPcore}&oPname=${oPname}&oPnumber=${oPnumber}&oPrice=${oPrice}&oTime=${oTime}&oUname=${oUname}&oPhone=${oPhone}&oAddress=${oAddress}&oPaytype=${oPaytype}&oStatus=${oStatus}`),
-  method: 'GET'
-});
-export const OrderRemove = (oId) => requests({
-  url: (`http://localhost:8082/orderInfo/deleteById?oId=${oId}`),
-  method: 'GET'
+
+// 参数删除
+export const OrderParamsDelete = (orderId) => requests({
+  url: (`orderParams/delete?orderId = ${orderId}`),
+  method: 'DELETE',
 });

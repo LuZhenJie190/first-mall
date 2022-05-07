@@ -13,6 +13,8 @@ import MainInfo from '../pages/Reception/person/MainInfo.vue'
 import MainOrder from '../pages/Reception/person/MainOrder.vue'
 import ProductInfo from "../pages/Reception/ProductInfo.vue"
 import CheckOrder from "../pages/Reception/CheckOrder.vue"
+import OrderDetail from "../pages/Reception/person/OrderDetail.vue"
+
 
 import BackendSystem from '../pages/Backstage/BackendSystem.vue'
 import UserList from '../pages/Backstage/UserList.vue'
@@ -103,7 +105,13 @@ export default new VueRouter({
                     name: 'mainorder',
                     path: 'MainOrder',
                     component: MainOrder
-                }
+                },
+                {
+                    name: 'orderdetail',
+                    path: '/OrderDetail',
+                    component: OrderDetail,
+
+                },
             ]
 
 

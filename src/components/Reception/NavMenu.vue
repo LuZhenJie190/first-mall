@@ -9,25 +9,17 @@
             <router-link to="/Index" active-class="active">首页</router-link>
           </el-menu-item>
           <el-menu-item index="2">
-            <router-link to="/MobilePhone" active-class="active"
-              >手机</router-link
-            >
+            <router-link to="/MobilePhone" active-class="active">手机</router-link>
           </el-menu-item>
-          <el-menu-item index="3"
-            ><router-link to="/Notebook" active-class="active"
-              >笔记本</router-link
-            ></el-menu-item
-          >
-          <el-menu-item index="4"
-            ><router-link to="/Television" active-class="active"
-              >电视</router-link
-            ></el-menu-item
-          >
-          <el-menu-item index="5"
-            ><router-link to="/Bracelet" active-class="active"
-              >手环</router-link
-            ></el-menu-item
-          >
+          <el-menu-item index="3">
+            <router-link to="/Notebook" active-class="active">笔记本</router-link>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <router-link to="/Television" active-class="active">电视</router-link>
+          </el-menu-item>
+          <el-menu-item index="5">
+            <router-link to="/Bracelet" active-class="active">手环</router-link>
+          </el-menu-item>
 
           <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
         </el-menu>
@@ -51,58 +43,39 @@
           </div>
           <el-dropdown @command="handleCommand" v-show="uname != null">
             <span class="el-dropdown-link">
-              <a>{{ uname }}</a
-              ><i class="el-icon-arrow-down el-icon--right"></i>
+              <a>{{ uname }}</a><i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="a" class="ditem"
-                ><a>个人中心</a></el-dropdown-item
-              >
-              <el-dropdown-item command="b" class="ditem"
-                ><a>退出登录</a></el-dropdown-item
-              >
+              <el-dropdown-item command="a" class="ditem"><a>个人中心</a></el-dropdown-item>
+              <el-dropdown-item command="b" class="ditem"><a>退出登录</a></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
       </div>
     </div>
 
-    <transition
-      enter-active-class="animate__animated animate__fadeInDown"
-      leave-active-class="animate__animated animate__fadeOut"
-    >
+    <transition enter-active-class="animate__animated animate__fadeInDown"
+      leave-active-class="animate__animated animate__fadeOut">
       <div class="navmenu" ref="nav" v-show="fixedShow">
         <div class="wrap">
           <h1 class="logo" @click="goIndex">数码购</h1>
-          <el-menu
-            class="el-menu-demo"
-            mode="horizontal"
-            @select="handleSelect"
-          >
+          <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect">
             <!-- <img class="icon-logo" src="../../assets/logo2.png" alt="" /> -->
             <el-menu-item index="1">
               <router-link to="/Index" active-class="active">首页</router-link>
             </el-menu-item>
             <el-menu-item index="2">
-              <router-link to="/MobilePhone" active-class="active"
-                >手机</router-link
-              >
+              <router-link to="/MobilePhone" active-class="active">手机</router-link>
             </el-menu-item>
-            <el-menu-item index="3"
-              ><router-link to="/Notebook" active-class="active"
-                >笔记本</router-link
-              ></el-menu-item
-            >
-            <el-menu-item index="4"
-              ><router-link to="/Television" active-class="active"
-                >电视</router-link
-              ></el-menu-item
-            >
-            <el-menu-item index="5"
-              ><router-link to="/Bracelet" active-class="active"
-                >手环</router-link
-              ></el-menu-item
-            >
+            <el-menu-item index="3">
+              <router-link to="/Notebook" active-class="active">笔记本</router-link>
+            </el-menu-item>
+            <el-menu-item index="4">
+              <router-link to="/Television" active-class="active">电视</router-link>
+            </el-menu-item>
+            <el-menu-item index="5">
+              <router-link to="/Bracelet" active-class="active">手环</router-link>
+            </el-menu-item>
 
             <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
           </el-menu>
@@ -126,16 +99,11 @@
             </div>
             <el-dropdown @command="handleCommand" v-show="uname != null">
               <span class="el-dropdown-link">
-                <a>{{ uname }}</a
-                ><i class="el-icon-arrow-down el-icon--right"></i>
+                <a>{{ uname }}</a><i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="a" class="ditem"
-                  ><a>个人中心</a></el-dropdown-item
-                >
-                <el-dropdown-item command="b" class="ditem"
-                  ><a>退出登录</a></el-dropdown-item
-                >
+                <el-dropdown-item command="a" class="ditem"><a>个人中心</a></el-dropdown-item>
+                <el-dropdown-item command="b" class="ditem"><a>退出登录</a></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -166,7 +134,9 @@ export default {
   },
   watch: {
     scrollDistance(val) {
-      if (val >= 80) {
+      if (val >= 80 && this.$route.path != "/PersonalMenu/PersonalIndex"
+        && this.$route.path != "/PersonalMenu/MainOrder"
+        && this.$route.path != "/OrderDetail") {
         this.fixedShow = true;
         this.$refs.nav.style.position = "fixed";
         this.$refs.nav.style.top = "0px";
@@ -174,8 +144,12 @@ export default {
         this.fixedShow = false;
       }
     },
-    "$route.path": function () {
-      this.uname = localStorage.getItem("uname");
+    $route: {
+      deep: true,
+      handler(newValue, oldValue) {
+        this.uname = localStorage.getItem("uname");
+      }
+
     },
   },
   methods: {
@@ -228,6 +202,7 @@ export default {
   border-bottom: 3px solid #be0f2d;
   transition: 0.3s;
 }
+
 .navmenu {
   width: 100%;
   height: 70px;
@@ -236,6 +211,7 @@ export default {
   box-shadow: 0px 0px 10px #ccc;
   position: relative;
 }
+
 .wrap {
   padding: 0px 50px;
   display: grid;
@@ -244,15 +220,18 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .el-menu.el-menu--horizontal a,
 .right a {
   font-weight: 600;
   color: gray;
 }
+
 .el-menu.el-menu--horizontal a:hover {
   color: #be0f2d;
   transition: 0.3s;
 }
+
 .logo {
   justify-self: start;
   font-weight: 600;
@@ -265,9 +244,10 @@ export default {
   border-bottom: transparent;
 }
 
-.el-menu--horizontal > .el-menu-item.is-active {
+.el-menu--horizontal>.el-menu-item.is-active {
   border-bottom: transparent;
 }
+
 .right {
   display: grid;
   grid-template-columns: 100px 100px;
@@ -275,6 +255,7 @@ export default {
   align-items: center;
   height: 100%;
 }
+
 .scar,
 .login {
   display: grid;
@@ -283,14 +264,17 @@ export default {
   align-items: center;
   cursor: pointer;
 }
+
 .login {
   /* display: none; */
 }
+
 .scar i,
 .login i {
   transform: scale(1.4);
   margin-right: 5px;
 }
+
 .el-dropdown {
   width: 100px;
   text-overflow: ellipsis;
@@ -299,9 +283,11 @@ export default {
   text-decoration: underline;
   /* display: none; */
 }
+
 .ditem {
   cursor: pointer;
 }
+
 .ditem:hover {
   color: #000;
   background-color: #eee;
@@ -315,6 +301,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .search-input i {
   transform: scale(1.2, 1.2);
   display: flex;
@@ -325,6 +312,7 @@ export default {
   left: 8px;
   color: #ccc;
 }
+
 .search-input input {
   border: 1px solid #ccc;
   border-right: none;
@@ -337,6 +325,7 @@ export default {
   box-sizing: border-box;
   position: relative;
 }
+
 .search-input button {
   border: none;
   height: 35px;
@@ -349,19 +338,24 @@ export default {
   border-bottom-right-radius: 10px;
   cursor: pointer;
 }
+
 .search-input :focus {
   border-color: #be0f2d !important;
   transition: 0.5s;
 }
+
 .el-input-group__append {
   background-color: #fff !important;
 }
+
 .el-menu-item {
   padding: 0px 10px 0px 10px;
 }
+
 .el-menu-item a {
   padding: 12px;
 }
+
 .el-menu.el-menu--horizontal {
   width: 450px;
   justify-self: center;
