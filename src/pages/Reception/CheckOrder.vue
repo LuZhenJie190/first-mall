@@ -99,6 +99,7 @@ import {
   AddressDelete,
   OrderParamsInsertBatch,
   OrderInsert,
+  CartDatchDelete
 } from "../../api/index";
 import AddressModel from "../../components/Reception/AddressModel.vue";
 export default {
@@ -144,6 +145,7 @@ export default {
         area: "",
         orderPrice: "",
       },
+      cids: ""
     };
   },
   created() {
@@ -151,8 +153,8 @@ export default {
     this.productList = this.$route.params.cart;
     this.productList.forEach((e) => {
       e["orderId"] = this.orderInfo.orderId;
+      this.cids += e.cid + ",";
     });
-    console.log(this.productList);
     this.getAddressList();
     // 随机生成订单号
 
@@ -213,10 +215,10 @@ export default {
       } else {
         this.orderInfo.orderTime = getnowDate();
         this.orderInfo.orderPrice = this.allTotal;
-        // 添加商品参数
-        OrderParamsInsertBatch(this.productList).then((res) => {
-          console.log(res);
-        });
+        // 删除购物车
+        CartDatchDelete(this.cids)
+        // 添加订单商品参数
+        OrderParamsInsertBatch(this.productList)
         this.$confirm("确定支付吗", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -225,7 +227,6 @@ export default {
           .then(() => {
             this.orderInfo.payStatus = 1;
             OrderInsert(this.orderInfo).then((res) => {
-              console.log(res);
               if ((res.code = 200)) {
                 this.$message({
                   type: "success",

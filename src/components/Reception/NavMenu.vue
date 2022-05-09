@@ -60,7 +60,7 @@
         <div class="wrap">
           <h1 class="logo" @click="goIndex">数码购</h1>
           <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect">
-            <!-- <img class="icon-logo" src="../../assets/logo2.png" alt="" /> -->
+
             <el-menu-item index="1">
               <router-link to="/Index" active-class="active">首页</router-link>
             </el-menu-item>
@@ -77,15 +77,12 @@
               <router-link to="/Bracelet" active-class="active">手环</router-link>
             </el-menu-item>
 
-            <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
+
           </el-menu>
           <div class="search-input">
             <input type="text" v-model="searchMsg" />
             <i class="el-icon-search"></i>
             <button>搜索</button>
-            <!-- <el-input type="text" placeholder="请输入关键字" v-model="searchMsg">
-        </el-input>
-        <img @click="mainSearch" src="../../assets/search.png" /> -->
           </div>
 
           <div class="right">
@@ -177,9 +174,14 @@ export default {
         });
       } else if (command == "b") {
         localStorage.clear();
-        this.$router.push({
-          path: "/Index",
-        });
+        if (this.$route.path == "/Index") {
+          this.$router.go();
+        } else {
+          this.$router.push({
+            path: "/Index",
+          });
+        }
+
       }
     },
     // goPersonal() {
@@ -206,7 +208,7 @@ export default {
 .navmenu {
   width: 100%;
   height: 70px;
-  background: #fff;
+  background-color: rgba(255, 255, 255, 80%);
   z-index: 999;
   box-shadow: 0px 0px 10px #ccc;
   position: relative;
@@ -246,6 +248,7 @@ export default {
 
 .el-menu--horizontal>.el-menu-item.is-active {
   border-bottom: transparent;
+  background: transparent;
 }
 
 .right {
@@ -265,9 +268,6 @@ export default {
   cursor: pointer;
 }
 
-.login {
-  /* display: none; */
-}
 
 .scar i,
 .login i {
@@ -317,13 +317,17 @@ export default {
   border: 1px solid #ccc;
   border-right: none;
   height: 35px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  background: transparent;
   outline: none;
   padding: 0 10px 0 30px;
   box-sizing: border-box;
   position: relative;
+}
+
+.search-input input:focus {
+  background-color: #fff;
 }
 
 .search-input button {
@@ -334,8 +338,8 @@ export default {
   letter-spacing: 2px;
   background-color: #be0f2d;
   color: #fff;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
   cursor: pointer;
 }
 
@@ -346,6 +350,14 @@ export default {
 
 .el-input-group__append {
   background-color: #fff !important;
+}
+
+.navmenu /deep/ .el-menu {
+  background-color: transparent;
+}
+
+.navmenu /deep/ .el-menu-item:hover {
+  background-color: transparent;
 }
 
 .el-menu-item {

@@ -237,11 +237,36 @@ export const CartById = (userId) => requests({
   method: 'GET',
 });
 
+// 购物车删除
+export const CartDelete = (cid) => requests({
+  url: (`shoppingCart/deleteById?cid=${cid}`),
+  method: 'DELETE',
+});
+
+// 购物车删除
+export const CartDatchDelete = (params) => requests({
+  method: 'DELETE',
+  url: `shoppingCart/batchDelete/${params}`,
+});
+
 // -------------------------------------------------------------------------------------------------------------
 // 订单
+// 全部订单
+
+export const OrderGetAll = () => requests({
+  url: (`order/getAll`),
+  method: 'GET',
+});
+
 // 查询参数/查询订单
 export const OrderGetParams = (userId) => requests({
   url: (`order/getParams?userId=${userId}`),
+  method: 'GET',
+});
+
+// 手机号查询订单
+export const OrderGetParamsByPhone = (userPhone) => requests({
+  url: (`order/getParams?userPhone=${userPhone}`),
   method: 'GET',
 });
 

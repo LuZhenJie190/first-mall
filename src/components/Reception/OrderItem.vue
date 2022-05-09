@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="order-items" v-for="o1 in orderList" :key="o1.oid">
+    <div class="order-items" v-for="(o1, index) in orderList" :key="index">
       <div class="top">
         <div class="top-left">
           <h2>{{ o1.payStatus | status() }}</h2>
@@ -24,7 +24,7 @@
       </div>
       <div class="bottom">
         <div class="products">
-          <div class="product" v-for="o2 in o1.orderParams" :key="o2.opid">
+          <div class="product" v-for="(o2, index) in o1.orderParams" :key="index">
             <img :src="o2.productImg" alt="" />
             <div class="p-title">
               <p>{{ o2.productTitle }}</p>

@@ -3,9 +3,7 @@
     <nav-menu v-if="!$route.meta.showNav" :scrollDistance="scrollDistance" />
     <router-view v-if="isRouterAlive" />
     <div class="back">
-      <el-button v-show="backTop" @click="goback"
-        ><i class="el-icon-top"></i
-      ></el-button>
+      <el-button v-show="backTop" @click="goback"><i class="el-icon-top"></i></el-button>
       <!-- <h1 v-show="backTop" @click="goback">回到顶部</h1> -->
     </div>
   </div>
@@ -45,7 +43,7 @@ export default {
         document.documentElement.scrollTop =
           document.body.scrollTop =
           top -=
-            60;
+          60;
         // 到顶了就销毁定时器
         if (top <= 0) clearInterval(timer);
       }, 10);
@@ -78,13 +76,16 @@ export default {
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   font-size: 14px;
 }
+
 * {
   margin: 0;
   padding: 0;
 }
+
 li {
   list-style: none;
 }
+
 a {
   text-decoration: none;
   cursor: pointer;
@@ -95,6 +96,7 @@ a {
   bottom: 100px;
   right: 10px;
 }
+
 .back .el-button {
   width: 50px;
   height: 50px;
@@ -102,6 +104,7 @@ a {
   justify-content: center;
   align-items: center;
 }
+
 .back i {
   transform: scale(2, 2);
 }

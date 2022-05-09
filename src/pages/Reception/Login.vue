@@ -9,44 +9,23 @@
           </div>
         </template>
         <template slot="form">
-          <div
-            :class="{
-              'login-right': true,
-              'animate__animated animate__bounceOutRight': anShow,
-            }"
-          >
+          <div :class="{
+            'login-right': true,
+            'animate__animated animate__bounceOutRight': anShow,
+          }">
             <h1 class="t-login">帐号登录</h1>
-            <el-form
-              :model="form"
-              label-width="80px"
-              class="login-form"
-              :rules="rules"
-              ref="form"
-              @keyup.enter.native="login('form')"
-            >
-              <el-form-item label="用户名：" prop="name">
-                <input
-                  class="inp"
-                  type="text"
-                  v-model="form.userPhone"
-                  placeholder="请输入手机号"
-                />
+            <el-form :model="form" label-width="80px" class="login-form" status-icon :rules="rules" ref="form"
+              @keyup.enter.native="login('form')">
+              <el-form-item label="用户名：" prop="userPhone">
+                <input class="inp" type="text" v-model="form.userPhone" placeholder="请输入手机号" />
               </el-form-item>
-              <el-form-item label="密码：" prop="password">
-                <input
-                  class="inp"
-                  type="password"
-                  v-model="form.userPwd"
-                  placeholder="请输入密码"
-                  ref="password"
-                />
+              <el-form-item label="密码：" prop="userPwd">
+                <input class="inp" type="password" v-model="form.userPwd" placeholder="请输入密码" ref="password" />
                 <!-- <i class="el-icon-view icon-pw" @click="pwdChange"></i> -->
               </el-form-item>
               <a class="forgetpwd" href="">忘记密码</a>
               <el-form-item>
-                <el-button type="danger" class="loginbtn" @click="login('form')"
-                  >登录</el-button
-                >
+                <el-button type="danger" class="loginbtn" @click="login('form')">登录</el-button>
               </el-form-item>
             </el-form>
             <el-divider>其他登录方式</el-divider>
@@ -65,12 +44,28 @@
 </template>
 
 <script>
+import {
+  phoneValidation,
+} from "../../utils/index";
 import { UserLogin } from "../../api/index";
 import LoginForm from "../../components/LoginForm.vue";
 export default {
   components: { LoginForm },
   name: "Login",
   data() {
+    // 自定义验证规则
+    // 手机号
+    var validatePhone = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("手机号不能为空"));
+        console.log(value);
+      }
+      if (!phoneValidation(value)) {
+        callback(new Error("手机号不合法"));
+      } else {
+        callback();
+      }
+    };
     return {
       // 表单
       form: {
@@ -79,13 +74,10 @@ export default {
       },
       // 表单规则
       rules: {
-        name: [
-          { required: true, message: "请输入手机号", trigger: "blur" },
-          { min: 11, max: 11, message: "长度为 11 个字符", trigger: "blur" },
-        ],
-        password: [
+        userPhone: [{ validator: validatePhone, trigger: "blur" }],
+        userPwd: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, max: 20, message: "长度为 6 -20 个字符", trigger: "blur" },
+
         ],
       },
       // 其他登录
@@ -117,33 +109,30 @@ export default {
     },
     login(formName) {
       this.$refs[formName].validate((valid) => {
-        // if (valid) {
-        //   alert("submit!");
-        // } else {
-        //   console.log("error submit!!");
-        //   return false;
-        // }
-      });
-      UserLogin(this.form).then((res) => {
-        console.log(res);
-        if (res.code == 200) {
-          localStorage.setItem("uname", res.data.userName);
-          localStorage.setItem("uid", res.data.uId);
+        if (valid) {
+          UserLogin(this.form).then((res) => {
+            console.log(res);
+            if (res.code == 200) {
+              localStorage.setItem("uname", res.data.userName);
+              localStorage.setItem("uid", res.data.uId);
 
-          if (res.data.userIdentity == 1) {
-            this.$router.push({ path: "/BackendSystem/home" });
-          } else {
-            this.$router.push({ path: "/index" });
-          }
+              if (res.data.userIdentity == 1) {
+                this.$router.replace({ path: "/BackendSystem/home" });
+              } else {
+                this.$router.replace({ path: "/index" });
+              }
+            } else if (res.code == 202) {
+              this.$alert(`${res.message}`)
+            }
+            else if (res.code == null) {
+              this.$alert("密码错误");
+            }
+          });
         }
       });
-      // console.log(this.name);
-      // console.log(this.password);
+
     },
-    // logout() {
-    //   console.log("aa");
-    //   localStorage.clear();
-    // },
+
   },
 };
 </script>
@@ -152,6 +141,7 @@ export default {
 .login {
   background: #fff;
 }
+
 .login-context {
   width: 100%;
   height: 100vh;
@@ -174,6 +164,7 @@ export default {
   overflow: hidden;
   position: relative;
 }
+
 .login-left {
   display: flex;
   align-items: center;
@@ -181,6 +172,7 @@ export default {
   position: relative;
   overflow: hidden;
 }
+
 .login-bg {
   width: 100%;
   height: 100%;
@@ -190,14 +182,17 @@ export default {
   object-fit: cover;
   transition: 0.5s;
 }
+
 .btn-register:hover {
   opacity: 1;
   transition: 0.5s;
 }
-.btn-register:hover + .login-bg {
+
+.btn-register:hover+.login-bg {
   transition: 0.5s;
   filter: blur(5px);
 }
+
 .btn-register {
   border: none;
   background: white;
@@ -214,11 +209,13 @@ export default {
   cursor: pointer;
   position: absolute;
 }
+
 .btn-register a {
   font-weight: 600;
   font-size: 25px;
   color: #000;
 }
+
 .btn-register i {
   background: #be0f2d;
   border-radius: 100%;
@@ -226,6 +223,7 @@ export default {
   margin-top: 30px;
   transform: scale(2, 2);
 }
+
 .focus {
   width: 105%;
   height: 100%;
@@ -234,6 +232,7 @@ export default {
   /* filter: blur(1px); */
   z-index: 10;
 }
+
 .login-right {
   display: grid;
   grid-template-rows: 100px 300px 1px auto;
@@ -241,19 +240,20 @@ export default {
   align-items: center;
   text-align: center;
 }
+
 .login-form {
   width: 400px;
   position: relative;
 }
+
 .login-form /deep/ .el-input__inner:focus {
   border: 1px solid #be0f2d;
 }
-.login-form
-  /deep/
-  .el-form-item.is-required:not(.is-no-asterisk)
-  > .el-form-item__label:before {
+
+.login-form /deep/ .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before {
   content: "";
 }
+
 .inp {
   position: relative;
   border: 1px solid #dcdfe6;
@@ -265,13 +265,16 @@ export default {
   box-sizing: border-box;
   border-radius: 4px;
 }
+
 .inp::placeholder {
   color: #ccc;
 }
+
 .inp:focus {
   border: 1px solid #be0f2d;
   transition: 0.5s;
 }
+
 .icon-pw {
   position: absolute;
   top: 12px;
@@ -280,6 +283,7 @@ export default {
   color: #757575;
   cursor: pointer;
 }
+
 .loginbtn {
   width: 200px;
   display: flex;
@@ -287,22 +291,27 @@ export default {
   margin-top: 20px;
   margin-left: 20px;
 }
+
 .login-type ul {
   height: 80px;
   display: flex;
   justify-content: space-evenly;
 }
+
 .login-type li {
   width: 50px;
   height: 50px;
 }
+
 .login-type li img {
   width: 40px;
   height: 40px;
 }
+
 .t-login {
   align-self: flex-end;
 }
+
 .forgetpwd {
   position: absolute;
   bottom: 80px;
@@ -310,12 +319,14 @@ export default {
   font-size: small;
   color: #000;
 }
+
 .linkToregister {
   position: absolute;
   right: 0;
   bottom: 0;
   margin: 10px;
 }
+
 .login-footer {
   position: relative;
   bottom: 0;

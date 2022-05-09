@@ -1,45 +1,67 @@
 <template>
   <div class="carousel">
-    <el-carousel
-      :interval="4000"
-      type="card"
-      height="600px"
-      class="carousel-main"
-    >
-      <el-carousel-item
-        class="carousel-item"
-        v-for="(item, index) in carouselData.slice(0, 4)"
-        :key="index"
-      >
-        <img class="carousel-img" :src="item.mainImg" />
+    <el-carousel class="carousel-main">
+      <el-carousel-item class="carousel-item" v-for="(item, index) in carouselData.slice(0, 4)" :key="index">
+        <img class="carousel-img" :src="item.carousel.carouselImg" />
       </el-carousel-item>
     </el-carousel>
   </div>
 </template>
 
 <script>
-import { ProductgetAll } from "../../api/index";
 export default {
   name: "Carousel",
   props: ["carouselData"],
   data() {
-    return {};
+    return {
+    };
   },
   created() {
-    // console.log(this.carouselData);
+    console.log(this.carouselData);
   },
 };
 </script>
 
 <style scoped>
 .carousel {
-  margin: 15px 0px;
+  height: 100vh;
+  width: 99.8vw;
+  position: relative;
+  top: -10px;
+  left: -180px;
 }
+
+.carousel /deep/ .el-carousel__container {
+  height: 100vh;
+}
+
 .carousel /deep/ .el-carousel__button {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
+  width: 20px;
+  height: 5px;
+  border-radius: 0px;
+  background-color: gray;
 }
+
+.carousel /deep/ .el-carousel__arrow {
+  border-radius: 0px;
+  height: 80px;
+}
+
+.carousel /deep/ .el-carousel__arrow--left {
+  left: 10px;
+}
+
+.carousel /deep/ .el-carousel__arrow--right {
+  right: 0px;
+}
+
+.carousel-main {
+  width: 100%;
+  height: 100vh;
+  margin-top: -60px;
+  padding: 0;
+}
+
 .carousel-main h3 {
   color: #475669;
   font-size: 14px;
@@ -50,23 +72,28 @@ export default {
 
 .carousel-item:nth-child(2n) {
   background-color: #99a9bf;
-  width: 90%;
+  width: 100vw;
+  height: 100vh;
   position: absolute;
-  left: -20%;
+  /* left: -20%; */
   border-radius: 3px;
 }
 
 .carousel-item:nth-child(2n + 1) {
   background-color: #d3dce6;
-  width: 90%;
+  width: 100vw;
+  height: 100vh;
   position: absolute;
-  left: -20%;
+  /* left: -20%; */
   border-radius: 3px;
 }
+
 .carousel-img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
+
 .el-carousel__button {
   width: 8px;
   height: 8px;

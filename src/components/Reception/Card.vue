@@ -32,30 +32,41 @@ export default {
   transition: 0.3s;
   padding: 20px 0;
 }
+
 .card:hover {
   box-shadow: 0px 10px 10px #ccc;
   transition: 0.5s;
   transform: translateY(-10px);
   transition-timing-function: cubic-bezier(0.2, 0.5, 0.5, 1);
 }
+
 .bottom {
   text-align: center;
 }
+
 .bottom h3 {
   padding: 0 10px;
   font-weight: 500;
   font-size: 16px;
 }
+
 .bottom p {
   color: #757575;
-  margin: 3px 0px 10px 0px;
+  margin: 3px 5px 10px 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
+
 .images {
   width: 160px;
   height: 160px;
   object-fit: cover;
   overflow: hidden;
 }
+
 .price {
   font-size: 20px;
   color: #be0f2d;

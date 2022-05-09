@@ -4,28 +4,13 @@
       <el-form label-width="100px" :model="form" :rules="rules" ref="form">
         <el-form-item label="商品类型：" prop="categoryId">
           <el-radio-group v-model="form.categoryId">
-            <el-radio
-              v-for="item in category"
-              :key="item.pcid"
-              v-model="form.categoryId"
-              :label="item.categoryId"
-              @change="typeRadio(form.categoryId)"
-              >{{ item.categoryName }}</el-radio
-            >
+            <el-radio v-for="item in category" :key="item.pcid" v-model="form.categoryId" :label="item.categoryId"
+              @change="typeRadio(form.categoryId)">{{ item.categoryName }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="商品品牌：" prop="brandId">
-          <el-select
-            v-model="form.brandId"
-            placeholder="请选择"
-            @change="sortSelect(form.brandId)"
-          >
-            <el-option
-              v-for="item in brand"
-              :key="item.pbid"
-              :label="item.brandName"
-              :value="item.brandId"
-            >
+          <el-select v-model="form.brandId" placeholder="请选择" @change="sortSelect(form.brandId)">
+            <el-option v-for="item in brand" :key="item.pbid" :label="item.brandName" :value="item.brandId">
             </el-option>
           </el-select>
         </el-form-item>
@@ -33,59 +18,39 @@
           <el-input v-model="form.title"></el-input>
         </el-form-item>
         <el-form-item label="商品简介：" prop="subTitle">
-          <el-input v-model="form.subTitle"></el-input>
+          <el-input type="textarea" placeholder="请输入内容" v-model="form.subTitle"></el-input>
         </el-form-item>
         <el-form-item label="商品主图：" style="width: 1200px; height: 180px">
-          <el-upload
-            class="upload-demo"
-            action="#"
-            :http-request="upload"
-            list-type="picture-card"
-            :file-list="fileList"
-            :limit="1"
-          >
+          <el-upload class="upload-demo" action="#" :http-request="upload" list-type="picture-card"
+            :file-list="fileList" :limit="1">
             <i slot="default" class="el-icon-plus"></i>
-            <div
-              class="el-upload__tip"
-              slot="tip"
-              style="margin-top: -5px; font-weight: bold"
-            >
+            <div class="el-upload__tip" slot="tip" style="margin-top: -5px; font-weight: bold">
+              只能上传jpg/png文件，限定一张
+            </div>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="商品轮播图：" style="width: 1200px; height: 180px">
+          <el-upload class="upload-demo" action="#" :http-request="Cupload" list-type="picture-card"
+            :file-list="fileList" :limit="1">
+            <i slot="default" class="el-icon-plus"></i>
+            <div class="el-upload__tip" slot="tip" style="margin-top: -5px; font-weight: bold">
               只能上传jpg/png文件，限定一张
             </div>
           </el-upload>
         </el-form-item>
         <el-form-item label="展示设置：">
           <el-checkbox label="轮播图" v-model="form.isCarousel"></el-checkbox>
-          <el-checkbox
-            label="每日推荐"
-            v-model="form.isRecommend"
-          ></el-checkbox>
+          <el-checkbox label="每日推荐" v-model="form.isRecommend"></el-checkbox>
           <el-form-item>
-            <el-button
-              type="primary"
-              @click="getParams"
-              v-show="paramsContext === false"
-              >点击添加参数</el-button
-            >
+            <el-button type="primary" @click="getParams" v-show="paramsContext === false">点击添加参数</el-button>
           </el-form-item>
         </el-form-item>
         <div class="paramsContext" v-show="paramsContext" v-loading="loading3">
           <el-form-item label="详情图片：" style="width: 1200px; height: 180px">
-            <el-upload
-              class="upload-demo"
-              action="#"
-              :http-request="pUpload"
-              list-type="picture-card"
-              :file-list="imageList"
-              :limit="5"
-              multiple
-            >
+            <el-upload class="upload-demo" action="#" :http-request="pUpload" list-type="picture-card"
+              :file-list="imageList" :limit="5" multiple>
               <i slot="default" class="el-icon-plus"></i>
-              <div
-                class="el-upload__tip"
-                slot="tip"
-                style="margin-top: -5px; font-weight: bold"
-              >
+              <div class="el-upload__tip" slot="tip" style="margin-top: -5px; font-weight: bold">
                 只能上传jpg/png文件，限定五张
               </div>
             </el-upload>
@@ -98,11 +63,7 @@
                 <li>价格</li>
                 <li>库存</li>
               </ul>
-              <ul
-                class="params-tr"
-                v-for="(item, index) in paramList"
-                :key="index"
-              >
+              <ul class="params-tr" v-for="(item, index) in paramList" :key="index">
                 <li>{{ item.pmColor }}</li>
                 <li>{{ item.pmVersion }}</li>
                 <li>{{ item.price }}</li>
@@ -123,22 +84,14 @@
                   <el-input v-model="paramForm.stock"></el-input>
                 </li>
               </ul>
-              <el-button
-                class="param-btn"
-                type="primary"
-                plain
-                size="mini"
-                @click="addParams"
-                ><i class="el-icon-plus"></i
-              ></el-button>
+              <el-button class="param-btn" type="primary" plain size="mini" @click="addParams"><i
+                  class="el-icon-plus"></i></el-button>
             </div>
           </el-form-item>
         </div>
 
         <el-form-item style="margin-top: -18px">
-          <el-button class="p_submit" type="primary" @click="submitForm('form')"
-            >提交</el-button
-          >
+          <el-button class="p_submit" type="primary" @click="submitForm('form')">提交</el-button>
           <el-button @click="resetForm('form')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -181,6 +134,7 @@ export default {
         updateTime: "",
         isCarousel: false,
         isRecommend: false,
+        carouselImg: ""
       },
       pageNum: 1,
       pageSize: 100,
@@ -202,8 +156,8 @@ export default {
           { required: true, message: "简介不能为空", trigger: "blur" },
           {
             min: 2,
-            max: 50,
-            message: "长度在 2 到 50 个字符",
+            max: 100,
+            message: "长度在 2 到 100 个字符",
             trigger: "blur",
           },
         ],
@@ -321,8 +275,8 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.imageList.length != 0 && this.paramList.length != 0) {
-            ProductImageAdd(this.imageList).then((res) => {});
-            ProductParamsAdd(this.paramList).then((res) => {});
+            ProductImageAdd(this.imageList).then((res) => { });
+            ProductParamsAdd(this.paramList).then((res) => { });
             this.$alert("添加成功");
             // 重置表单
             this.reload();
@@ -360,6 +314,7 @@ export default {
         },
         (error, data) => {
           this.form.mainImg = "http://" + data.Location;
+          console.log(this.form);
         }
       );
     },
@@ -394,6 +349,29 @@ export default {
         }
       );
     },
+    Cupload(res) {
+      if (!res.file) {
+        return;
+      }
+      // 1. 把图片上传到腾讯云COS
+      // 执行上传操作
+      cos.putObject(
+        {
+          Bucket: "leo-1310014300" /* 存储桶 */,
+          Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
+          Key: res.file.name /* 文件名 */,
+          StorageClass: "STANDARD", // 上传模式, 标准模式
+          Body: res.file, // 上传文件对象
+          onProgress: (progressData) => {
+            this.percentage = progressData.percent * 100;
+          },
+        },
+        (error, data) => {
+          this.form.carouselImg = "http://" + data.Location;
+          console.log(this.form);
+        }
+      );
+    },
   },
 };
 </script>
@@ -409,26 +387,32 @@ export default {
   display: flex;
   overflow: hidden;
 }
+
 .addForm .el-form-item {
   margin-bottom: 20px;
 }
+
 .p_submit {
   width: 100px;
   margin-top: 50px;
   margin-left: 30px;
 }
+
 .el-upload-list--picture .el-upload-list__item:focus {
   border-color: #409eff;
 }
+
 .params {
   width: 600px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
+
 .params-th {
   display: flex;
 }
+
 .params-th li {
   border: 1px solid #eee;
   padding: 0 60px;
@@ -436,21 +420,26 @@ export default {
   font-weight: 600;
   box-sizing: border-box;
 }
+
 .params-tr {
   display: flex;
 }
+
 .params-tr li {
   border: 1px solid #eee;
   box-sizing: border-box;
   width: 600px;
   text-align: center;
 }
+
 .params-tr /deep/ input {
   border: none;
 }
+
 .param-btn {
   width: 100px;
 }
+
 .dd {
   position: absolute;
   right: 70px;
@@ -459,6 +448,7 @@ export default {
   color: #ccc;
   cursor: pointer;
 }
+
 .paramsContext {
   padding-top: 30px;
   width: 75vw;

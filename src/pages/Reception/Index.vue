@@ -3,7 +3,9 @@
     <div class="wrap">
       <Carousel :carouselData="carouselData" class="carousel" />
       <Classification />
-      <Recommend :recommendData="recommendData"><h1>推荐购</h1></Recommend>
+      <Recommend :recommendData="recommendData">
+        <h1>推荐购</h1>
+      </Recommend>
       <div class="product-sort">
         <ProductShow :products="phoneData">
           <template slot="pTitle">
@@ -34,8 +36,8 @@
             <h1>手环</h1>
           </template>
           <template slot="pImage">
-            <img src="../../assets/login_bg.jpg" /> </template
-        ></ProductShow>
+            <img src="../../assets/login_bg.jpg" /> </template>
+        </ProductShow>
       </div>
     </div>
     <div class="index-footer">
@@ -58,7 +60,7 @@ import Classification from "../../components/Reception/Classification.vue";
 import ProductShow from "../../components/Reception/ProductShow.vue";
 import Recommend from "../../components/Reception/Recommend.vue";
 import DsFooter from "../../components/Reception/DsFooter.vue";
-import { ProductgetAll, ProductGetByCate } from "../../api/index";
+import { ProductgetAll, ProductGetByCate, ProductCategory } from "../../api/index";
 export default {
   name: "Index",
   components: {
@@ -104,17 +106,12 @@ export default {
       ],
       carouselData: [],
       recommendData: [],
+      pp: [],
     };
   },
   created() {
     ProductgetAll(1, 1000).then((res) => {
-      // console.log(res);
-      // for (let index = 0; index < 8; index++) {
-      //   this.phoneData[index] = res.data.list[index];
-      //   ProductDetail(res.data.list[index].pid).then((res) => {
-      //     this.phoneData[index].price = res.data[0].productParams[0].price;
-      //   });
-      // }
+      console.log("index", res);
       res.data.list.forEach((element) => {
         if (element.isCarousel) {
           this.carouselData.push(element);
@@ -128,14 +125,43 @@ export default {
   },
   methods: {
     getSomeData() {
-      for (let index = 1001; index < 1004; index++) {
-        ProductGetByCate(index).then((res) => {
-          index == 1001 ? (this.phoneData = res.data) : [];
-          index == 1002 ? (this.notebookData = res.data) : [];
-          index == 1003 ? (this.tvData = res.data) : [];
-          index == 1004 ? (this.braceletData = res.data) : [];
-        });
-      }
+      ProductCategory().then(res => {
+        console.log("pc", res);
+        let array1 = [];
+        let array2 = [];
+
+        res.data.forEach(e => {
+          array1 = e.productBrand;
+        })
+
+        array1.forEach(e => {
+          // console.log(e.product);
+          e.product.forEach(ee => {
+            array2.push(ee)
+          })
+        })
+
+        this.phoneData = array2.filter(e => {
+          if (e.categoryId == 1001) {
+            return e;
+          }
+        })
+        console.log("css", this.phoneData);
+
+
+
+
+
+      })
+      // for (let index = 1001; index < 1005; index++) {
+      //   ProductGetByCate(index).then((res) => {
+      //     console.log("pc", res);
+      //     // index == 1001 ? (this.phoneData = res.data) : [];
+      //     // index == 1002 ? (this.notebookData = res.data) : [];
+      //     // index == 1003 ? (this.tvData = res.data) : [];
+      //     // index == 1004 ? (this.braceletData = res.data) : [];
+      //   });
+      // }
     },
   },
 };
@@ -146,6 +172,7 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
 }
+
 .index-footer {
   width: 100%;
   height: 100px;
@@ -154,6 +181,7 @@ export default {
   bottom: -30px;
   border-bottom: 1px solid #eee;
 }
+
 .footer-list {
   display: flex;
   justify-content: space-evenly;
@@ -161,13 +189,16 @@ export default {
   margin: 50px 0px 0px 80px;
   height: 100px;
 }
+
 .footer-list-item img {
   width: 50px;
   height: 50px;
 }
+
 .footer-list-item span {
   margin-left: 50px;
 }
+
 .footer-list-item {
   display: flex;
   align-items: center;
@@ -175,11 +206,8 @@ export default {
   height: 30px;
   border-right: 1px solid #ccc;
 }
+
 .footer-list li:last-child {
   border-right: none;
-}
-.carousel {
-  width: 1500px;
-  margin-left: -150px;
 }
 </style>

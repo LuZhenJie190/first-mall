@@ -2,13 +2,9 @@
   <div class="recommend">
     <slot></slot>
     <br />
-    <vue-seamless-scroll
-      :data="recommendData1"
-      :class-option="classOption"
-      class="warp"
-    >
+    <vue-seamless-scroll :data="recommendData1" :class-option="classOption" class="warp">
       <ul class="recommend-list">
-        <li v-for="(item, index) in recommendData" :key="index">
+        <li v-for="(item, index) in recommendData" :key="index" @click="goDetail(item.pid)">
           <div class="recommend-detail">
             <img :src="item.mainImg" alt="" srcset="" />
             <p>{{ item.title }}</p>
@@ -20,6 +16,7 @@
 </template>
 
 <script>
+import { ProductDetail } from "../../api/index"
 import vueSeamlessScroll from "vue-seamless-scroll";
 export default {
   name: "Recommend",
@@ -44,6 +41,21 @@ export default {
       },
     },
   },
+  methods: {
+    goDetail(index) {
+      console.log(index);
+      ProductDetail(index).then(res => {
+        if (res.code == 200) {
+          this.$router.push({
+            name: "productinfo",
+            params: {
+              details: res.data[0],
+            },
+          });
+        }
+      })
+    }
+  }
 };
 </script>
 
@@ -56,6 +68,7 @@ export default {
   width: 20px;
   height: 80px;
 }
+
 .recommend-carousel .el-carousel__arrow--right {
   position: absolute;
   top: 120px;
@@ -64,17 +77,24 @@ export default {
   width: 20px;
   height: 80px;
 }
+
 .recommend {
   width: 100%;
   height: 300px;
   margin-top: 30px;
   overflow: hidden;
 }
+
 .recommend-list {
   display: flex;
   justify-content: space-around;
   align-items: center;
 }
+
+.recommend-list li {
+  margin: 10px 5px;
+}
+
 .recommend-detail {
   width: 190px;
   height: 260px;
@@ -82,10 +102,17 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
+
 .recommend-detail img {
-  width: 98%;
-  height: 220px;
+  width: 160px;
+  height: 180px;
+  padding-top: 10px;
   cursor: pointer;
+}
+
+.recommend-detail p {
+  padding-top: 10px;
 }
 </style>

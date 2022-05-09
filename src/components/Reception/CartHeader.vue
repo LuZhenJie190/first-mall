@@ -9,16 +9,11 @@
         <div class="right">
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">
-              <a>{{ name }}</a
-              ><i class="el-icon-arrow-down el-icon--right"></i>
+              <a>{{ name }}</a><i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown" class="down-menu">
-              <el-dropdown-item command="a" class="ditem"
-                ><a @click="goPersonal">个人中心</a></el-dropdown-item
-              >
-              <el-dropdown-item command="b" class="ditem"
-                ><a>退出登录</a></el-dropdown-item
-              >
+              <el-dropdown-item command="a" class="ditem"><a>个人中心</a></el-dropdown-item>
+              <el-dropdown-item command="b" class="ditem"><a>退出登录</a></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <a class="order" @click="goOrder">我的订单</a>
@@ -39,7 +34,21 @@ export default {
   },
   methods: {
     handleCommand(command) {
-      console.log(command);
+      if (command == "a") {
+        this.$router.push({
+          path: "/PersonalMenu/PersonalIndex",
+        });
+      } else if (command == "b") {
+        localStorage.clear();
+        if (this.$route.path == "/Index") {
+          this.$router.go();
+        } else {
+          this.$router.push({
+            path: "/Index",
+          });
+        }
+
+      }
     },
     goShopping() {
       this.$router.push({
@@ -65,46 +74,56 @@ export default {
   max-width: 1200px;
   margin: auto;
 }
+
 .top {
   width: 100%;
   height: 100px;
   line-height: 100px;
   background-color: #fff;
 }
+
 .left {
   float: left;
   display: grid;
   grid-template-columns: 100px auto;
 }
+
 .left h1 {
   color: #be0f2d;
   font-size: 30px;
   font-weight: 500;
 }
+
 .left p,
 .order {
   margin-top: 7px;
   color: #757575;
 }
+
 .right {
   float: right;
 }
+
 .ditem {
   cursor: pointer;
 }
+
 .ditem:hover {
   color: #000;
   background-color: #eee;
   transition: 0.5s;
 }
+
 .down-menu {
   margin-top: -20px !important;
 }
+
 .order {
   border-left: 1px solid #757575;
   padding-left: 15px;
   margin-left: 15px;
 }
+
 .line {
   margin: 0;
   background-color: #be0f2d;

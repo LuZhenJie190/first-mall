@@ -22,9 +22,9 @@
 
 <script>
 import {
-  UserInfoListFindAll,
-  ProductInfoFindAll,
-  OrderFindAll,
+  UsergetAll,
+  ProductgetAll,
+  OrderGetAll
 } from "../../api/index";
 //全部引入
 const echarts = require("echarts");
@@ -32,10 +32,8 @@ export default {
   name: "Home",
   data() {
     return {
-      cc: [],
       pageN: 1,
       pageS: 1000,
-      allData: [],
       usersTotal: "",
       pTotal: "",
       oTotal: "",
@@ -45,67 +43,100 @@ export default {
         tv: "",
         watch: "",
       },
-      pnum: "",
       cards: [
         {
           id: "0",
           url: require("../../assets/user.png"),
           title: "users",
-          num: "",
+          num: this.usersTotal,
         },
         {
           id: "1",
           url: require("../../assets/product.png"),
           title: "products",
-          num: "",
+          num: this.pTotal,
         },
         {
           id: "2",
           url: require("../../assets/order.png"),
           title: "orders",
-          num: "",
+          num: this.oTotal,
         },
       ],
     };
   },
   mounted() {
-    ProductInfoFindAll(this.pageN, this.pageS).then((res) => {
-      this.allData = res.list;
-      this.pnum = this.allData.map((obj) => {
-        return obj.ptype;
-      });
-      let str = this.pnum.join("");
-      // console.log(str);
-      // 手机，笔记本，电视，手环  各个总数
-      this.product.phone = str.split("0").length - 1;
-      this.product.notebook = str.split("1").length - 1;
-      this.product.tv = str.split("2").length - 1;
-      this.product.watch = str.split("3").length - 1;
-
-      this.pTotal = res.total;
-      this.cards[1].num = res.total;
-    });
-    OrderFindAll(this.pageN, this.pageS).then((res) => {
-      // console.log(res);
-      this.oTotal = res.total;
-      this.cards[2].num = res.total;
-    });
     this.initCharts();
+  },
+  created() {
+    // ProductInfoFindAll(this.pageN, this.pageS).then((res) => {
+    //   this.allData = res.list;
+    //   this.pnum = this.allData.map((obj) => {
+    //     return obj.ptype;
+    //   });
+    //   let str = this.pnum.join("");
+    //   // console.log(str);
+    //   // 手机，笔记本，电视，手环  各个总数
+    //   this.product.phone = str.split("0").length - 1;
+    //   this.product.notebook = str.split("1").length - 1;
+    //   this.product.tv = str.split("2").length - 1;
+    //   this.product.watch = str.split("3").length - 1;
+
+    //   this.pTotal = res.total;
+    //   this.cards[1].num = res.total;
+    // });
+    // OrderFindAll(this.pageN, this.pageS).then((res) => {
+    //   // console.log(res);
+    //   this.oTotal = res.total;
+    //   this.cards[2].num = res.total;
+    // });
+    this.getUser();
+    this.getOrder();
+    this.getProduct();
   },
 
   methods: {
+    getUser() {
+      UsergetAll(this.pageN, this.pageS).then(res => {
+        this.usersTotal = res.data.total
+      })
+    },
+    getProduct() {
+      ProductgetAll(this.pageN, this.pageS).then(res => {
+        this.pTotal = res.data.total;
+        this.cards[1].num = this.pTotal
+        let phone = res.data.list.filter(e => { if (e.categoryId == 1001) return e; })
+        let nb = res.data.list.filter(e => { if (e.categoryId == 1002) return e; })
+        let tv = res.data.list.filter(e => { if (e.categoryId == 1003) return e; })
+        let watch = res.data.list.filter(e => { if (e.categoryId == 1004) return e; })
+        this.product.phone = phone.length;
+        this.product.notebook = nb.length;
+        this.product.tv = tv.length;
+        this.product.watch = watch.length;
+      })
+    },
+    getOrder() {
+      OrderGetAll().then(res => {
+        this.oTotal = res.length;
+        this.cards[2].num = this.oTotal
+      })
+    },
     initCharts() {
       this.chart = echarts.init(this.$refs.ech);
       this.chart1 = echarts.init(this.$refs.ech2);
-
       this.setOptions();
     },
     setOptions() {
-      UserInfoListFindAll(this.pageN, this.pageS).then((res) => {
-        this.usersTotal = res.total;
-        this.cards[0].num = res.total;
+      UsergetAll(this.pageN, this.pageS).then((res) => {
+        this.usersTotal = res.data.total;
+        this.cards[0].num = res.data.total;
         // console.log(this.pTotal);
         this.chart.setOption({
+          itemStyle: {
+            color: '#002FA7',
+            opacity: "0.9",
+            barBorderRadius: 3
+          },
           title: {
             text: "数据统计",
           },
@@ -161,11 +192,13 @@ export default {
   position: relative;
   top: 50px;
 }
+
 .h-cards {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
 }
+
 .h-cards .el-card__body {
   width: 250px;
   height: 80px;
@@ -174,11 +207,13 @@ export default {
   align-items: center;
   cursor: pointer;
 }
+
 .h-cards img {
   width: 60px;
   height: 60px;
   margin: 5px;
 }
+
 .h-cards-right {
   flex: 1;
   display: flex;
@@ -186,11 +221,19 @@ export default {
   align-items: center;
   justify-items: center;
 }
+
 .h-cards-right h1 {
   position: relative;
   top: -10px;
   margin: 5px;
 }
+
+.h-cards-right p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #757575;
+}
+
 .echarts {
   display: flex;
   justify-content: space-around;

@@ -9,11 +9,7 @@
         <slot name="pImage"></slot>
       </div>
       <div class="product-right">
-        <cards-list
-          class="card"
-          v-for="(p1, index) in recommendData"
-          :key="index"
-        >
+        <cards-list class="card" v-for="(p1, index) in recommendData" :key="index" @click.native="goDetail(p1)">
           <template slot="image">
             <img class="images cardimg" :src="p1.mainImg" />
           </template>
@@ -40,18 +36,27 @@ export default {
       recommendData: [],
     };
   },
-  created() {},
+  created() { },
   watch: {
     // 监听props的数据，解决无法读取到父组件数据的问题
     products: {
       deep: true,
       handler(newVal, oldVal) {
-        this.recommendData = this.products[0].productBrand[0].product;
-        console.log(this.recommendData);
+        this.recommendData = this.products
       },
     },
   },
-  methods: {},
+  methods: {
+    goDetail(data) {
+      console.log(data);
+      this.$router.push({
+        name: "productinfo",
+        params: {
+          details: data,
+        },
+      });
+    }
+  },
 };
 </script>
 
@@ -60,12 +65,15 @@ export default {
   padding: 0;
   row-gap: 0px;
 }
+
 .card h3 {
   margin-bottom: 8px;
 }
+
 .cardimg {
   padding-top: 20px;
 }
+
 .productshow {
   margin-top: 60px;
   width: 100%;
@@ -74,6 +82,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .product-context {
   display: grid;
   grid-template-columns: 3fr 7fr;
@@ -85,6 +94,7 @@ export default {
   height: 100%;
   object-fit: cover;
 }
+
 .product-right {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -92,13 +102,16 @@ export default {
   column-gap: 10px;
   row-gap: 10px;
 }
+
 .title {
   display: flex;
   justify-content: space-between;
 }
+
 .title h1 {
   margin-bottom: 10px;
 }
+
 .title a {
   line-height: 40px;
 }

@@ -65,7 +65,7 @@
 <script>
 // import Counter from "../../components/Reception/Counter.vue";
 import DsFooter from "../../components/Reception/DsFooter.vue";
-import { CartById } from "../../api/index";
+import { CartById, CartDelete, CartDatchDelete } from "../../api/index";
 import CartHeader from "../../components/Reception/CartHeader.vue";
 export default {
   name: "ShoppingCart",
@@ -81,6 +81,7 @@ export default {
       number: "",
       rowData: "",
       total: "",
+      cids: "",
     };
   },
   watch: {
@@ -133,6 +134,7 @@ export default {
       CartById(localStorage.getItem("uid")).then((res) => {
         console.log(res);
         this.tableData = res.data;
+        this.tableData.reverse();
       });
     },
     goCart() {
@@ -141,9 +143,7 @@ export default {
       });
     },
     goShopping() {
-      this.$router.push({
-        path: "/Index",
-      });
+      this.$router.back();
     },
 
     toggleSelection(rows) {
@@ -157,10 +157,18 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(this.multipleSelection);
+      this.multipleSelection.forEach((e) => {
+        this.cids += e.cid + ",";
+      })
+      console.log(this.cids);
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      // console.log(index, row);
+      CartDelete(row.cid).then(res => {
+        if (res.code == 200) {
+          this.getCartData();
+        }
+      })
     },
   },
 };

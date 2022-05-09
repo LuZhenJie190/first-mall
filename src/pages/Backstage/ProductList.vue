@@ -1,93 +1,39 @@
 <template>
   <div class="product-list" v-loading="loading">
     <!-- 搜索和批量删除按钮 -->
-    <BackstageSearch
-      @searchInput="searchInput"
-      @brand="searchBrand"
-      :inputValue="ivalue"
-      :multipleSelection="multipleSelection"
-      :flag="flag"
-    >
+    <BackstageSearch @searchInput="searchInput" @brand="searchBrand" :inputValue="ivalue"
+      :multipleSelection="multipleSelection" :flag="flag">
     </BackstageSearch>
     <!-- 表格 -->
-    <el-table
-      :data="tableData"
-      stripe
-      border
-      ref="multipleTable"
-      @selection-change="handleSelectionChange"
-    >
+    <el-table :data="tableData" stripe border ref="multipleTable" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50" />
       <el-table-column prop="pid" label="商品ID" width="100" />
-      <el-table-column
-        prop="categoryId"
-        label="品类"
-        width="100"
-        sortable
-        :formatter="formatCate"
-      />
-      <el-table-column
-        prop="brandId"
-        label="品牌"
-        width="100"
-        sortable
-        :formatter="formatBrand"
-      />
+      <el-table-column prop="categoryId" label="品类" width="100" sortable :formatter="formatCate" />
+      <el-table-column prop="brandId" label="品牌" width="100" sortable :formatter="formatBrand" />
       <el-table-column prop="mainImg" label="主图" width="105">
         <template slot-scope="scope">
-          <img
-            :src="scope.row.mainImg"
-            alt=""
-            style="width: 60px; height: 55px"
-          />
+          <img :src="scope.row.mainImg" alt="" style="width: 60px; height: 55px" />
         </template>
       </el-table-column>
       <el-table-column prop="title" label="名称" width="180" />
       <el-table-column prop="subTitle" label="简介" width="200" />
-      <el-table-column
-        prop="createTime"
-        label="轮播图"
-        width="120"
-        align="center"
-      >
+      <el-table-column prop="createTime" label="轮播图" width="120" align="center">
         <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.isCarousel"
-            :active-value="1"
-            :inactive-value="0"
-            @change="carouselChange(scope.$index)"
-          />
+          <el-switch v-model="scope.row.isCarousel" :active-value="1" :inactive-value="0"
+            @change="carouselChange(scope.$index)" />
         </template>
       </el-table-column>
-      <el-table-column
-        prop="createTime"
-        label="每日推荐"
-        width="120"
-        align="center"
-      >
+      <el-table-column prop="createTime" label="每日推荐" width="120" align="center">
         <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.isRecommend"
-            :active-value="1"
-            :inactive-value="0"
-          />
+          <el-switch v-model="scope.row.isRecommend" :active-value="1" :inactive-value="0" />
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="160" />
       <el-table-column label="操作" width="228" fixed="right">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="detail(scope.$index)"
-            >详情</el-button
-          >
-          <el-button type="success" size="mini" @click="update(scope.$index)"
-            >修改</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click="removeProduct(scope.$index)"
-            >删除</el-button
-          >
+          <el-button type="primary" size="mini" @click="detail(scope.$index)">详情</el-button>
+          <el-button type="success" size="mini" @click="update(scope.$index)">修改</el-button>
+          <el-button size="mini" type="danger" @click="removeProduct(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -112,11 +58,7 @@
               <el-input v-model="form.title"></el-input>
             </el-form-item>
             <el-form-item label="商品简介：">
-              <el-input
-                type="textarea"
-                :autosize="{ minRows: 1, maxRows: 2 }"
-                v-model="form.subTitle"
-              ></el-input>
+              <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 2 }" v-model="form.subTitle"></el-input>
             </el-form-item>
             <el-form-item label="创建时间：">
               <el-input v-model="form.createTime"></el-input>
@@ -125,28 +67,26 @@
         </el-tab-pane>
         <el-tab-pane label="商品图片" name="1">
           <el-image :src="form.mainImg"></el-image>
-          <el-upload
-            class="upload-demo"
-            action="#"
-            :http-request="upload"
-            :file-list="fileList"
-            list-type="picture"
-            :limit="1"
-          >
-            <el-button slot="trigger" size="small" type="primary"
-              >选取文件</el-button
-            >
+          <el-upload class="upload-demo" action="#" :http-request="upload" :file-list="fileList" list-type="picture"
+            :limit="1">
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
             <span slot="tip" class="el-upload__tip">
-              &nbsp; &nbsp; &nbsp; &nbsp;只能上传jpg/png文件<i
-                >(限制一张，如已选择图片，请务必删除后重新选择)</i
-              >
+              &nbsp; &nbsp; &nbsp; &nbsp;只能上传jpg/png文件<i>(限制一张，如已选择图片，请务必删除后重新选择)</i>
+            </span>
+          </el-upload>
+        </el-tab-pane>
+        <el-tab-pane label="轮播图" name="2">
+          <el-image :src="form.carouselImg"></el-image>
+          <el-upload class="upload-demo" action="#" :http-request="Cupload" :file-list="fileList" list-type="picture"
+            :limit="1">
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <span slot="tip" class="el-upload__tip">
+              &nbsp; &nbsp; &nbsp; &nbsp;只能上传jpg/png文件<i>(限制一张，如已选择图片，请务必删除后重新选择)</i>
             </span>
           </el-upload>
         </el-tab-pane>
       </el-tabs>
-      <el-button type="primary" class="p-update-btn" @click="updateInfo"
-        >确定修改</el-button
-      >
+      <el-button type="primary" class="p-update-btn" @click="updateInfo">确定修改</el-button>
     </el-dialog>
   </div>
 </template>
@@ -193,6 +133,7 @@ export default {
       categoryList: [],
       labelPosition: "right",
       oldImg: "",
+      oldCImg: "",
       // 上传图片的缩略图展示列表
       fileList: [],
       // 表单信息
@@ -207,6 +148,7 @@ export default {
         updateTime: "",
         isCarousel: "",
         isRecommend: "",
+        carouselImg: "",
       },
 
       multipleSelection: [],
@@ -247,6 +189,7 @@ export default {
     getProductList() {
       ProductgetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then(
         (res) => {
+          console.log(res);
           this.tableData = res.data.list;
           this.pageInfo.pageTotal = res.data.total;
           this.loading = false;
@@ -260,7 +203,7 @@ export default {
         this.brandList = res.data[0].productBrand;
       });
     },
-    sortSelect(brand) {},
+    sortSelect(brand) { },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
@@ -317,7 +260,7 @@ export default {
             type: "success",
           });
         })
-        .catch(() => {});
+        .catch(() => { });
     },
 
     // 修改按钮
@@ -327,10 +270,12 @@ export default {
       this.fileList = [];
       // 根据ID获取数据
       let pData = this.tableData[pid];
+      console.log(pData);
       this.form.categoryId = pData.categoryId;
       this.form.brandId = pData.brandId;
       this.form.pid = pData.pid;
       this.form.mainImg = pData.mainImg;
+      this.form.carouselImg = pData.carousel.carouselImg;
       this.form.title = pData.title;
       this.form.subTitle = pData.subTitle;
       this.form.createTime = pData.createTime;
@@ -347,6 +292,7 @@ export default {
         // 重置选项
         this.tabsIndex = "0";
         this.form.mainImg = this.oldImg;
+        this.form.carouselImg = this.oldCImg;
         ProductUpdate(this.form);
         this.$message({
           message: "修改成功",
@@ -413,6 +359,30 @@ export default {
         }
       );
     },
+
+    Cupload(res) {
+      if (!res.file) {
+        return;
+      }
+      // 1. 把图片上传到腾讯云COS
+      // 执行上传操作
+      cos.putObject(
+        {
+          Bucket: "leo-1310014300" /* 存储桶 */,
+          Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
+          Key: res.file.name /* 文件名 */,
+          StorageClass: "STANDARD", // 上传模式, 标准模式
+          Body: res.file, // 上传文件对象
+          onProgress: (progressData) => {
+            this.percentage = progressData.percent * 100;
+          },
+        },
+        (error, data) => {
+          this.oldCImg = "http://" + data.Location;
+
+        }
+      );
+    },
     // 搜索商品编号
     searchInput(val) {
       this.loading = true;
@@ -458,14 +428,17 @@ export default {
 .product-list /deep/ .el-table thead {
   color: gray;
 }
+
 .product-list {
   padding: 20px;
 }
+
 .product-list /deep/ .el-table--border::after,
 .product-list /deep/ .el-table--group::after,
 .product-list /deep/ .el-table::before {
   z-index: 0;
 }
+
 .product-list /deep/.el-form {
   position: relative;
   top: 30px;
@@ -474,14 +447,17 @@ export default {
   height: 351px;
   margin: auto;
 }
+
 .product-list /deep/.el-icon-circle-close:hover {
   color: #f56c6c;
 }
-.product-list /deep/.el-tabs__nav-scroll {
-}
+
+.product-list /deep/.el-tabs__nav-scroll {}
+
 .product-list /deep/.el-tabs--left .el-tabs__nav-wrap.is-left::after {
   height: 0px;
 }
+
 .product-list /deep/.el-tabs {
   height: 80% !important;
   position: relative;
@@ -496,29 +472,35 @@ export default {
   border: 1px solid #eee;
   border-radius: 5px;
 }
+
 .product-list /deep/.el-form {
   margin-top: -30px;
 }
+
 .product-list /deep/.upload-demo {
   padding: 40px 50px 0px 50px;
 }
+
 .p-update-btn {
   width: 180px;
   position: relative;
   left: 250px;
   top: 20px;
 }
+
 .product-page {
   margin-top: 10px;
   display: flex;
   justify-content: center;
 }
+
 .product-list /deep/ .el-dialog {
   margin-top: 5vh !important;
   height: 500px;
   width: 50%;
   border-radius: 5px;
 }
+
 .product-list /deep/ .upload-demo {
   width: 500px;
   height: 145px;

@@ -2,24 +2,23 @@
   <div class="info">
     <div class="wrap">
       <div class="info-left">
-        <div class="swiper-container">
+        <!-- v-for="item in productData.productImage" :key="item.imgid" -->
+        <div class="swiper">
           <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <p>内容</p>
+            <div class="swiper-slide" v-for="item in carouselList" :key="item.imgid">
+              <img :src="item.url">
             </div>
-            <div class="swiper-slide">
-              <p>内容</p>
-            </div>
-            <div class="swiper-slide">
-              <p>内容</p>
-            </div>
+
           </div>
           <!-- 如果需要分页器 -->
-          <div class="swiper-pagination"></div>
+          <div class="swiper-pagination" v-if="carouselList.length != 1"></div>
 
           <!-- 如果需要导航按钮 -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
+          <div v-if="carouselList.length != 1">
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+          </div>
+
         </div>
       </div>
       <div class="info-right">
@@ -40,13 +39,8 @@
           <div class="colors">
             <h2>选择颜色</h2>
             <ul>
-              <li
-                v-for="(item, index) in colorList"
-                :key="index"
-                @click="colorIndex(index)"
-                :class="{ active: current == index }"
-                ref="color"
-              >
+              <li v-for="(item, index) in colorList" :key="index" @click="colorIndex(index)"
+                :class="{ active: current == index }" ref="color">
                 {{ item }}
               </li>
             </ul>
@@ -54,33 +48,22 @@
           <div class="versions">
             <h2>选择版本</h2>
             <ul>
-              <li
-                v-for="(item, index) in versionList"
-                :key="index"
-                @click="versionIndex(index)"
-                :class="{ active: current1 == index }"
-                ref="version"
-              >
+              <li v-for="(item, index) in versionList" :key="index" @click="versionIndex(index)"
+                :class="{ active: current1 == index }" ref="version">
                 {{ item }}
               </li>
             </ul>
           </div>
           <div class="number">
             <h2>数量</h2>
-            <el-input-number
-              v-model="cartInfo.productNumber"
-              @change="numberChange"
-              :min="1"
-              :max="10"
-            ></el-input-number>
+            <el-input-number v-model="cartInfo.productNumber" @change="numberChange" :min="1" :max="10">
+            </el-input-number>
           </div>
         </div>
         <div class="bottom">
           <div class="total">
-            <span
-              >{{ productData.title }} {{ params2.pmVersion }}
-              {{ params1.pmColor }}</span
-            >
+            <span>{{ productData.title }} {{ params2.pmVersion }}
+              {{ params1.pmColor }}</span>
             <span>{{ total }}元</span>
             <h1>总计：{{ allTotal }}元</h1>
           </div>
@@ -93,8 +76,7 @@
 
 <script>
 import Swiper from "swiper"; // 注意引入的是Swiper
-import "swiper/css/swiper.min.css"; // 注意这里的引入
-import { ProductGetPrice, ProductGetCV, CartInsert } from "../../api/index";
+import { ProductGetPrice, ProductDetail, ProductGetCV, CartInsert } from "../../api/index";
 export default {
   name: "ProductInfo",
   data() {
@@ -131,9 +113,32 @@ export default {
         isChecked: "0",
         total: "",
       },
+      carouselList: [],
     };
   },
   watch: {
+    carouselList: {
+      handler(newValue, oldValue) {
+        this.$nextTick(() => {
+          var mySwiper = new Swiper('.swiper', {
+
+            loop: true, // 循环模式选项
+
+            // 如果需要分页器
+            pagination: {
+              el: '.swiper-pagination',
+            },
+
+            // 如果需要前进后退按钮
+            navigation: {
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
+            },
+            // effect: 'fade',
+          })
+        })
+      },
+    },
     selected: {
       handler(newValue, oldValue) {
         let str = newValue.join(" ");
@@ -207,26 +212,20 @@ export default {
   created() {
     this.getDetail();
     this.getCV();
+    this.getCarousel();
   },
-  beforeDestroy() {
-    localStorage.removeItem("info");
-  },
+  // beforeDestroy() {
+  //   localStorage.removeItem("info");
+  // },
   mounted() {
-    var mySwiper = new Swiper(".swiper-container", {
-      loop: true, // 循环模式选项
-      // 如果需要分页器
-      pagination: {
-        el: ".swiper-pagination",
-      },
-      // 如果需要前进后退按钮
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-      effect: "fade",
-    });
   },
   methods: {
+    getCarousel() {
+      ProductDetail(this.productData.pid).then(res => {
+        console.log(res);
+        this.carouselList = res.data[0].productImage;
+      })
+    },
     addToCart() {
       this.cartInfo.pid = this.productData.pid;
       //{{ productData.title }} {{ params2.pmVersion }}
@@ -267,6 +266,7 @@ export default {
       this.productData = info;
       this.params1.productId = this.productData.pid;
       this.params2.productId = this.productData.pid;
+      console.log(this.productData);
     },
     colorIndex(val) {
       // console.log(this.$refs.color[val].innerText);
@@ -292,59 +292,75 @@ export default {
   width: 100%;
   background-color: #fff;
 }
+
 .wrap {
   width: 1200px;
   margin: 0 auto;
   display: flex;
   padding-top: 20px;
 }
+
 .info-left {
-  flex: 4;
+  flex: 4.5;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
 }
+
 .info-right {
-  flex: 6;
+  flex: 5.5;
   display: grid;
   grid-template-rows: 130px 1fr 100px;
-  margin-left: 10px;
+  margin-left: 50px;
 }
+
 .top {
   border-bottom: 1px solid #ccc;
 }
+
 .top h1 {
   font-weight: 500;
 }
+
 .sub-title {
   color: #757575;
   margin: 10px 0;
 }
+
 .price {
   font-size: 18px;
   color: #be0f2d;
 }
+
 .address {
   background-color: #eee;
   line-height: 80px;
   padding: 0 20px;
 }
+
 .address a {
   color: #be0f2d;
 }
+
 .colors,
 .versions,
 .number {
   margin-top: 20px;
 }
+
 .colors h2,
 .versions h2,
 .number h2 {
   font-weight: 500;
   margin: 15px 0;
 }
+
 .colors ul,
 .versions ul {
   display: flex;
   margin: 15px 0px;
 }
+
 .colors li,
 .versions li {
   padding: 10px 50px;
@@ -353,16 +369,19 @@ export default {
   margin-right: 10px;
   cursor: pointer;
 }
+
 .colors li:hover,
 .versions li:hover {
   border: 1px solid #be0f2d;
   color: #be0f2d;
   transition: 0.3s;
 }
+
 .active {
   border: 1px solid #be0f2d !important;
   color: #be0f2d;
 }
+
 .bottom {
   margin-top: 20px;
 }
@@ -372,17 +391,21 @@ export default {
   line-height: 40px;
   padding: 10px 30px;
 }
+
 .total span :first-child {
   float: left;
 }
+
 .total :nth-child(2) {
   float: right;
 }
+
 .total h1 {
   font-weight: 500;
   color: #be0f2d;
   font-size: 24px;
 }
+
 .cart {
   border: none;
   outline: none;
@@ -394,13 +417,47 @@ export default {
   cursor: pointer;
 }
 
-.swiper-container {
-  width: 500px;
-  height: 400px;
+.swiper {
+  width: 100%;
+  position: relative;
 }
+
 .swiper-slide {
-  text-align: center;
-  line-height: 400px;
-  color: #b0b0b0;
+  width: 100% !important;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  color: #e3e3e3;
+  font-size: 30px;
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background-color: rgba(120, 116, 116, 0.4);
+  transition: .2s;
+}
+
+.swiper-button-prev {
+  left: 0px;
+
+}
+
+.swiper-button-next {
+  right: 0px;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-position: center;
+}
+
+.info /deep/.swiper-pagination-bullet {
+  background-color: gray !important;
+  width: 20px;
+  height: 3px;
+  border-radius: 0px;
 }
 </style>
