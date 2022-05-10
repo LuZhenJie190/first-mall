@@ -44,10 +44,12 @@ export default {
 .mobilephone {
   background-color: #f5f5f5;
 }
+
 .wrap {
   max-width: 1200px;
   margin: 0 auto;
 }
+
 .bread {
   padding: 15px 0px;
 }
@@ -55,6 +57,7 @@ export default {
 .el-breadcrumb {
   padding-top: 50px;
 }
+
 .m-tabs {
   display: grid;
   grid-template-rows: 120px auto;
@@ -63,6 +66,7 @@ export default {
   /* padding: 15px; */
   align-items: center;
 }
+
 .m-title {
   background-color: #fff;
   border-radius: 5px;

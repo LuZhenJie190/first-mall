@@ -4,44 +4,21 @@
       <!-- 搜索 -->
       <div class="list-search">
         <el-input :placeholder="inputValue" v-model="search" clearable>
-          <el-button
-            slot="append"
-            icon="el-icon-search"
-            @click="searchInfo"
-          ></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="searchInfo"></el-button>
         </el-input>
       </div>
       <!-- 筛选 -->
       <div class="screen">
         <!-- 分类 -->
         <p>筛选:</p>
-        <el-select
-          v-model="cateValue"
-          placeholder="请选择类型"
-          @change="cateChange(cateValue)"
-          clearable
-        >
-          <el-option
-            v-for="item in cateOptions"
-            :key="item.categoryId"
-            :label="item.categoryName"
-            :value="item.categoryId"
-          >
+        <el-select v-model="cateValue" placeholder="请选择类型" @change="cateChange(cateValue)" clearable>
+          <el-option v-for="item in cateOptions" :key="item.categoryId" :label="item.categoryName"
+            :value="item.categoryId">
           </el-option>
           <!-- 品牌 -->
         </el-select>
-        <el-select
-          v-model="brandValue"
-          placeholder="请选择品牌"
-          @change="brandChange(brandValue)"
-          clearable
-        >
-          <el-option
-            v-for="item in brandOptions"
-            :key="item.brandId"
-            :label="item.brandName"
-            :value="item.brandId"
-          >
+        <el-select v-model="brandValue" placeholder="请选择品牌" @change="brandChange(brandValue)" clearable>
+          <el-option v-for="item in brandOptions" :key="item.brandId" :label="item.brandName" :value="item.brandId">
           </el-option>
         </el-select>
       </div>
@@ -59,6 +36,7 @@ import {
   ProductDatchDelete,
   ProductCategory,
   ProductBrandGetByCate,
+  OrderBatchDelete
 } from "../../api/index";
 export default {
   inject: ["reload"],
@@ -69,6 +47,7 @@ export default {
       search: "",
       uidList: [],
       pidList: [],
+      oidList: [],
       cateOptions: [],
       brandOptions: [],
       cateValue: "",
@@ -86,8 +65,11 @@ export default {
       this.multipleSelection.forEach((element) => {
         let uuId = element.uId;
         let ppId = element.pid;
+        let ooId = element.orderId;
         this.uidList.push(uuId);
         this.pidList.push(ppId);
+        this.oidList.push(ooId);
+
       });
       this.$confirm("是否删除选中?", "提示", {
         confirmButtonText: "确定",
@@ -116,11 +98,21 @@ export default {
               }
             });
           }
+          if (this.flag == 3) {
+            ProductDatchDelete(this.oidList).then((res) => {
+              if (res.code == 200) {
+                this.$message({
+                  message: `成功删除${this.pidList.length}件订单`,
+                  type: "success",
+                });
+              }
+            });
+          }
 
           // 重新获取数据
           this.reload();
         })
-        .catch(() => {});
+        .catch(() => { });
     },
     // 获取分类
     getCategory() {
@@ -148,6 +140,7 @@ export default {
   border: 1px solid #dcdfe6;
   border-left: none;
 }
+
 .backstage-search {
   width: 100%;
   height: 50px;
@@ -155,6 +148,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+
 .screen {
   margin-left: -150px;
   width: 600px;
@@ -162,6 +156,7 @@ export default {
   align-items: center;
   margin-top: -10px;
 }
+
 .screen p,
 .screen .el-select {
   margin-right: 5px;

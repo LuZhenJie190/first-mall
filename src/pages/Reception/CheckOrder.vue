@@ -134,7 +134,7 @@ export default {
       orderInfo: {
         orderId: "",
         userId: localStorage.getItem("uid"),
-        payWay: 0,
+        payWay: "",
         payStatus: 0,
         orderTime: "",
         userName: "",
@@ -197,13 +197,12 @@ export default {
             this.modelShow1 = false;
           })
         } else {
-          console.log('error submit!!');
+
           return false;
         }
       });
 
 
-      console.log(this.addForm);
 
     },
     payment() {
@@ -239,6 +238,7 @@ export default {
             });
           })
           .catch(() => {
+            this.orderInfo.payWay = null;
             OrderInsert(this.orderInfo).then((res) => {
               console.log(res);
               this.$router.replace({ path: "/PersonalMenu/MainOrder" });

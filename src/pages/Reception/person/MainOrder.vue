@@ -10,7 +10,7 @@
         </ul>
       </div>
       <div class="right">
-        <input type="text" placeholder="请输入商品名称/订单号" v-model="search" />
+        <input type="text" placeholder="请输入手机号" v-model="search" />
         <button @click="searchOrder"><i class="el-icon-search"></i></button>
       </div>
     </div>

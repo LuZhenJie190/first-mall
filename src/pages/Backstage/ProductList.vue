@@ -7,7 +7,7 @@
     <!-- 表格 -->
     <el-table :data="tableData" stripe border ref="multipleTable" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50" />
-      <el-table-column prop="pid" label="商品ID" width="100" />
+      <el-table-column prop="pid" label="商品ID" width="100" sortable />
       <el-table-column prop="categoryId" label="品类" width="100" sortable :formatter="formatCate" />
       <el-table-column prop="brandId" label="品牌" width="100" sortable :formatter="formatBrand" />
       <el-table-column prop="mainImg" label="主图" width="105">
@@ -20,7 +20,7 @@
       <el-table-column prop="createTime" label="轮播图" width="120" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.isCarousel" :active-value="1" :inactive-value="0"
-            @change="carouselChange(scope.$index)" />
+            @change="carouselChange(scope.$index, scope.row)" :disabled="scope.row.carousel.carouselImg == null" />
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="每日推荐" width="120" align="center">
@@ -102,6 +102,7 @@ import {
   ProductGetTitle,
   ProductBrand,
   ProductGetByBrand,
+  ProductGetInfoByTitle
 } from "../../api/index.js";
 
 const COS = require("cos-js-sdk-v5");
@@ -120,7 +121,7 @@ export default {
     return {
       flag: "2",
       tabsIndex: "0",
-      ivalue: "请输入商品编码",
+      ivalue: "请输入商品名称",
       search: "",
       pageInfo: {
         pageNum: 1,
@@ -325,13 +326,20 @@ export default {
       if (row.brandId == 401) return "sss";
     },
 
-    carouselChange(val) {
-      ProductUpdate(this.tableData[val]).then((res) => {
-        if (res.code == 200) {
-          this.getProductList();
-        }
-      });
+    // 设置轮播图
+    carouselChange(val, data) {
+      if (data.carousel.carouselImg === null) {
+        this.$alert("请先到修改中添加轮播图")
+      } else {
+        ProductUpdate(this.tableData[val]).then((res) => {
+          if (res.code == 200) {
+            this.getProductList();
+          }
+        });
+      }
+
     },
+    // 设置推荐
     recommendChange(val) {
       console.log(val);
     },
@@ -383,12 +391,13 @@ export default {
         }
       );
     },
-    // 搜索商品编号
+    // 搜索商品
     searchInput(val) {
       this.loading = true;
       this.search = val;
+      console.log(val);
       if (this.search != "") {
-        ProductGetTitle(this.search).then((res) => {
+        ProductGetInfoByTitle(this.search).then((res) => {
           this.tableData = res.data.list;
           this.pageInfo.pageTotal = res.data.total;
           this.loading = false;

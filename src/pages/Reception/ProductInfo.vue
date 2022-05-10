@@ -134,7 +134,10 @@ export default {
               nextEl: '.swiper-button-next',
               prevEl: '.swiper-button-prev',
             },
-            // effect: 'fade',
+            effect: 'fade',
+            fadeEffect: {
+              crossFade: true,
+            }
           })
         })
       },
@@ -301,7 +304,7 @@ export default {
 }
 
 .info-left {
-  flex: 4.5;
+  flex: 4.8;
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -310,7 +313,7 @@ export default {
 .info-right {
   flex: 5.5;
   display: grid;
-  grid-template-rows: 130px 1fr 100px;
+  grid-template-rows: auto 1fr 100px;
   margin-left: 50px;
 }
 
@@ -320,6 +323,7 @@ export default {
 
 .top h1 {
   font-weight: 500;
+
 }
 
 .sub-title {
@@ -330,6 +334,7 @@ export default {
 .price {
   font-size: 18px;
   color: #be0f2d;
+  padding: 10px 0;
 }
 
 .address {

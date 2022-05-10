@@ -42,14 +42,16 @@ export default {
   watch: {
     products: {
       handler(newValue, oldValue) {
+        this.products.forEach(element => {
+          return element.product.reverse();
+        });
         this.phoneData = this.products;
-        // console.log(this.phoneData);
+
       },
     },
   },
   methods: {
     goDetail(index) {
-      // console.log(this.phoneData[this.activeName].product[index]);
       this.$router.push({
         name: "productinfo",
         params: {

@@ -11,9 +11,7 @@
           <template slot="pTitle">
             <h1>手机</h1>
           </template>
-          <template slot="pImage">
-            <img src="../../assets/login_bg.jpg" />
-          </template>
+
         </ProductShow>
         <ProductShow :products="notebookData">
           <template slot="pTitle">
@@ -113,8 +111,11 @@ export default {
     ProductgetAll(1, 1000).then((res) => {
       console.log("index", res);
       res.data.list.forEach((element) => {
+
         if (element.isCarousel) {
+
           this.carouselData.push(element);
+          console.log("element", this.carouselData);
         }
         if (element.isRecommend) {
           this.recommendData.push(element);
@@ -129,24 +130,45 @@ export default {
         console.log("pc", res);
         let array1 = [];
         let array2 = [];
+        let array3 = [];
+
+        let phoneList = [];
+        let nbList = [];
 
         res.data.forEach(e => {
-          array1 = e.productBrand;
+          array1.push(e.productBrand);
         })
 
-        array1.forEach(e => {
-          // console.log(e.product);
+        phoneList = array1[0];
+        nbList = array1[1];
+
+
+        phoneList.forEach(e => {
           e.product.forEach(ee => {
-            array2.push(ee)
+            array2.push(ee);
           })
         })
 
+
+        nbList.forEach(e => {
+          e.product.forEach(ee => {
+            array3.push(ee);
+          })
+        })
+
+        console.log("css", array2);
+        array2.reverse();
         this.phoneData = array2.filter(e => {
           if (e.categoryId == 1001) {
             return e;
           }
         })
-        console.log("css", this.phoneData);
+        this.notebookData = array3.filter(e => {
+          if (e.categoryId == 1002) {
+            return e;
+          }
+        })
+
 
 
 
@@ -168,6 +190,12 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  font-weight: 500;
+  font-size: 24px;
+  color: #757575;
+}
+
 .wrap {
   max-width: 1200px;
   margin: 0 auto;

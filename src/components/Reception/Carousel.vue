@@ -1,8 +1,8 @@
 <template>
   <div class="carousel">
     <el-carousel class="carousel-main">
-      <el-carousel-item class="carousel-item" v-for="(item, index) in carouselData.slice(0, 4)" :key="index">
-        <img class="carousel-img" :src="item.carousel.carouselImg" />
+      <el-carousel-item class="carousel-item" v-for="(item, index) in carouselData.slice(0, 8)" :key="index">
+        <img class="carousel-img" :src="item.carousel.carouselImg" @click="goDetail(item)" />
       </el-carousel-item>
     </el-carousel>
   </div>
@@ -19,6 +19,16 @@ export default {
   created() {
     console.log(this.carouselData);
   },
+  methods: {
+    goDetail(data) {
+      this.$router.push({
+        name: "productinfo",
+        params: {
+          details: data,
+        },
+      });
+    },
+  }
 };
 </script>
 
@@ -92,6 +102,8 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  cursor: pointer;
+
 }
 
 .el-carousel__button {

@@ -107,6 +107,13 @@ export const ProductGetInfoById = (pid) => requests({
   method: 'GET'
 });
 
+
+// ID查商品
+export const ProductGetInfoByTitle = (title) => requests({
+  url: (`product/getAllProduct?title=${title}`),
+  method: 'GET'
+});
+
 // 商品详情
 export const ProductDetail = (pid) => requests({
   url: `product/getDetailById?pid=${pid}`,
@@ -243,7 +250,7 @@ export const CartDelete = (cid) => requests({
   method: 'DELETE',
 });
 
-// 购物车删除
+// 购物车批量删除
 export const CartDatchDelete = (params) => requests({
   method: 'DELETE',
   url: `shoppingCart/batchDelete/${params}`,
@@ -253,8 +260,8 @@ export const CartDatchDelete = (params) => requests({
 // 订单
 // 全部订单
 
-export const OrderGetAll = () => requests({
-  url: (`order/getAll`),
+export const OrderGetAll = (pageNum, pageSize) => requests({
+  url: (`order/getAll?pageNum=${pageNum}&&pageSize=${pageSize}`),
   method: 'GET',
 });
 
@@ -267,6 +274,12 @@ export const OrderGetParams = (userId) => requests({
 // 手机号查询订单
 export const OrderGetParamsByPhone = (userPhone) => requests({
   url: (`order/getParams?userPhone=${userPhone}`),
+  method: 'GET',
+});
+
+// 用户名查询订单
+export const OrderGetParamsByName = (userName) => requests({
+  url: (`order/getParams?userName=${userName}`),
   method: 'GET',
 });
 
@@ -290,6 +303,11 @@ export const OrderDelete = (oid) => requests({
   method: 'DELETE',
 });
 
+//订单批量删除
+export const OrderBatchDelete = (params) => requests({
+  method: 'DELETE',
+  url: `order/batchDelete/${params}`,
+});
 
 // 参数批量添加
 export const OrderParamsInsertBatch = (params) => requests({

@@ -208,7 +208,7 @@ export default {
 .navmenu {
   width: 100%;
   height: 70px;
-  background-color: rgba(255, 255, 255, 80%);
+  background-color: rgba(255, 255, 255, 0.7);
   z-index: 999;
   box-shadow: 0px 0px 10px #ccc;
   position: relative;
@@ -226,7 +226,7 @@ export default {
 .el-menu.el-menu--horizontal a,
 .right a {
   font-weight: 600;
-  color: gray;
+  color: #757575;
 }
 
 .el-menu.el-menu--horizontal a:hover {

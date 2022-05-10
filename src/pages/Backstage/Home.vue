@@ -116,8 +116,9 @@ export default {
       })
     },
     getOrder() {
-      OrderGetAll().then(res => {
-        this.oTotal = res.length;
+      OrderGetAll(this.pageN, this.pageS).then(res => {
+        console.log(res);
+        this.oTotal = res.data.total;
         this.cards[2].num = this.oTotal
       })
     },
@@ -229,7 +230,7 @@ export default {
 }
 
 .h-cards-right p {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
   color: #757575;
 }

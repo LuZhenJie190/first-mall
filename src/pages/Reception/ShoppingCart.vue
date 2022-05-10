@@ -37,7 +37,7 @@
         </el-table>
       </div>
       <el-empty class="empty" description="您的购物车还是空的！" v-show="tableData.length == 0">
-        <button class="btn-pay" style="height: 60px" @click="goShopping">
+        <button class="btn-pay" style="height: 60px" @click="goShoppingIndex">
           马上去购物
         </button>
       </el-empty>
@@ -145,7 +145,11 @@ export default {
     goShopping() {
       this.$router.back();
     },
-
+    goShoppingIndex() {
+      this.$router.push({
+        path: "/Index",
+      });
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
