@@ -46,29 +46,28 @@
                   <i class="el-icon-notebook-2"></i>
                   <span slot="title">商品列表</span></el-menu-item
                 >
-                <el-menu-item index="/BackendSystem/ProductSet">
-                  <i class="el-icon-setting"></i>
-                  <span slot="title">商品设置</span></el-menu-item
-                >
-
                 <el-menu-item index="/BackendSystem/ProductAdd">
                   <i class="el-icon-sell"></i>
                   <span slot="title">商品发布</span></el-menu-item
                 >
-                <el-menu-item index="/BackendSystem/ProductCategory">
-                  <i class="el-icon-menu"></i>
-                  <span slot="title">商品分类</span>
-                </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-menu-item index="/BackendSystem/OrderManagement">
               <i class="el-icon-tickets"></i>
               <span slot="title">订单管理</span>
             </el-menu-item>
+            
+              <el-menu-item index="/BackendSystem/CartManagement">
+              <i class="el-icon-shopping-cart-1"></i>
+              <span slot="title">购物车管理</span>
+            </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main>
-          <router-view />
+          <keep-alive>
+             <router-view />
+          </keep-alive>
+         
         </el-main>
       </el-container>
     </el-container>

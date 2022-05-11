@@ -17,7 +17,7 @@ export default {
     };
   },
   created() {
-    console.log(this.carouselData);
+
   },
   methods: {
     goDetail(data) {
@@ -35,10 +35,9 @@ export default {
 <style scoped>
 .carousel {
   height: 100vh;
-  width: 99.8vw;
+  width: 100%;
   position: relative;
   top: -10px;
-  left: -180px;
 }
 
 .carousel /deep/ .el-carousel__container {

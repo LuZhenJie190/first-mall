@@ -34,16 +34,10 @@
       </el-table-column>
       <el-table-column prop="payWay" label="支付方式" width="150" :formatter="payType">
       </el-table-column>
-      <el-table-column label="操作" width="80" fixed="right" align="center">
-        <template slot-scope="scope">
-          <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="orderRemoveBtn(scope.$index)">
-          </el-button>
-        </template>
-      </el-table-column>
     </el-table>
 
     <!-- 修改模态框 -->
-    <div class="o-model-update" v-show="modelShow">
+    <!-- <div class="o-model-update" v-show="modelShow">
       <div class="o-model-bg"></div>
       <div class="o-model-context">
         <i class="el-icon-circle-close" @click="mShow"></i>
@@ -60,12 +54,10 @@
                 <el-input v-model="form.otime"></el-input>
               </el-form-item>
               <el-form-item label="支付类型：">
-                <!-- <el-input v-model="form.otype"></el-input> -->
                 <el-radio v-model="form.otype" :label="0">微信</el-radio>
                 <el-radio v-model="form.otype" :label="1">支付宝</el-radio>
               </el-form-item>
               <el-form-item label="支付状态：">
-                <!-- <el-input v-model="form.ostatus"></el-input> -->
                 <el-radio v-model="form.ostatus" :label="0">未支付</el-radio>
                 <el-radio v-model="form.ostatus" :label="1">已支付</el-radio>
               </el-form-item>
@@ -100,18 +92,14 @@
         </el-tabs>
         <el-button class="o-add" type="primary" @click="updateInfo()">点击修改</el-button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import { MessageBox } from "element-ui";
 import {
   OrderGetAll,
-  OrderFindById,
   OrderFindByPhone,
-  OrderUpdate,
-  OrderRemove,
   OrderGetParamsByPhone,
   OrderGetParamsByName
 } from "../../api/index";
@@ -123,30 +111,8 @@ export default {
     return {
       abPosition: "left",
       labelPosition: "left",
-      modelShow: false,
       searchTip: "请输入手机号",
       search: "",
-      pageShow: true,
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 5,
-        pageTotal: 0,
-        pageShow: true,
-      },
-      form: {
-        oid: "",
-        osn: "",
-        oprice: "",
-        otime: "",
-        otype: 0,
-        ostatus: 0,
-        pcore: "",
-        pname: "",
-        pnumber: "",
-        ouname: "",
-        ophone: "",
-        oaddress: "",
-      },
       tableData: [],
       inputValue: "请输入手机号/姓名",
       multipleSelection: "",
@@ -163,102 +129,6 @@ export default {
       OrderGetAll(1, 1000).then((res) => {
         this.tableData = res.data.list;
       });
-    },
-    mShow() {
-      this.modelShow = false;
-    },
-    // 点击修改按钮获取数据
-    orderUpdateBtn(oid) {
-      this.modelShow = true;
-      let index = oid;
-      let orderIndex = this.tableData[index].oid;
-      OrderFindById(orderIndex).then((res) => {
-        // let {osn,oprice,otime,opaytype,ostatus,pcore,pname,pnumber,ouname,ophone,oaddress}=this.form;
-        this.form.oid = res[0].oid;
-        this.form.osn = res[0].osn;
-        this.form.oprice = res[0].oprice;
-        this.form.otime = res[0].oTime;
-        this.form.otype = res[0].opaytype;
-        this.form.ostatus = res[0].ostatus;
-        this.form.pcore = res[0].opcore;
-        this.form.pname = res[0].opname;
-        this.form.pnumber = res[0].opnumber;
-        this.form.ouname = res[0].ouname;
-        this.form.ophone = res[0].ophone;
-        this.form.oaddress = res[0].oaddress;
-      });
-    },
-    // 确认修改更新数据
-    updateInfo() {
-      let {
-        oid,
-        osn,
-        oprice,
-        otime,
-        otype,
-        ostatus,
-        pcore,
-        pname,
-        pnumber,
-        ouname,
-        ophone,
-        oaddress,
-      } = this.form;
-      if (
-        osn == "" ||
-        oprice == "" ||
-        otime == "" ||
-        otype == null ||
-        ostatus == null ||
-        pcore == "" ||
-        pname == "" ||
-        pnumber == "" ||
-        ouname == "" ||
-        ophone == "" ||
-        oaddress == ""
-      ) {
-        MessageBox.alert("不能为空");
-      } else {
-        OrderUpdate(
-          oid,
-          osn,
-          pcore,
-          pname,
-          pnumber,
-          oprice,
-          otime,
-          ouname,
-          ophone,
-          oaddress,
-          otype,
-          ostatus
-        );
-        MessageBox.alert("修改成功");
-        setTimeout(() => {
-          this.getOrderList();
-        }, 300);
-        this.modelShow = false;
-      }
-    },
-    // 删除按钮
-    orderRemoveBtn(oid) {
-      let index = oid;
-      let orderIndex = this.tableData[index].oid;
-      MessageBox.confirm("此操作将永久删除此商品, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          // 删除操作
-          OrderRemove(orderIndex);
-          MessageBox.alert("删除成功");
-          // 重新获取数据
-          this.timer = setTimeout(() => {
-            this.getOrderList();
-          }, 500);
-        })
-        .catch(() => { });
     },
     // 手机号码搜索,接收子组件传过来的数据
     searchInput(val) {
@@ -284,6 +154,7 @@ export default {
       if (row.payWay == 0) return "微信"
       if (row.payWay == 1) return "支付宝"
     },
+    // 多选
     handleSelectionChange(val) {
       this.multipleSelection = val;
       console.log(this.multipleSelection);

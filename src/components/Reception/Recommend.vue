@@ -79,9 +79,9 @@ export default {
 }
 
 .recommend {
-  width: 100%;
+  width: 1200px;
+  margin: 30px auto;
   height: 300px;
-  margin-top: 30px;
   overflow: hidden;
 }
 

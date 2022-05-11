@@ -244,6 +244,12 @@ export const CartById = (userId) => requests({
   method: 'GET',
 });
 
+// 购物车查询全部
+export const CartGetALL = () => requests({
+  url: (`shoppingCart/CartById`),
+  method: 'GET',
+});
+
 // 购物车删除
 export const CartDelete = (cid) => requests({
   url: (`shoppingCart/deleteById?cid=${cid}`),

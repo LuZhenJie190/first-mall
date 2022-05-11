@@ -5,9 +5,7 @@
       <span class="now-time">北京时间 : {{ nowTime }}</span>
       <span class="quit">
         <p>管理员：{{ name }}</p>
-        <el-button type="primary" plain size="mini" @click="backTo"
-          >退出</el-button
-        >
+        <el-button type="primary" plain size="mini" @click="backTo">退出</el-button>
       </span>
     </div>
   </div>
@@ -20,7 +18,7 @@ export default {
   data() {
     return {
       nowTime: "",
-      name: localStorage.getItem("uname"),
+      name: localStorage.getItem("rootName"),
     };
   },
   created() {
@@ -38,8 +36,9 @@ export default {
     },
     backTo() {
       this.$router.push({
-        path: "/Index",
+        path: "/BackLogin",
       });
+      localStorage.clear();
     },
   },
 };
@@ -50,17 +49,21 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+
 .sys-header h1 {
   padding: 15px 0px 10px 0px;
 }
+
 .now-time {
   width: 250px;
   line-height: 60px;
 }
+
 .quit {
   display: flex;
   align-items: center;
 }
+
 .quit p {
   margin-right: 15px;
 }

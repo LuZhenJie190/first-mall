@@ -6,6 +6,7 @@
       :inputValue="uvalue"
       :multipleSelection="multipleSelection"
       :flag="flag"
+      class="search"
     />
     <el-table
       :data="tableData"
@@ -17,16 +18,16 @@
     >
       <el-table-column type="selection" width="50" />
       <el-table-column prop="uId" label="ID" width="80" fixed="left" />
-      <el-table-column prop="userIdentity" label="身份" width="120" />
+      <el-table-column prop="userIdentity" sortable label="身份" width="120" :formatter="identity"/>
       <el-table-column prop="userName" label="用户名" width="150" />
       <el-table-column prop="userPwd" label="密码" width="160" />
-      <el-table-column prop="userSex" label="性别" width="100" />
+      <el-table-column prop="userSex" label="性别" width="100" :formatter="sex" />
       <el-table-column prop="userEmail" label="邮箱" width="180" />
       <el-table-column prop="userPhone" label="手机号" width="170" />
       <el-table-column prop="uCreateTime" label="注册时间" width="180" />
-      <el-table-column label="操作" width="150" fixed="right">
+      <el-table-column label="操作" width="180" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" @click="update(scope.$index)">修改</el-button>
+          <el-button type="success" size="mini" @click="update(scope.$index)">修改</el-button>
           <el-button
             size="mini"
             type="danger"
@@ -173,7 +174,6 @@ export default {
       UsergetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then((res) => {
         this.tableData = res.data.list;
         this.pageInfo.pageTotal = res.data.total;
-        this.reName();
       });
     },
     toggleSelection(rows) {
@@ -197,25 +197,22 @@ export default {
       }
       UsergetAll(val, this.pageInfo.pageSize).then((res) => {
         this.tableData = res.data.list;
-        this.reName();
+      
       });
     },
 
     //重命名
-    reName() {
-      this.tableData.filter((e) => {
-        if (e.userIdentity == 0) {
-          e.userIdentity = "普通用户";
-        } else {
-          e.userIdentity = "管理员";
-        }
-        if (e.userSex == 0) {
-          e.userSex = "女";
-        } else {
-          e.userSex = "男";
-        }
-      });
+    identity(row,column){
+      if(row.userIdentity == 0) return"普通用户"
+      if(row.userIdentity == 1) return"管理员"
+
     },
+    sex(row,column){
+      if(row.userSex == 0) return"女"
+      if(row.userSex == 1) return"男"
+
+    },
+
 
     //删除行
     removeList(uid) {
@@ -356,5 +353,8 @@ export default {
 }
 .add {
   margin-left: 70px;
+}
+.search /deep/ .screen{
+  display: none;
 }
 </style>

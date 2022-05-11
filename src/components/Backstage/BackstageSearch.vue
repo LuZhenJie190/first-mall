@@ -24,7 +24,7 @@
       </div>
       <!-- 批量删除 -->
       <div class="list-delete">
-        <el-button type="danger" @click="datchDelete">批量删除</el-button>
+        <el-button type="danger" @click="datchDelete" :disabled="multipleSelection == ''">批量删除</el-button>
       </div>
     </div>
   </div>
@@ -36,7 +36,8 @@ import {
   ProductDatchDelete,
   ProductCategory,
   ProductBrandGetByCate,
-  OrderBatchDelete
+  OrderBatchDelete,
+  CartDatchDelete
 } from "../../api/index";
 export default {
   inject: ["reload"],
@@ -48,6 +49,7 @@ export default {
       uidList: [],
       pidList: [],
       oidList: [],
+      cidList:[],
       cateOptions: [],
       brandOptions: [],
       cateValue: "",
@@ -66,9 +68,12 @@ export default {
         let uuId = element.uId;
         let ppId = element.pid;
         let ooId = element.orderId;
+        let ccId = element.cid;
+
         this.uidList.push(uuId);
         this.pidList.push(ppId);
         this.oidList.push(ooId);
+        this.cidList.push(ccId);
 
       });
       this.$confirm("是否删除选中?", "提示", {
@@ -103,6 +108,16 @@ export default {
               if (res.code == 200) {
                 this.$message({
                   message: `成功删除${this.pidList.length}件订单`,
+                  type: "success",
+                });
+              }
+            });
+          }
+           if (this.flag == 4) {
+            CartDatchDelete(this.cidList).then((res) => {
+              if (res.code == 200) {
+                this.$message({
+                  message: `成功删除${this.pidList.length}件商品`,
                   type: "success",
                 });
               }

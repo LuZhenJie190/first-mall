@@ -1,5 +1,5 @@
 <template>
-    <div id="classification">
+    <div class="classification">
         <ul class="tabs">
             <li class="tabs-li" v-for="(item, index) in imgUrl" :key="index">
                 <img :src="item.url">
@@ -32,6 +32,11 @@ export default {
 </script>
 
 <style scoped>
+.classification {
+    width: 1200px;
+    margin: 0 auto;
+}
+
 .tabs {
     width: 80%;
     margin: auto;

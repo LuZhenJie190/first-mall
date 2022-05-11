@@ -1,7 +1,6 @@
 import VueRouter from 'vue-router'
 import Index from '../pages/Reception/Index.vue'
 import Login from '../pages/Reception/Login.vue'
-import Register from '../pages/Reception/Register.vue'
 import MobilePhone from '../pages/Reception/MobilePhone.vue'
 import Television from '../pages/Reception/Television.vue'
 import Notebook from '../pages/Reception/Notebook.vue'
@@ -16,7 +15,10 @@ import CheckOrder from "../pages/Reception/CheckOrder.vue"
 import OrderDetail from "../pages/Reception/person/OrderDetail.vue"
 
 
+
 import BackendSystem from '../pages/Backstage/BackendSystem.vue'
+import BackLogin from '../pages/Backstage/BackLogin.vue'
+
 import UserList from '../pages/Backstage/UserList.vue'
 import UserRoot from '../pages/Backstage/UserRoot.vue'
 import ProductList from '../pages/Backstage/ProductList.vue'
@@ -24,9 +26,9 @@ import OrderManagement from '../pages/Backstage/OrderManagement.vue'
 import UserAdd from '../pages/Backstage/UserAdd.vue'
 import ProductAdd from '../pages/Backstage/ProductAdd.vue'
 import Home from '../pages/Backstage/Home.vue'
-import ProductCategory from '../pages/Backstage/ProductCategory.vue'
-import ProductSet from '../pages/Backstage/ProductSet.vue'
 import ProductDetail from '../pages/Backstage/ProductDetail.vue'
+import CartManagement from '../pages/Backstage/CartManagement.vue'
+
 
 
 const originalPush = VueRouter.prototype.push
@@ -43,14 +45,6 @@ export default new VueRouter({
             name: 'login',
             path: '/Login',
             component: Login,
-            meta: {
-                showNav: true
-            }
-        },
-        {
-            name: 'register',
-            path: '/Register',
-            component: Register,
             meta: {
                 showNav: true
             }
@@ -133,6 +127,14 @@ export default new VueRouter({
             }
         },
         {
+            name: 'backlogin',
+            path: '/BackLogin',
+            component: BackLogin,
+            meta: {
+                showNav: true
+            }
+        },
+        {
             name: 'backendSystem',
             path: '/BackendSystem',
             component: BackendSystem,
@@ -173,21 +175,6 @@ export default new VueRouter({
                     },
                 },
                 {
-                    name: 'productcategory',
-                    path: 'ProductCategory',
-                    component: ProductCategory,
-                    meta: {
-                        showNav: true
-                    },
-                },
-                {
-                    path: 'ProductList',
-                    component: ProductList,
-                    meta: {
-                        showNav: true
-                    },
-                },
-                {
                     name: 'useradd',
                     path: 'UserAdd',
                     component: UserAdd,
@@ -204,6 +191,14 @@ export default new VueRouter({
                     },
                 },
                 {
+                    name: 'cartmanagement',
+                    path: 'CartManagement',
+                    component: CartManagement,
+                    meta: {
+                        showNav: true
+                    },
+                },
+                {
                     name: 'productadd',
                     path: 'ProductAdd',
                     component: ProductAdd,
@@ -211,14 +206,7 @@ export default new VueRouter({
                         showNav: true
                     },
                 },
-                {
-                    name: 'productset',
-                    path: 'ProductSet',
-                    component: ProductSet,
-                    meta: {
-                        showNav: true
-                    },
-                },
+
                 {
                     name: 'productdetail',
                     path: 'ProductDetail',

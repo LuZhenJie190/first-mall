@@ -197,8 +197,8 @@ h1 {
 }
 
 .wrap {
-  max-width: 1200px;
-  margin: 0 auto;
+  /* max-width: 1200px;
+  margin: 0 auto; */
 }
 
 .index-footer {

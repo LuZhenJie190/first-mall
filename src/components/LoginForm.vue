@@ -5,7 +5,11 @@
         <slot name="title"></slot>
         <div class="login-bg"></div>
       </div>
-      <slot name="form"></slot>
+      <div class="login-right">
+        <slot name="form"> </slot>
+      </div>
+
+
     </div>
   </div>
 </template>
@@ -32,7 +36,9 @@ export default {
   overflow: hidden;
   position: relative;
 }
+
 .login-left {
+  min-width: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,6 +46,11 @@ export default {
   overflow: hidden;
   z-index: 10;
 }
+
+.login-right {
+  display: flex;
+}
+
 .login-bg {
   width: 100%;
   height: 100%;
@@ -47,16 +58,18 @@ export default {
   background-position: -732px -360px;
   background-repeat: no-repeat;
   object-fit: cover;
-  transition: 0.5s;
 }
+
 .btn-register:hover {
   opacity: 1;
   transition: 0.5s;
 }
-.btn-register:hover + .login-bg {
+
+.btn-register:hover+.login-bg {
   transition: 0.5s;
-  filter: blur(5px);
+  filter: blur(3px);
 }
+
 .btn-register {
   border: none;
   background: white;
@@ -73,11 +86,13 @@ export default {
   cursor: pointer;
   position: absolute;
 }
+
 .btn-register a {
   font-weight: 600;
   font-size: 25px;
   color: #000;
 }
+
 .btn-register i {
   background: #be0f2d;
   border-radius: 100%;
