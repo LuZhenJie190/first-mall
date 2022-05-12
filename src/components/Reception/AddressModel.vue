@@ -3,29 +3,32 @@
         <div class="bg"></div>
         <div class="form">
             <i class="close el-icon-close" @click="closeModel"></i>
-            <el-form label-width="90px" :model="form" status-icon :rules="rules" ref="form">
-                <el-form-item label="收货人:" prop="userName">
-                    <el-input v-model="form.userName"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号:" prop="userPhone">
-                    <el-input v-model="form.userPhone"></el-input>
-                </el-form-item>
-                <el-form-item label="选择地址:" prop="selected">
-                    <area-cascader :level="1" type="text" v-model="form.selected" :data="data" :placeholder="address"
-                        style="line-height: 20px"></area-cascader>
-                </el-form-item>
-                <el-form-item label="详细地址:" prop="uAddress">
-                    <span>
-                        <el-input placeholder="街道/小区" v-model="form.uAddress">
-                        </el-input>
-                    </span>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="danger" @click="addressUpdate('form')" v-if="form.uaId != null">确认</el-button>
-                    <el-button type="danger" @click="insert('form')" v-if="form.uaId == null">确认</el-button>
+            <div class="address">
 
-                </el-form-item>
-            </el-form>
+                <el-form label-width="90px" :model="form" status-icon :rules="rules" ref="form">
+                    <el-form-item label="收货人:" prop="userName">
+                        <el-input v-model="form.userName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号:" prop="userPhone">
+                        <el-input v-model="form.userPhone"></el-input>
+                    </el-form-item>
+                    <el-form-item label="选择地址:" prop="selected">
+                        <area-cascader :level="1" type="text" v-model="form.selected" :data="data"
+                            :placeholder="address" style="line-height: 20px"></area-cascader>
+                    </el-form-item>
+                    <el-form-item label="详细地址:" prop="uAddress">
+                        <span>
+                            <el-input placeholder="街道/小区" v-model="form.uAddress">
+                            </el-input>
+                        </span>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="danger" @click="addressUpdate('form')" v-if="form.uaId != null">确认
+                        </el-button>
+                        <el-button type="danger" @click="insert('form')" v-if="form.uaId == null">确认</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
     </div>
 </template>

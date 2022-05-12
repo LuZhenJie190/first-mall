@@ -11,30 +11,36 @@
           <template slot="pTitle">
             <h1>手机</h1>
           </template>
-
+          <template slot="getMore">
+            <router-link to="/MobilePhone" class="get-more">查看更多 <i class="el-icon-right"></i></router-link>
+          </template>
         </ProductShow>
+
         <ProductShow :products="notebookData">
           <template slot="pTitle">
             <h1>笔记本</h1>
           </template>
-          <template slot="pImage">
-            <img src="../../assets/login_bg.jpg" />
+          <template slot="getMore">
+            <router-link to="/Notebook" class="get-more">查看更多 <i class="el-icon-right"></i></router-link>
           </template>
         </ProductShow>
+
         <ProductShow :products="tvData">
           <template slot="pTitle">
             <h1>电视</h1>
           </template>
-          <template slot="pImage">
-            <img src="../../assets/login_bg.jpg" />
+          <template slot="getMore">
+            <router-link to="/Television" class="get-more">查看更多 <i class="el-icon-right"></i></router-link>
           </template>
         </ProductShow>
+
         <ProductShow :products="braceletData">
           <template slot="pTitle">
-            <h1>手环</h1>
+            <h1>智能穿戴</h1>
           </template>
-          <template slot="pImage">
-            <img src="../../assets/login_bg.jpg" /> </template>
+          <template slot="getMore">
+            <router-link to="/Bracelet" class="get-more">查看更多 <i class="el-icon-right"></i></router-link>
+          </template>
         </ProductShow>
       </div>
     </div>
@@ -52,13 +58,12 @@
 </template>
 
 <script>
-import axios from "axios";
 import Carousel from "../../components/Reception/Carousel.vue";
 import Classification from "../../components/Reception/Classification.vue";
 import ProductShow from "../../components/Reception/ProductShow.vue";
 import Recommend from "../../components/Reception/Recommend.vue";
 import DsFooter from "../../components/Reception/DsFooter.vue";
-import { ProductgetAll, ProductGetByCate, ProductCategory } from "../../api/index";
+import { ProductgetAll, ProductCategory } from "../../api/index";
 export default {
   name: "Index",
   components: {
@@ -128,62 +133,40 @@ export default {
     getSomeData() {
       ProductCategory().then(res => {
         console.log("pc", res);
-        let array1 = [];
-        let array2 = [];
-        let array3 = [];
+        let array = [];
+        let array1001 = [];
+        let array1002 = [];
+        let array1003 = [];
+        let array1004 = [];
 
         let phoneList = [];
         let nbList = [];
+        let tvList = [];
+        let wbList = [];
 
-        res.data.forEach(e => {
-          array1.push(e.productBrand);
-        })
+        res.data.forEach(e => { array.push(e.productBrand); })
 
-        phoneList = array1[0];
-        nbList = array1[1];
+        phoneList = array[0];
+        nbList = array[1];
+        tvList = array[2];
+        wbList = array[3];
 
+        phoneList.forEach(e => { e.product.forEach(ee => { array1001.push(ee); }) })
+        nbList.forEach(e => { e.product.forEach(ee => { array1002.push(ee); }) })
+        tvList.forEach(e => { e.product.forEach(ee => { array1004.push(ee); }) })
+        wbList.forEach(e => { e.product.forEach(ee => { array1003.push(ee); }) })
 
-        phoneList.forEach(e => {
-          e.product.forEach(ee => {
-            array2.push(ee);
-          })
-        })
+        array1001.reverse();
+        array1002.reverse();
+        array1003.reverse();
+        array1004.reverse();
 
-
-        nbList.forEach(e => {
-          e.product.forEach(ee => {
-            array3.push(ee);
-          })
-        })
-
-        console.log("css", array2);
-        array2.reverse();
-        this.phoneData = array2.filter(e => {
-          if (e.categoryId == 1001) {
-            return e;
-          }
-        })
-        this.notebookData = array3.filter(e => {
-          if (e.categoryId == 1002) {
-            return e;
-          }
-        })
-
-
-
-
-
+        this.phoneData = array1001.filter(e => { if (e.categoryId == 1001) return e })
+        this.notebookData = array1002.filter(e => { if (e.categoryId == 1002) return e })
+        this.tvData = array1003.filter(e => { if (e.categoryId == 1003) return e })
+        this.braceletData = array1004.filter(e => { if (e.categoryId == 1004) return e })
 
       })
-      // for (let index = 1001; index < 1005; index++) {
-      //   ProductGetByCate(index).then((res) => {
-      //     console.log("pc", res);
-      //     // index == 1001 ? (this.phoneData = res.data) : [];
-      //     // index == 1002 ? (this.notebookData = res.data) : [];
-      //     // index == 1003 ? (this.tvData = res.data) : [];
-      //     // index == 1004 ? (this.braceletData = res.data) : [];
-      //   });
-      // }
     },
   },
 };

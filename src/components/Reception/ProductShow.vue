@@ -2,11 +2,12 @@
   <div class="productshow">
     <div class="title">
       <slot name="pTitle"></slot>
-      <a class="get-more">查看更多 <i class="el-icon-right"></i></a>
+      <slot name="getMore"></slot>
     </div>
     <div class="product-context">
       <div class="product-right">
-        <cards-list class="card" v-for="(p1, index) in recommendData" :key="index" @click.native="goDetail(p1)">
+        <cards-list class="card" v-for="(p1, index) in recommendData.slice(0, 8)" :key="index"
+          @click.native="goDetail(p1)">
           <template slot="image">
             <img class="images cardimg" :src="p1.mainImg" />
           </template>
@@ -104,7 +105,6 @@ export default {
   grid-template-rows: 50px 1fr;
   justify-content: center;
   align-items: center;
-  height: 770px;
   overflow: hidden;
 }
 

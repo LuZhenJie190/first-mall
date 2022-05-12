@@ -231,16 +231,17 @@ export default {
     },
     addToCart() {
       this.cartInfo.pid = this.productData.pid;
-      //{{ productData.title }} {{ params2.pmVersion }}
-      //      {{ params1.pmColor }}
       this.cartInfo.productTitle = `${this.productData.title} ${this.params2.pmVersion} ${this.params1.pmColor}`;
       this.cartInfo.productImg = this.productData.mainImg;
       this.cartInfo.productPrice = this.total;
       this.cartInfo.total = this.allTotal;
-      // this.cartInfo.productInfo = this.productData;
-      console.log(this.cartInfo);
+
       if (this.cartInfo.total == "") {
         this.$alert("请选择颜色和版本");
+      } else if (this.cartInfo.userId == null) {
+        this.$router.push({
+          path: "/Login"
+        })
       } else {
         CartInsert(this.cartInfo).then((res) => {
           if (res.code == 200) {

@@ -9,7 +9,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="商品品牌：" prop="brandId">
-          <el-select v-model="form.brandId" placeholder="请选择" @change="sortSelect(form.brandId)">
+          <el-select v-model="form.brandId" placeholder="请选择">
             <el-option v-for="item in brand" :key="item.pbid" :label="item.brandName" :value="item.brandId">
             </el-option>
           </el-select>
@@ -42,7 +42,8 @@
           <el-checkbox label="轮播图" v-model="form.isCarousel"></el-checkbox>
           <el-checkbox label="每日推荐" v-model="form.isRecommend"></el-checkbox>
           <el-form-item>
-            <el-button type="primary" @click="getParams" v-show="paramsContext === false">点击添加参数</el-button>
+            <!-- v-show="paramsContext === false" -->
+            <el-button type="primary" @click="getParams">展开添加参数</el-button>
           </el-form-item>
         </el-form-item>
         <div class="paramsContext" v-show="paramsContext" v-loading="loading3">
@@ -106,6 +107,8 @@ import {
   ProductBrandGetByCate,
   ProductParamsAdd,
   ProductImageAdd,
+  ProductGetCate,
+  CateGetBrand
 } from "../../api/index";
 import { MessageBox } from "element-ui";
 import { getnowDate } from "../../utils/index";
@@ -195,8 +198,10 @@ export default {
     };
   },
   created() {
+    // 获取当前时间
     this.getTime();
-    ProductCategory().then((res) => {
+    // 获取分类
+    ProductGetCate().then((res) => {
       this.category = res.data;
     });
   },
@@ -228,7 +233,6 @@ export default {
       } else {
         this.$alert("请上传图片！");
       }
-      console.log(this.paramForm.productId);
     },
     // 删除参数项
     deleteParam(index) {
@@ -262,13 +266,11 @@ export default {
     // 商品类型
     typeRadio(radio) {
       // 根据分类获取品牌
-      ProductBrandGetByCate(radio).then((res) => {
-        console.log(res);
-        this.brand = res.data[0].productBrand;
+      CateGetBrand(radio).then((res) => {
+        res.data.forEach((e) => {
+          e.categoryId == radio ? this.brand = e.productBrand : []
+        })
       });
-    },
-    sortSelect(value) {
-      console.log(value);
     },
     // 提交添加表单
     submitForm(formName) {
@@ -279,7 +281,7 @@ export default {
             ProductParamsAdd(this.paramList).then((res) => { });
             this.$alert("添加成功");
             // 重置表单
-            this.reload();
+            // this.reload();
           } else {
             this.$alert("请添加图片和参数");
           }
@@ -288,7 +290,6 @@ export default {
         }
       });
     },
-
     //重置表单
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -318,7 +319,6 @@ export default {
         }
       );
     },
-
     pUpload(res) {
       this.loading3 = true;
       if (!res.file) {

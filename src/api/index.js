@@ -187,9 +187,21 @@ export const ProductDatchDelete = (pids) => requests({
   }
 });
 
-// 全部分类
+// 全部查询
 export const ProductCategory = () => requests({
   url: (`cate/getAll`),
+  method: 'GET'
+});
+
+// 查询分类
+export const ProductGetCate = () => requests({
+  url: (`cate/getCate`),
+  method: 'GET'
+});
+
+// 查询分类、品牌
+export const CateGetBrand = (categoryId) => requests({
+  url: (`cate/getCate?categoryId = ${categoryId}`),
   method: 'GET'
 });
 
@@ -199,11 +211,12 @@ export const ProductBrand = () => requests({
   method: 'GET'
 });
 
-// 分类查品牌
+// 分类查品牌带商品
 export const ProductBrandGetByCate = (categoryId) => requests({
   url: (`cate/getAll?categoryId=${categoryId}`),
   method: 'GET'
 });
+
 
 //品牌查商品
 export const ProductGetByBrand = (brandId) => requests({

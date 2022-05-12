@@ -21,7 +21,10 @@
           </el-menu>
         </aside>
         <div class="conter-right">
+
           <router-view class="animate__animated animate__fadeIn" />
+
+
         </div>
       </div>
     </div>

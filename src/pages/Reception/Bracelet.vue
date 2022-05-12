@@ -7,13 +7,7 @@
           <h2>手环专区</h2>
           <el-divider></el-divider>
         </div>
-        <tabs-list
-          :phoneSorts="phoneSorts"
-          :commodities1="commodities1"
-          :commodities2="commodities2"
-          :commodities3="commodities3"
-          :commodities4="commodities4"
-        />
+        <tabs-list :products="bData" />
       </div>
     </div>
     <ds-footer />
@@ -24,19 +18,24 @@
 import DsFooter from "../../components/Reception/DsFooter.vue";
 import TabsList from "../../components/Reception/TabsList.vue";
 import BreadHeader from "../../components/Reception/BreadHeader.vue";
+import { ProductGetByCate } from "../../api/index.js";
 export default {
   components: { DsFooter, TabsList, BreadHeader },
   name: "Bracelet",
   data() {
     return {
-      phoneSorts: [
-        { name: "1" },
-        { name: "2" },
-        { name: "3" },
-        { name: "4" },
-        { name: "5" },
-      ],
+      bData: [],
     };
+  },
+  created() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      ProductGetByCate(1002).then((res) => {
+        this.bData = res.data[0].productBrand;
+      });
+    },
   },
 };
 </script>
@@ -46,6 +45,7 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
 }
+
 .bread {
   margin: 15px 0px;
 }
@@ -53,12 +53,14 @@ export default {
 .el-breadcrumb {
   padding-top: 50px;
 }
+
 .m-tabs {
   display: grid;
   grid-template-rows: 120px auto;
   max-width: unset;
   align-items: center;
 }
+
 .m-title {
   background-color: #fff;
   border-radius: 5px;

@@ -174,7 +174,7 @@ export default {
       if (val == 1001) return "手机";
       if (val == 1002) return "笔记本";
       if (val == 1003) return "电视";
-      if (val == 1004) return "手环";
+      if (val == 1004) return "智能穿戴";
       if (val == 101) return "小米";
       if (val == 102) return "华为";
       if (val == 103) return "VIVO";

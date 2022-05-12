@@ -1,13 +1,7 @@
 <template>
   <div id="useradd">
     <h1>添加用户</h1>
-    <el-form
-      :label-position="labelPosition"
-      label-width="100px"
-      :model="form"
-      :rules="rules"
-      ref="form"
-    >
+    <el-form :label-position="labelPosition" label-width="100px" :model="form" :rules="rules" ref="form">
       <el-form-item label="用户名：" prop="userName">
         <el-input v-model="form.userName"></el-input>
       </el-form-item>
@@ -16,12 +10,7 @@
       </el-form-item>
       <el-form-item label="性别：" prop="userSex">
         <el-select v-model="form.userSex" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
@@ -119,7 +108,7 @@ export default {
                 message: "注册成功",
                 type: "success",
               });
-              // this.$refs[formName].resetFields();
+              this.$refs[formName].resetFields();
             } else {
               this.$message.error(res.message);
             }
@@ -143,6 +132,7 @@ export default {
   width: 400px;
   margin: 0px 300px auto;
 }
+
 #useradd h1 {
   text-align: center;
   margin: 10px 10px 20px 60px;

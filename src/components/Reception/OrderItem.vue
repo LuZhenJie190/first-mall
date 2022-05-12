@@ -31,15 +31,14 @@
               <span></span>
               <p>{{ o2.productPrice }}元</p>
               <p>× {{ o2.productNumber }}</p>
-              </span>
+
             </div>
           </div>
         </div>
         <div class="operation">
-          <button class="btn-order" v-if="o1.payStatus != 1">立即支付</button>
+          <button class="btn-order" v-if="o1.payStatus != 1" @click="pay(o1)">立即支付</button>
           <button class="btn-order" @click="goOrderDetail(o1)">订单详情</button>
         </div>
-
       </div>
     </div>
   </div>
@@ -50,7 +49,9 @@ export default {
   name: "OrderItem",
   props: ["orderList"],
   data() {
-    return {};
+    return {
+      modelShow: true,
+    };
   },
   filters: {
     status(val) {
@@ -63,14 +64,17 @@ export default {
     },
   },
   methods: {
-    goOrderDetail(data) {
-      // console.log(index);
+    goOrderDetail(odata) {
       this.$router.push({
         name: "orderdetail",
         params: {
-          odata: data
+          odata: odata
         }
       })
+    },
+    pay(data) {
+      this.$emit("openModel", this.modelShow, data);
+
     }
   },
 };

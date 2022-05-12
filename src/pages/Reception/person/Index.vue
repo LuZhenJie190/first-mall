@@ -44,7 +44,8 @@
         </div>
       </div>
     </div>
-    <address-model v-if="modelShow" @mShow="closeModel" :addressData="addressData"></address-model>
+    <address-model v-if="modelShow" @mShow="closeModel" :addressData="addressData">
+    </address-model>
   </div>
 </template>
 

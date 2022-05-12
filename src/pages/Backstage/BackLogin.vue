@@ -3,8 +3,7 @@
         <div class="bg"></div>
         <div class="l-form">
             <h1 class="title">数码购后台管理系统</h1>
-            <el-form label-width="80px" :model="form" status-icon :rules="rules" ref="form"
-                @keyup.enter.native="login('form')">
+            <el-form label-width="80px" :model="form" status-icon ref="form" @keyup.enter.native="login('form')">
                 <el-form-item label="帐号：" prop="userPhone">
                     <input type="text" :class="{ warn: nameShow }" v-model="form.userPhone" placeholder="请输入手机号" />
                 </el-form-item>

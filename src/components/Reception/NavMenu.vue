@@ -18,7 +18,7 @@
             <router-link to="/Television" active-class="active">电视</router-link>
           </el-menu-item>
           <el-menu-item index="5">
-            <router-link to="/Bracelet" active-class="active">手环</router-link>
+            <router-link to="/Bracelet" active-class="active">智能穿戴</router-link>
           </el-menu-item>
 
           <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->

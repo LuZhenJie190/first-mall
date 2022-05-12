@@ -209,7 +209,7 @@ export default {
             if (res.code == 200) {
               localStorage.setItem("uname", res.data.userName);
               localStorage.setItem("uid", res.data.uId);
-              this.$router.replace({ path: "/index" });
+              this.$router.back();
             } else if (res.code == 202) {
               this.$alert(`${res.message}`)
             }

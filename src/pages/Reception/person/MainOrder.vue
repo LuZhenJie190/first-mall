@@ -17,21 +17,40 @@
     <el-empty :image-size="200" v-if="orderList.length == 0"></el-empty>
     <div class="tab-content" v-if="orderList.length != 0">
       <div class="all animate__animated animate__fadeIn" v-show="currentIndex == 0">
-        <order-item :orderList="orderList"></order-item>
+        <order-item :orderList="orderList" @openModel="openModel"></order-item>
       </div>
       <div class="not-pay animate__animated animate__fadeIn" v-show="currentIndex == 1">
-        <order-item :orderList="isPay"></order-item>
+        <order-item :orderList="isPay" @openModel="openModel"></order-item>
       </div>
 
       <div class="is-pay animate__animated animate__fadeIn" v-show="currentIndex == 2">
-        <order-item :orderList="noPay"></order-item>
+        <order-item :orderList="noPay" @openModel="openModel"></order-item>
       </div>
     </div>
+
+    <div class="model" v-show="modelShow">
+      <div class="bg"></div>
+      <div class="form">
+        <h1>支付方式</h1>
+        <i class="close el-icon-close" @click="closeModel"></i>
+        <div class="pay-box">
+          <ul>
+            <li v-for="(item, index) in payList" :key="index" @click="pay(index)"
+              :class="{ 'pay-active': current1 == index }">
+              <img :src="item.img" />
+              <p>{{ item.title }}</p>
+            </li>
+          </ul>
+          <button class="btn-pay1" @click="orderPay">确定</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
-import { OrderGetParams, OrderGetParamsByPhone } from "../../../api/index";
+import { OrderGetParams, OrderGetParamsByPhone, OrderUpdate } from "../../../api/index";
 import OrderItem from "../../../components/Reception/OrderItem.vue";
 export default {
   name: "MainOrder",
@@ -48,6 +67,14 @@ export default {
       isPay: [],
       noPay: [],
       search: "",
+      modelShow: false,
+      payList: [
+        { img: require("../../../assets/wx.png"), title: "微信" },
+        { img: require("../../../assets/zfb.png"), title: "支付宝" },
+      ],
+      current1: -1,
+      payType: "",
+      orderData: ""
     };
   },
   created() {
@@ -89,6 +116,39 @@ export default {
     change(index) {
       this.currentIndex = index;
     },
+
+    orderPay() {
+      if (this.payType == null) {
+        this.$message({ type: "warning", message: "请选择支付方式" })
+      } else {
+        this.orderData.payWay = this.payType;
+        this.orderData.payStatus = 1;
+        OrderUpdate(this.orderData).then(res => {
+          console.log(res);
+          if (res.code == 200) {
+            this.$message({ type: "success", message: "支付成功" })
+            this.modelShow = false;
+          }
+        })
+      }
+
+    },
+    payment() {
+      this.modelShow = true
+    },
+    closeModel() {
+      this.modelShow = false
+    },
+    pay(index) {
+      this.current1 = index;
+      this.payType = index
+      console.log(this.payType);
+    },
+    openModel(val, data) {
+      this.modelShow = val;
+      this.orderData = data;
+      console.log(this.orderData);
+    }
   },
 };
 </script>
@@ -157,5 +217,90 @@ export default {
   width: 42px;
   height: 42px;
   cursor: pointer;
+}
+
+.bg {
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.6;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.form {
+  background-color: #fff;
+  width: 400px;
+  height: 220px;
+  z-index: 1001;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  padding: 20px;
+}
+
+.form h1 {
+  font-weight: 500;
+  font-size: 20px;
+  color: #757575;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transform: scale(1.8, 1.8);
+  cursor: pointer;
+}
+
+.close:hover {
+  color: red;
+}
+
+.pay-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pay-box ul {
+  display: flex;
+  width: 100%;
+  padding: 30px 0;
+  justify-content: space-around;
+}
+
+.pay-box li {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  width: 150px;
+  line-height: 80px;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.pay-box img {
+  width: 40px;
+  height: 40px;
+  padding-right: 10px;
+}
+
+.btn-pay1 {
+  border: none;
+  outline: none;
+  width: 150px;
+  line-height: 40px;
+  background: #be0f2d;
+  color: #fff;
+  cursor: pointer;
+}
+
+.pay-active {
+  border: 1px solid #be0f2d !important;
 }
 </style>

@@ -1,24 +1,13 @@
 <template>
   <div class="user-list">
     <!-- 搜索 -->
-    <BackstageSearch
-      @searchInput="searchInput"
-      :inputValue="uvalue"
-      :multipleSelection="multipleSelection"
-      :flag="flag"
-      class="search"
-    />
-    <el-table
-      :data="tableData"
-      border
-      stripe
-      ref="multipleTable"
-      height="485"
-      @selection-change="handleSelectionChange"
-    >
+    <BackstageSearch @searchInput="searchInput" :inputValue="uvalue" :multipleSelection="multipleSelection" :flag="flag"
+      class="search" />
+    <el-table :data="tableData" border stripe ref="multipleTable" height="485"
+      @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="50" />
       <el-table-column prop="uId" label="ID" width="80" fixed="left" />
-      <el-table-column prop="userIdentity" sortable label="身份" width="120" :formatter="identity"/>
+      <el-table-column prop="userIdentity" sortable label="身份" width="120" :formatter="identity" />
       <el-table-column prop="userName" label="用户名" width="150" />
       <el-table-column prop="userPwd" label="密码" width="160" />
       <el-table-column prop="userSex" label="性别" width="100" :formatter="sex" />
@@ -27,13 +16,8 @@
       <el-table-column prop="uCreateTime" label="注册时间" width="180" />
       <el-table-column label="操作" width="180" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="update(scope.$index)">修改</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click.native="removeList(scope.$index)"
-            >删除</el-button
-          >
+          <el-button type="success" size="mini" @click="update(scope.row)">修改</el-button>
+          <el-button size="mini" type="danger" @click.native="removeList(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,13 +33,7 @@
       <div class="model-context">
         <i class="el-icon-circle-close" @click="mShow"></i>
         <div class="form">
-          <el-form
-            :label-position="labelPosition"
-            label-width="100px"
-            :model="form"
-            :rules="rules"
-            ref="form"
-          >
+          <el-form :label-position="labelPosition" label-width="100px" :model="form" :rules="rules" ref="form">
             <el-form-item label="用户名：" prop="userName">
               <el-input v-model="form.userName"></el-input>
             </el-form-item>
@@ -64,12 +42,7 @@
             </el-form-item>
             <el-form-item label="性别：" prop="userSex">
               <el-select v-model="form.userSex" placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
+                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -80,12 +53,10 @@
               <el-input v-model="form.userEmail"></el-input>
             </el-form-item>
             <el-form-item label="注册时间：">
-              <el-input v-model="form.uCreateTime" :disabled="true"></el-input>
+              <el-input v-model="form.uCreateTime"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('form')"
-                >确认修改</el-button
-              >
+              <el-button type="primary" @click="submitForm('form')">确认修改</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -197,28 +168,27 @@ export default {
       }
       UsergetAll(val, this.pageInfo.pageSize).then((res) => {
         this.tableData = res.data.list;
-      
+
       });
     },
 
     //重命名
-    identity(row,column){
-      if(row.userIdentity == 0) return"普通用户"
-      if(row.userIdentity == 1) return"管理员"
+    identity(row, column) {
+      if (row.userIdentity == 0) return "普通用户"
+      if (row.userIdentity == 1) return "管理员"
 
     },
-    sex(row,column){
-      if(row.userSex == 0) return"女"
-      if(row.userSex == 1) return"男"
+    sex(row, column) {
+      if (row.userSex == 0) return "女"
+      if (row.userSex == 1) return "男"
 
     },
 
 
     //删除行
-    removeList(uid) {
+    removeList(data) {
       // 拿到表格行的下标，把它赋值给数组的下标，实现根据对象的id删除
-      const index = uid;
-      const tableIndex = this.tableData[index].uId;
+      const index = data.uId;
       // console.log(tableIndex);
       this.$confirm("此操作将永久删除用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -226,31 +196,28 @@ export default {
         type: "warning",
       }).then(() => {
         // 删除操作
-        UserRemove(tableIndex);
+        UserRemove(index);
         this.$message({
           message: "删除成功",
           type: "success",
         });
         // 刷新页面
-        // this.reload();
+        this.reload();
         this.getUserList();
       });
     },
     // 拿到数据并放到输入框里面
-    update(uid) {
+    update(data) {
       this.modelShow = true;
-      var index = uid;
-      var tableIndex = this.tableData[index].uId;
-      UsergetById(tableIndex).then((res) => {
-        this.form.uId = res.data.uId;
-        this.form.userName = res.data.userName;
-        this.form.userPwd = res.data.userPwd;
-        this.form.userSex = res.data.userSex;
-        this.form.userPhone = res.data.userPhone;
-        this.form.userEmail = res.data.userEmail;
-        this.form.userIdentity = res.data.userIdentity;
-        this.form.uCreateTime = res.data.uCreateTime;
-      });
+      this.form.uId = data.uId;
+      this.form.userName = data.userName;
+      this.form.userPwd = data.userPwd;
+      this.form.userSex = data.userSex;
+      this.form.userPhone = data.userPhone;
+      this.form.userEmail = data.userEmail;
+      this.form.userIdentity = data.userIdentity;
+      this.form.uCreateTime = data.uCreateTime;
+
     },
     // 模态框隐藏
     mShow() {
@@ -303,16 +270,19 @@ export default {
 .user-list {
   padding: 20px;
 }
+
 .btn-prev,
 .btn-next {
   background: #ccc !important;
   color: #000 !important;
 }
+
 .pagination {
   margin-top: 10px;
   display: flex;
   justify-content: center;
 }
+
 .model-bg {
   width: 100%;
   height: 100%;
@@ -323,6 +293,7 @@ export default {
   left: 0;
   z-index: 4;
 }
+
 .model-context {
   width: 40%;
   height: 500px;
@@ -333,6 +304,7 @@ export default {
   left: 500px;
   z-index: 5;
 }
+
 .model-context .form {
   position: relative;
   top: 45px;
@@ -340,6 +312,7 @@ export default {
   width: 60%;
   margin: auto;
 }
+
 .model-context i {
   transform: scale(2, 2);
   position: absolute;
@@ -348,13 +321,16 @@ export default {
   color: gray;
   cursor: pointer;
 }
+
 .model-context i:hover {
   color: #f56c6c;
 }
+
 .add {
   margin-left: 70px;
 }
-.search /deep/ .screen{
+
+.search /deep/ .screen {
   display: none;
 }
 </style>
