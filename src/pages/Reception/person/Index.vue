@@ -2,7 +2,7 @@
   <div>
     <div class="top">
       <div class="top-left">
-        <img src="../../../assets/zfb.png" class="via" />
+        <img src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" class="via" />
         <div class="username">
           <h1>{{ userName }}</h1>
           <p>你好</p>

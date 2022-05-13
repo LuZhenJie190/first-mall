@@ -271,4 +271,25 @@ export default {
   margin-left: 10px;
   cursor: pointer;
 }
+
+.cart /deep/ .el-checkbox__label {
+  color: #ccc;
+}
+
+.cart /deep/ .el-checkbox__input.is-checked+.el-checkbox__label {
+  color: #be0f2d;
+}
+
+.cart /deep/ .el-checkbox__input.is-checked .el-checkbox__inner {
+  border-color: #be0f2d;
+  background-color: #be0f2d;
+}
+
+.cart /deep/ .el-checkbox__input.is-focus .el-checkbox__inner {
+  border-color: #be0f2d;
+}
+
+.cart /deep/ .el-checkbox__inner:hover {
+  border: 1px solid #be0f2d;
+}
 </style>

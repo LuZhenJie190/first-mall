@@ -161,10 +161,11 @@ export default {
         array1003.reverse();
         array1004.reverse();
 
+
         this.phoneData = array1001.filter(e => { if (e.categoryId == 1001) return e })
         this.notebookData = array1002.filter(e => { if (e.categoryId == 1002) return e })
-        this.tvData = array1003.filter(e => { if (e.categoryId == 1003) return e })
-        this.braceletData = array1004.filter(e => { if (e.categoryId == 1004) return e })
+        this.tvData = array1004.filter(e => { if (e.categoryId == 1003) return e })
+        this.braceletData = array1003.filter(e => { if (e.categoryId == 1004) return e })
 
       })
     },

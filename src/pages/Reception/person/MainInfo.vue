@@ -3,7 +3,7 @@
     <h1 class="title">用户信息</h1>
     <el-form class="user-form" label-width="100px">
       <el-form-item label="头像：">
-        <img class="user-photo" src="../../../assets/login_bg.jpg" />
+        <img class="user-photo" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
       </el-form-item>
 
       <el-form-item label="用户名：">
@@ -107,28 +107,35 @@ export default {
   font-weight: 500;
   color: #757575;
 }
+
 .user-form {
   width: 350px;
   padding-top: 50px;
 }
+
 .user-photo {
   width: 100px;
   height: 100px;
   margin-left: 100px;
 }
+
 .main-info /deep/ .el-input__inner:focus {
   border: 1px solid #be0f2d;
 }
+
 .main-info /deep/ .el-radio__input.is-checked .el-radio__inner {
   background: #be0f2d;
   border-color: #be0f2d;
 }
+
 .main-info /deep/ .el-radio__inner:hover {
   border-color: #be0f2d !important;
 }
-.main-info /deep/ .el-radio__input.is-checked + .el-radio__label {
+
+.main-info /deep/ .el-radio__input.is-checked+.el-radio__label {
   color: #be0f2d !important;
 }
+
 .user-update {
   background-color: #be0f2d;
   color: white;
