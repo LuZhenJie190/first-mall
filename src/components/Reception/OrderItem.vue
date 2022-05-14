@@ -24,7 +24,7 @@
       </div>
       <div class="bottom">
         <div class="products">
-          <div class="product" v-for="(o2, index) in o1.orderParams" :key="index">
+          <div class="product" v-for="(o2, index) in o1.orderParams" :key="index" @click="goProduct(o2.pid)">
             <img :src="o2.productImg" alt="" />
             <div class="p-title">
               <p>{{ o2.productTitle }}</p>
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { ProductDetail } from "../../api/index"
 export default {
   name: "OrderItem",
   props: ["orderList"],
@@ -75,7 +76,16 @@ export default {
     pay(data) {
       this.$emit("openModel", this.modelShow, data);
 
-    }
+    },
+    goProduct(pid) {
+      ProductDetail(pid).then((res) => {
+        console.log(res);
+        this.$router.push({
+          name: "productinfo",
+          params: { details: res.data[0] }
+        })
+      })
+    },
   },
 };
 </script>
@@ -150,6 +160,7 @@ export default {
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .product img {

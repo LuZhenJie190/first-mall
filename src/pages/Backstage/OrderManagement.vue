@@ -35,64 +35,6 @@
       <el-table-column prop="payWay" label="支付方式" width="150" :formatter="payType">
       </el-table-column>
     </el-table>
-
-    <!-- 修改模态框 -->
-    <!-- <div class="o-model-update" v-show="modelShow">
-      <div class="o-model-bg"></div>
-      <div class="o-model-context">
-        <i class="el-icon-circle-close" @click="mShow"></i>
-        <el-tabs :tab-position="abPosition" style="height: 200px">
-          <el-tab-pane label="订单信息">
-            <el-form :label-position="labelPosition" label-width="100px" :model="form">
-              <el-form-item label="订单编号：">
-                <el-input v-model="form.osn" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="订单价格：">
-                <el-input v-model="form.oprice"></el-input>
-              </el-form-item>
-              <el-form-item label="下单时间：">
-                <el-input v-model="form.otime"></el-input>
-              </el-form-item>
-              <el-form-item label="支付类型：">
-                <el-radio v-model="form.otype" :label="0">微信</el-radio>
-                <el-radio v-model="form.otype" :label="1">支付宝</el-radio>
-              </el-form-item>
-              <el-form-item label="支付状态：">
-                <el-radio v-model="form.ostatus" :label="0">未支付</el-radio>
-                <el-radio v-model="form.ostatus" :label="1">已支付</el-radio>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-          <el-tab-pane label="商品信息">
-            <el-form :label-position="labelPosition" label-width="100px" :model="form">
-              <el-form-item label="商品编码：">
-                <el-input v-model="form.pcore" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="商品名称：">
-                <el-input v-model="form.pname"></el-input>
-              </el-form-item>
-              <el-form-item label="商品数量：">
-                <el-input v-model="form.pnumber"></el-input>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-          <el-tab-pane label="客户信息">
-            <el-form :label-position="labelPosition" label-width="100px" :model="form">
-              <el-form-item label="客户姓名：">
-                <el-input v-model="form.ouname"></el-input>
-              </el-form-item>
-              <el-form-item label="客户手机号：">
-                <el-input v-model="form.ophone"></el-input>
-              </el-form-item>
-              <el-form-item label="收货地址：">
-                <el-input v-model="form.oaddress"></el-input>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-        </el-tabs>
-        <el-button class="o-add" type="primary" @click="updateInfo()">点击修改</el-button>
-      </div>
-    </div> -->
   </div>
 </template>
 
