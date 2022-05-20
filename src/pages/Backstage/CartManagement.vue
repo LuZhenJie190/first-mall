@@ -1,28 +1,27 @@
 <template>
   <div class="cart">
-      <div class="order">
-    <backstage-search class="search" @searchInput="searchInput" :flag="flag" :multipleSelection="multipleSelection"
-      :inputValue="inputValue">
-    </backstage-search>
-    <el-table :data="tableData" stripe style="margin-top:20px"
-      @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="userId" label="用户ID" width="150" fixed="left">
-      </el-table-column>
-            <el-table-column prop="pid" label="商品ID" width="150" >
-      </el-table-column>
-      <el-table-column label="商品图片" width="150">
-        <template slot-scope="scope">
-          <img class="pimg" :src="scope.row.productImg" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="productTitle" label="商品名称" width="400">
-      </el-table-column>
-      <el-table-column prop="productNumber" label="数量" width="150">
-      </el-table-column>
-      <el-table-column prop="productPrice" label="商品价格" width="180">
-      </el-table-column>      
-    </el-table>
+    <div class="order">
+      <backstage-search class="search" @searchInput="searchInput" :flag="flag" :multipleSelection="multipleSelection"
+        :inputValue="inputValue">
+      </backstage-search>
+      <el-table :data="tableData" stripe style="margin-top:20px" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" />
+        <el-table-column prop="userId" label="用户ID" width="150" fixed="left">
+        </el-table-column>
+        <el-table-column prop="pid" label="商品ID" width="150">
+        </el-table-column>
+        <el-table-column label="商品图片" width="150">
+          <template slot-scope="scope">
+            <img class="pimg" :src="scope.row.productImg" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="productTitle" label="商品名称" width="400">
+        </el-table-column>
+        <el-table-column prop="productNumber" label="数量" width="150">
+        </el-table-column>
+        <el-table-column prop="productPrice" label="商品价格" width="180">
+        </el-table-column>
+      </el-table>
     </div>
   </div>
 </template>
@@ -31,8 +30,6 @@
 import {
   CartById,
   OrderFindByPhone,
-  OrderGetParamsByPhone,
-  OrderGetParamsByName,
   CartGetALL
 } from "../../api/index";
 import BackstageSearch from '../../components/Backstage/BackstageSearch.vue';
@@ -59,7 +56,7 @@ export default {
     // 获取数据
     getOrderList() {
       CartGetALL().then((res) => {
-          console.log(res);
+        console.log(res);
         this.tableData = res.data;
       });
     },
@@ -101,8 +98,8 @@ export default {
         })
       } else {
         this.$message({
-            type:"warning",
-            message:"输入不合法"
+          type: "warning",
+          message: "输入不合法"
         })
       }
 
@@ -112,9 +109,10 @@ export default {
 </script>
 
 <style scoped>
-.cart{
-    padding: 10px;
+.cart {
+  padding: 10px;
 }
+
 .pimg {
   width: 80px;
   height: 80px;

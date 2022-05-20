@@ -57,7 +57,7 @@ export default {
 }
 
 .carousel /deep/ .el-carousel__arrow--left {
-  left: 10px;
+  left: 0px;
 }
 
 .carousel /deep/ .el-carousel__arrow--right {

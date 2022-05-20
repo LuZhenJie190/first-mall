@@ -31,7 +31,7 @@
             {{ productData.subTitle }}
           </p>
           <p class="price" v-if="total == ''">
-            {{ productData.productParams[0].price }} 元
+            {{ productData.productParams[0].price || 2999 }} 元
           </p>
           <p class="price" v-if="total != ''">{{ total }} 元</p>
         </div>
@@ -174,17 +174,12 @@ export default {
       deep: true,
       handler(newValue, oldValue) {
         this.cvparams.productId = this.params1.productId;
-        // this.cvparams.pmColor = this.params1.pmColor;
-        // this.cvparams.pmVersion = this.params2.pmVersion;
         if (this.cvparams.pmColor != "" && this.cvparams.pmVersion != "") {
           ProductGetPrice(this.cvparams).then((res) => {
-            console.log(res);
+            //  console.log(res);
             this.total = res.data.price;
           });
         }
-        // ProductGetPrice(this.cvparams).then((res) => {
-        //   console.log(res);
-        // });
       },
     },
   },
@@ -225,7 +220,7 @@ export default {
   methods: {
     getCarousel() {
       ProductDetail(this.productData.pid).then(res => {
-        console.log(res);
+        //console.log(res);
         this.carouselList = res.data[0].productImage;
       })
     },
@@ -260,6 +255,7 @@ export default {
       }
     },
     getDetail() {
+      console.log(this.$route.params.details);
       if (this.$route.params.details != undefined) {
         localStorage.setItem(
           "info",
@@ -270,13 +266,13 @@ export default {
       this.productData = info;
       this.params1.productId = this.productData.pid;
       this.params2.productId = this.productData.pid;
-      console.log(this.productData);
+      // console.log(this.productData);
     },
     colorIndex(val) {
       // console.log(this.$refs.color[val].innerText);
       this.current = val;
       this.params1.pmColor = this.$refs.color[val].innerText;
-      console.log(this.params1.pmColor);
+      // console.log(this.params1.pmColor);
     },
     versionIndex(val) {
       // console.log(val);

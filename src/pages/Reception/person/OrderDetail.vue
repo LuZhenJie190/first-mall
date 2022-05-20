@@ -6,7 +6,7 @@
     </div>
     <div class="products">
       <ul>
-        <li v-for="item in detailData.orderParams" :key="item.opid">
+        <li v-for="item in detailData.orderParams" :key="item.opid" @click="goProduct(item.pid)">
           <img :src="item.productImg" />
           <span>{{ item.productTitle }}</span>
           <span class="price">
@@ -88,8 +88,7 @@
 </template>
 
 <script>
-import { OrderUpdate } from "../../../api/index"
-import AddressModel from '../../../components/Reception/AddressModel.vue';
+import { OrderUpdate, ProductDetail } from "../../../api/index"
 export default {
   name: "orderDetail",
   data() {
@@ -154,7 +153,15 @@ export default {
       this.current1 = index;
       this.payType = index
     },
-
+    goProduct(pid) {
+      ProductDetail(pid).then((res) => {
+        console.log(res);
+        this.$router.push({
+          name: "productinfo",
+          params: { details: res.data[0] }
+        })
+      })
+    }
   }
 }
 </script>
@@ -177,6 +184,7 @@ export default {
   align-items: center;
   border-bottom: 1px solid #ccc;
   padding: 10px 0;
+  cursor: pointer;
 }
 
 .products span {

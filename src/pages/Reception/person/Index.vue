@@ -6,7 +6,7 @@
         <div class="username">
           <h1>{{ userName }}</h1>
           <p>你好</p>
-          <a style="color: #e6a23c">修改个人信息</a>
+          <router-link style="color: #e6a23c" to="/PersonalMenu/MainInfo">修改个人信息</router-link>
         </div>
       </div>
       <div class="top-right">
@@ -27,7 +27,7 @@
       <div class="address">
         <h2>收货地址</h2>
         <div class="items">
-          <div class="item" v-for="(item, index) in addressList" :key="item.uaId" v-show="addressList.leght != 0">
+          <div class="item" v-for="item in addressList" :key="item.uaId" v-show="addressList.leght != 0">
             <h3>{{ item.userName }}</h3>
             <p>{{ item.userPhone }}</p>
             <p>{{ item.uProvince }} {{ item.uCity }} {{ item.uArea }}</p>
@@ -53,8 +53,6 @@
 import {
   UsergetById,
   AddressById,
-  AddressInsert,
-  AddressUpdate,
   AddressDelete,
 } from "../../../api/index";
 import AddressModel from '../../../components/Reception/AddressModel.vue';

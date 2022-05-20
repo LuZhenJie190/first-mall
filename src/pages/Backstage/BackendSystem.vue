@@ -6,12 +6,7 @@
       </el-header>
       <el-container>
         <el-aside>
-          <el-menu
-            default-active="1"
-            class="el-menu-vertical-demo"
-            :router="true"
-            :unique-opened="true"
-          >
+          <el-menu default-active="1" class="el-menu-vertical-demo" :router="true" :unique-opened="true">
             <el-menu-item index="/BackendSystem/Home">
               <i class="el-icon-house"></i>
               <span slot="title">首页</span>
@@ -28,12 +23,12 @@
                 </el-menu-item>
                 <el-menu-item index="/BackendSystem/UserRoot">
                   <i class="el-icon-setting"></i>
-                  <span slot="title">用户权限</span></el-menu-item
-                >
+                  <span slot="title">用户权限</span>
+                </el-menu-item>
                 <el-menu-item index="/BackendSystem/UserAdd">
                   <i class="el-icon-plus"></i>
-                  <span slot="title">添加用户</span></el-menu-item
-                >
+                  <span slot="title">添加用户</span>
+                </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="3">
@@ -44,30 +39,27 @@
               <el-menu-item-group>
                 <el-menu-item index="/BackendSystem/ProductList">
                   <i class="el-icon-notebook-2"></i>
-                  <span slot="title">商品列表</span></el-menu-item
-                >
+                  <span slot="title">商品列表</span>
+                </el-menu-item>
                 <el-menu-item index="/BackendSystem/ProductAdd">
                   <i class="el-icon-sell"></i>
-                  <span slot="title">商品发布</span></el-menu-item
-                >
+                  <span slot="title">商品发布</span>
+                </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-menu-item index="/BackendSystem/OrderManagement">
               <i class="el-icon-tickets"></i>
               <span slot="title">订单管理</span>
             </el-menu-item>
-            
-              <el-menu-item index="/BackendSystem/CartManagement">
+
+            <el-menu-item index="/BackendSystem/CartManagement">
               <i class="el-icon-shopping-cart-1"></i>
               <span slot="title">购物车管理</span>
             </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main>
-          <keep-alive>
-             <router-view />
-          </keep-alive>
-         
+          <router-view />
         </el-main>
       </el-container>
     </el-container>
@@ -93,6 +85,7 @@ html {
   height: 100vh;
   background: #f5f5f5;
 }
+
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;
@@ -112,6 +105,7 @@ html {
   background: #fff;
   border-radius: 5px;
 }
+
 .el-main {
   background: #fff;
   margin: 5px 5px 0px 0px;
@@ -120,6 +114,7 @@ html {
   height: 90vh;
   overflow: auto;
 }
+
 .el-menu {
   border: none;
 }

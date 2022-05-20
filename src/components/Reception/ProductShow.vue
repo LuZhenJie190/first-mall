@@ -37,19 +37,22 @@ export default {
       recommendData: [],
     };
   },
-  created() { },
+  created() {
+
+  },
   watch: {
     // 监听props的数据，解决无法读取到父组件数据的问题
     products: {
       deep: true,
       handler(newVal, oldVal) {
         this.recommendData = this.products
+
       },
     },
   },
   methods: {
     goDetail(data) {
-      console.log(data);
+      // console.log(data);
       this.$router.push({
         name: "productinfo",
         params: {

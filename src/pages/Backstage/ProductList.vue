@@ -20,7 +20,8 @@
       <el-table-column prop="createTime" label="轮播图" width="120" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.isCarousel" :active-value="1" :inactive-value="0"
-            @change="carouselChange(scope.$index, scope.row)" :disabled="scope.row.carousel.carouselImg == null" />
+            @change="carouselChange(scope.$index, scope.row)"
+            :disabled="scope.row.carousel == null || scope.row.carousel.carouselImg == null" />
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="每日推荐" width="120" align="center">
@@ -102,7 +103,8 @@ import {
   ProductGetTitle,
   ProductBrand,
   ProductGetByBrand,
-  ProductGetInfoByTitle
+  ProductGetInfoByTitle,
+  ProductGetInfoByTitleL
 } from "../../api/index.js";
 
 const COS = require("cos-js-sdk-v5");
@@ -159,6 +161,7 @@ export default {
       loading: true,
       dialogTableVisible: false,
       cateNames: [],
+      carouselImg: "0",
     };
   },
 
@@ -179,10 +182,14 @@ export default {
       if (val == 102) return "华为";
       if (val == 103) return "VIVO";
       if (val == 104) return "OPPO";
-      if (val == 201) return "xxx";
-      if (val == 202) return "aaa";
-      if (val == 301) return "ccc";
-      if (val == 401) return "sss";
+      if (val == 201) return "联想";
+      if (val == 202) return "惠普";
+      if (val == 301) return "华为";
+      if (val == 302) return "创维";
+
+      if (val == 401) return "小米";
+      if (val == 402) return "荣耀";
+
     },
   },
   methods: {
@@ -301,6 +308,8 @@ export default {
         });
         // 重新获取数据
         this.getProductList();
+        this.reload();
+        this.pageInfo.pageNum = 1;
         // 模态框显示
         this.dialogTableVisible = false;
       }
@@ -395,15 +404,15 @@ export default {
     searchInput(val) {
       this.loading = true;
       this.search = val;
-      console.log(val);
       if (this.search != "") {
         ProductGetInfoByTitle(this.search).then((res) => {
-          this.tableData = res.data.list;
-          this.pageInfo.pageTotal = res.data.total;
+          this.tableData = res.data;
+          this.pageInfo.pageShow = false
           this.loading = false;
         });
       } else {
         this.getProductList();
+        this.pageInfo.pageShow = true
       }
     },
     // 筛选商品

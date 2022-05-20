@@ -3,8 +3,7 @@
     <nav-menu v-if="!$route.meta.showNav" :scrollDistance="scrollDistance" />
     <router-view v-if="isRouterAlive" />
     <div class="back">
-      <el-button v-show="backTop" @click="goback"><i class="el-icon-top"></i></el-button>
-      <!-- <h1 v-show="backTop" @click="goback">回到顶部</h1> -->
+      <el-button type="danger" plain v-show="backTop" @click="goback"><i class="el-icon-top"></i></el-button>
     </div>
   </div>
 </template>

@@ -69,27 +69,6 @@ export default {
     this.initCharts();
   },
   created() {
-    // ProductInfoFindAll(this.pageN, this.pageS).then((res) => {
-    //   this.allData = res.list;
-    //   this.pnum = this.allData.map((obj) => {
-    //     return obj.ptype;
-    //   });
-    //   let str = this.pnum.join("");
-    //   // console.log(str);
-    //   // 手机，笔记本，电视，手环  各个总数
-    //   this.product.phone = str.split("0").length - 1;
-    //   this.product.notebook = str.split("1").length - 1;
-    //   this.product.tv = str.split("2").length - 1;
-    //   this.product.watch = str.split("3").length - 1;
-
-    //   this.pTotal = res.total;
-    //   this.cards[1].num = res.total;
-    // });
-    // OrderFindAll(this.pageN, this.pageS).then((res) => {
-    //   // console.log(res);
-    //   this.oTotal = res.total;
-    //   this.cards[2].num = res.total;
-    // });
     this.getUser();
     this.getOrder();
     this.getProduct();

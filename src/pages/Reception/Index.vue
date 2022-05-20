@@ -114,13 +114,13 @@ export default {
   },
   created() {
     ProductgetAll(1, 1000).then((res) => {
-      console.log("index", res);
+      //console.log("index", res);
       res.data.list.forEach((element) => {
 
         if (element.isCarousel) {
 
           this.carouselData.push(element);
-          console.log("element", this.carouselData);
+          //console.log("element", this.carouselData);
         }
         if (element.isRecommend) {
           this.recommendData.push(element);
@@ -132,7 +132,7 @@ export default {
   methods: {
     getSomeData() {
       ProductCategory().then(res => {
-        console.log("pc", res);
+        //console.log("pc", res);
         let array = [];
         let array1001 = [];
         let array1002 = [];
@@ -164,8 +164,9 @@ export default {
 
         this.phoneData = array1001.filter(e => { if (e.categoryId == 1001) return e })
         this.notebookData = array1002.filter(e => { if (e.categoryId == 1002) return e })
-        this.tvData = array1004.filter(e => { if (e.categoryId == 1003) return e })
-        this.braceletData = array1003.filter(e => { if (e.categoryId == 1004) return e })
+        this.tvData = array1003.filter(e => { if (e.categoryId == 1003) return e })
+        this.braceletData = array1004.filter(e => { if (e.categoryId == 1004) return e })
+        console.log(array1003);
 
       })
     },
@@ -180,10 +181,6 @@ h1 {
   color: #757575;
 }
 
-.wrap {
-  /* max-width: 1200px;
-  margin: 0 auto; */
-}
 
 .index-footer {
   width: 100%;

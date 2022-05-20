@@ -228,21 +228,21 @@ export default {
       this.$refs[formName].validate((valid) => {
 
         if (valid) {
-          console.log("vv");
-          // this.registerForm.uCreateTime = getnowDate();
-          // UserRegsiter(this.registerForm).then((res) => {
-          //   console.log(res);
-          //   if (res.code == 200) {
-          //     this.$alert(`${res.message}`, {
-          //       confirmButtonText: "确定",
-          //       callback: () => {
-          //         this.reload();
-          //       },
-          //     });
-          //   } else {
-          //     this.$alert(`${res.message}`);
-          //   }
-          // });
+
+          this.registerForm.uCreateTime = getnowDate();
+          UserRegsiter(this.registerForm).then((res) => {
+            console.log(res);
+            if (res.code == 200) {
+              this.$alert(`${res.message}`, {
+                confirmButtonText: "确定",
+                callback: () => {
+                  this.reload();
+                },
+              });
+            } else {
+              this.$alert(`${res.message}`);
+            }
+          });
         } else {
           return false;
         }
@@ -305,6 +305,7 @@ export default {
 .login-form /deep/ .el-input__inner:focus {
   border: 1px solid #be0f2d;
 }
+
 
 .login-form /deep/ .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before {
   content: "";
@@ -401,6 +402,10 @@ export default {
   left: 80px;
   top: -10px;
 
+}
+
+.checked /deep/ .el-input__inner:focus {
+  border: 1px solid #be0f2d;
 }
 
 .checked /deep/ .el-checkbox__label {

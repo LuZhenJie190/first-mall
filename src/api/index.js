@@ -108,9 +108,9 @@ export const ProductGetInfoById = (pid) => requests({
 });
 
 
-// ID查商品
+// 名称查商品
 export const ProductGetInfoByTitle = (title) => requests({
-  url: (`product/getAllProduct?title=${title}`),
+  url: (`product/searchProduct?title=${title}`),
   method: 'GET'
 });
 

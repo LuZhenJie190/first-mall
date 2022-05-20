@@ -103,14 +103,11 @@
 <script>
 import {
   ProductAdd,
-  ProductCategory,
-  ProductBrandGetByCate,
   ProductParamsAdd,
   ProductImageAdd,
   ProductGetCate,
   CateGetBrand
 } from "../../api/index";
-import { MessageBox } from "element-ui";
 import { getnowDate } from "../../utils/index";
 const COS = require("cos-js-sdk-v5");
 // 填写自己腾讯云cos中的key和id (密钥)
@@ -254,7 +251,7 @@ export default {
         this.paramForm.pmVersion = "";
         this.paramForm.price = "";
         this.paramForm.stock = "";
-        console.log(this.paramList);
+        // console.log(this.paramList);
       }
     },
     // 获取当前时间
@@ -277,11 +274,11 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.imageList.length != 0 && this.paramList.length != 0) {
-            ProductImageAdd(this.imageList).then((res) => { });
-            ProductParamsAdd(this.paramList).then((res) => { });
+            ProductImageAdd(this.imageList);
+            ProductParamsAdd(this.paramList);
             this.$alert("添加成功");
             // 重置表单
-            // this.reload();
+            this.reload();
           } else {
             this.$alert("请添加图片和参数");
           }
@@ -315,7 +312,7 @@ export default {
         },
         (error, data) => {
           this.form.mainImg = "http://" + data.Location;
-          console.log(this.form);
+          // console.log(this.form);
         }
       );
     },
@@ -368,7 +365,7 @@ export default {
         },
         (error, data) => {
           this.form.carouselImg = "http://" + data.Location;
-          console.log(this.form);
+          // console.log(this.form);
         }
       );
     },

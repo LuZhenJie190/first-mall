@@ -11,8 +11,6 @@ import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 import animated from 'animate.css'
 import VueAreaLinkage from 'vue-area-linkage';
 import 'vue-area-linkage/dist/index.css'; // v2 or higher
-import store from "./store/index"
-import nodepc from "./utils/nodepc";
 Vue.use(VueAreaLinkage)
 Vue.use(animated)
 import {
@@ -107,7 +105,6 @@ Vue.use(VueRouter),
   Vue.use(Pagination);
 Vue.use(Skeleton);
 Vue.use(SkeletonItem);
-
 Vue.use(Dialog);
 Vue.use(Autocomplete);
 Vue.use(Dropdown);
@@ -206,6 +203,5 @@ Vue.component(Paging.name, Paging);
 new Vue({
   render: h => h(App),
   router,
-  store,
 
 }).$mount('#app')

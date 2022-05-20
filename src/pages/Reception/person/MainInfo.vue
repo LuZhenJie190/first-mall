@@ -29,12 +29,12 @@
       </el-form-item>
 
       <el-form-item>
-        <button class="user-update" @click="userUpdate" v-show="!update">
+        <el-button class="user-update" @click="userUpdate" v-show="!update">
           编辑资料
-        </button>
-        <button class="user-update" @click="isUpdate" v-show="update">
+        </el-button>
+        <el-button class="user-update" @click="isUpdate" v-show="update">
           确认修改
-        </button>
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -102,6 +102,10 @@ export default {
 </script>
 
 <style scoped>
+.main-info {
+  width: 100%;
+}
+
 .title {
   font-size: 30px;
   font-weight: 500;

@@ -87,6 +87,7 @@ export default {
   top: 0px;
   left: 0px;
   margin-right: 10px;
+  max-width: 276px;
   width: 30vw;
   height: 80vh;
   display: flex;

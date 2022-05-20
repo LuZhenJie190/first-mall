@@ -8,7 +8,7 @@
           <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column width="110">
             <template slot-scope="scope">
-              <img :src="scope.row.productImg" />
+              <img :src="scope.row.productImg" @click="goProduct(scope.row)" />
             </template>
           </el-table-column>
           <el-table-column label="商品名称" width="400">
@@ -65,7 +65,7 @@
 <script>
 // import Counter from "../../components/Reception/Counter.vue";
 import DsFooter from "../../components/Reception/DsFooter.vue";
-import { CartById, CartDelete, CartDatchDelete } from "../../api/index";
+import { CartById, CartDelete, ProductDetail } from "../../api/index";
 import CartHeader from "../../components/Reception/CartHeader.vue";
 export default {
   name: "ShoppingCart",
@@ -132,7 +132,7 @@ export default {
     },
     getCartData() {
       CartById(localStorage.getItem("uid")).then((res) => {
-        console.log(res);
+        //console.log(res);
         this.tableData = res.data;
         this.tableData.reverse();
       });
@@ -164,7 +164,7 @@ export default {
       this.multipleSelection.forEach((e) => {
         this.cids += e.cid + ",";
       })
-      console.log(this.cids);
+      // console.log(this.cids);
     },
     handleDelete(index, row) {
       // console.log(index, row);
@@ -172,6 +172,16 @@ export default {
         if (res.code == 200) {
           this.getCartData();
         }
+      })
+    },
+    goProduct(data) {
+      let pid = data.pid;
+      ProductDetail(pid).then((res) => {
+        //  console.log(res);
+        this.$router.push({
+          name: "productinfo",
+          params: { details: res.data[0] }
+        })
       })
     },
   },

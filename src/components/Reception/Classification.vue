@@ -1,9 +1,9 @@
 <template>
     <div class="classification">
         <ul class="tabs">
-            <li class="tabs-li" v-for="(item, index) in imgUrl" :key="index">
+            <li class="tabs-li" v-for="(item, index) in imgUrl" :key="index" @click="goPage(item.path)">
                 <img :src="item.url">
-                <a href="">{{ item.title }}</a>
+                <a>{{ item.title }}</a>
             </li>
         </ul>
     </div>
@@ -16,17 +16,21 @@ export default {
     data() {
         return {
             imgUrl: [
-                { url: require('../../assets/phone.png'), title: '手机' },
-                { url: require('../../assets/netobook.png'), title: '笔记本' },
-                { url: require('../../assets/tv.png'), title: '电视' },
-                { url: require('../../assets/watch.png'), title: '手环' },
+                { url: require('../../assets/phone.png'), title: '手机', path: "/MobilePhone" },
+                { url: require('../../assets/netobook.png'), title: '笔记本', path: "/Notebook" },
+                { url: require('../../assets/tv.png'), title: '电视', path: "/Television" },
+                { url: require('../../assets/watch.png'), title: '智能穿戴', path: "/Bracelet" },
             ],
             showDetails: false
 
         }
     },
     methods: {
-
+        goPage(path) {
+            this.$router.push({
+                path: path
+            })
+        }
     },
 };
 </script>
@@ -53,11 +57,17 @@ export default {
     height: 70px;
 }
 
+.tabs-li a {
+    font-weight: 600;
+    color: #757575;
+}
+
 .tabs-li {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .tabs-details {

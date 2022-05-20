@@ -1,13 +1,7 @@
 <template>
   <div class="counter">
-    <el-input-number
-      v-model="num"
-      @change="handleChange"
-      :min="1"
-      :max="10"
-      size="small"
-      label="描述文字"
-    ></el-input-number>
+    <el-input-number v-model="num" @change="handleChange" :min="1" :max="10" size="small" label="描述文字">
+    </el-input-number>
   </div>
 </template>
 
@@ -32,10 +26,4 @@ export default {
 </script>
 
 <style>
-/* .el-input-number:hover{
-  border: 1px solid red !important;
-} */
-/* .el-input-number__decrease:hover{
-  border: 1px solid red !important;
-} */
 </style>

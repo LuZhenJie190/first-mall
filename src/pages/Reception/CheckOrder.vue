@@ -134,7 +134,7 @@ export default {
       orderInfo: {
         orderId: "",
         userId: localStorage.getItem("uid"),
-        payWay: "",
+        payWay: null,
         payStatus: 0,
         orderTime: "",
         userName: "",
@@ -150,15 +150,17 @@ export default {
   },
   created() {
     this.orderInfo.orderId = this.idRandom;
-    this.productList = this.$route.params.cart;
+    if (this.$route.params.cart !== undefined) {
+      localStorage.setItem("checkorder", JSON.stringify(this.$route.params.cart));
+    }
+    let result = JSON.parse(localStorage.getItem("checkorder"))
+    this.productList = result;
+    // console.log(this.productList);
     this.productList.forEach((e) => {
       e["orderId"] = this.orderInfo.orderId;
       this.cids += e.cid + ",";
     });
     this.getAddressList();
-    // 随机生成订单号
-
-    // this.orderParams.orderId =  this.orderInfo.orderId;
   },
 
   computed: {
@@ -191,9 +193,9 @@ export default {
 
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.addForm);
+          // console.log(this.addForm);
           AddressInsert(this.addForm).then(res => {
-            console.log(res);
+            // console.log(res);
             this.modelShow1 = false;
           })
         } else {
@@ -209,7 +211,7 @@ export default {
       if (this.orderInfo.userAddress == "") {
         this.$alert("请选择地址");
       } else if (this.orderInfo.payWay == null) {
-        console.log(this.orderInfo);
+        // console.log(this.orderInfo);
         this.$alert("请选择支付方式");
       } else {
         this.orderInfo.orderTime = getnowDate();
@@ -240,7 +242,7 @@ export default {
           .catch(() => {
             this.orderInfo.payWay = null;
             OrderInsert(this.orderInfo).then((res) => {
-              console.log(res);
+              // console.log(res);
               this.$router.replace({ path: "/PersonalMenu/MainOrder" });
             });
           });
@@ -254,10 +256,10 @@ export default {
       this.orderInfo.city = val.uCity;
       this.orderInfo.area = val.uArea;
       this.orderInfo.userAddress = val.uAddress;
-      console.log(val);
+      //console.log(val);
     },
     pay(index) {
-      console.log(index);
+      // console.log(index);
       this.current1 = index;
       this.orderInfo.payWay = index;
     },
@@ -300,11 +302,12 @@ export default {
       });
 
 
+
     },
     updateAddress(val) {
       this.addressData = val;
       this.modelShow = true;
-      console.log(this.from);
+      // console.log(this.from);
     },
     goCart() {
       this.$router.push({ path: "/ShoppingCart" });

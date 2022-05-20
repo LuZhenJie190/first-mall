@@ -1,10 +1,10 @@
 <template>
   <div class="bracelet">
     <div class="wrap">
-      <bread-header class="bread">手环</bread-header>
+      <bread-header class="bread">智能穿戴</bread-header>
       <div class="m-tabs">
         <div class="m-title">
-          <h2>手环专区</h2>
+          <h2>智能穿戴专区</h2>
           <el-divider></el-divider>
         </div>
         <tabs-list :products="bData" />
@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     getData() {
-      ProductGetByCate(1002).then((res) => {
+      ProductGetByCate(1004).then((res) => {
         this.bData = res.data[0].productBrand;
       });
     },

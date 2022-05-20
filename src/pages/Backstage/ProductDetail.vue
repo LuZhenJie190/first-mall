@@ -1,28 +1,38 @@
 <template>
   <div class="detail">
     <el-page-header @back="goBack" content="商品列表" />
-    <el-table :data="tableData" style="width: 80%; margin: auto; margin-top: 20px" v-loading="loading">
-      <el-table-column label="颜色" width="150" sortable prop="pmColor">
-      </el-table-column>
-      <el-table-column label="版本" width="200">
-        <template slot-scope="scope">
-          <el-tag size="medium" type="success">
-            {{ scope.row.pmVersion }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column property="price" width="150" label="价格"></el-table-column>
-      <el-table-column property="stock" width="150" label="库存"></el-table-column>
-      <el-table-column align="right">
-        <template slot="header" slot-scope="scope">
-          <el-button type="primary" @click="insert">添加 <i class="el-icon-plus"></i></el-button>
-        </template>
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="updateParams(scope.$index)">修改</el-button>
-          <el-button size="mini" type="danger" @click="removeProduct(scope.$index)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="wrap">
+      <div class="imageList">
+        <h2>商品图片：</h2>
+        <ul>
+          <li v-for="item in imgsList" :key="item.imgid">
+            <img :src="item.url" alt="">
+          </li>
+        </ul>
+      </div>
+      <el-table :data="tableData" style="width: 100%; margin: auto; margin-top: 20px" v-loading="loading">
+        <el-table-column label="颜色" width="150" sortable prop="pmColor">
+        </el-table-column>
+        <el-table-column label="版本" width="300">
+          <template slot-scope="scope">
+            <el-tag size="medium" type="success">
+              {{ scope.row.pmVersion }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column property="price" width="150" label="价格"></el-table-column>
+        <el-table-column property="stock" width="150" label="库存"></el-table-column>
+        <el-table-column align="right">
+          <template slot="header">
+            <el-button type="primary" @click="insert">添加 <i class="el-icon-plus"></i></el-button>
+          </template>
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="updateParams(scope.$index)">修改</el-button>
+            <el-button size="mini" type="danger" @click="removeProduct(scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <!-- 添加弹框 -->
     <el-dialog title="添加参数" :visible.sync="dialogTableVisible" style="width: 1000px; margin: auto">
       <el-form label-width="70px" style="width: 400px; margin: auto">
@@ -91,6 +101,7 @@ export default {
         stock: "",
       },
       pList: [],
+      imgsList: [],
     };
   },
   created() {
@@ -100,8 +111,9 @@ export default {
     // 获取数据
     getDetail() {
       ProductDetail(this.$route.query.pid).then((res) => {
-        // console.log(res);
+        console.log(res);
         this.tableData = res.data[0].productParams;
+        this.imgsList = res.data[0].productImage;
         this.loading = false;
       });
     },
@@ -192,5 +204,34 @@ export default {
 <style scoped>
 .detail {
   padding: 10px;
+}
+
+.wrap {
+  padding: 10px;
+  width: 100%;
+}
+
+.imageList {
+  margin: 30px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.imageList h2 {
+  font-weight: normal;
+  font-size: 16px;
+  color: #757575;
+}
+
+.imageList ul {
+  display: flex;
+}
+
+.imageList li {
+  padding: 10px 15px;
+}
+
+.imageList img {
+  width: 100px;
+  height: 100px;
 }
 </style>

@@ -24,12 +24,9 @@
           <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
         </el-menu>
         <div class="search-input">
-          <input type="text" v-model="searchMsg" />
+          <input type="text" v-model="searchMsg" placeholder="请输入商品名称" />
           <i class="el-icon-search"></i>
-          <button>搜索</button>
-          <!-- <el-input type="text" placeholder="请输入关键字" v-model="searchMsg">
-        </el-input>
-        <img @click="mainSearch" src="../../assets/search.png" /> -->
+          <button @click="goSearch">搜索</button>
         </div>
 
         <div class="right">
@@ -74,15 +71,15 @@
               <router-link to="/Television" active-class="active">电视</router-link>
             </el-menu-item>
             <el-menu-item index="5">
-              <router-link to="/Bracelet" active-class="active">手环</router-link>
+              <router-link to="/Bracelet" active-class="active">智能穿戴</router-link>
             </el-menu-item>
 
 
           </el-menu>
           <div class="search-input">
-            <input type="text" v-model="searchMsg" />
+            <input type="text" v-model="searchMsg" placeholder="请输入商品名称" />
             <i class="el-icon-search"></i>
-            <button>搜索</button>
+            <button @click="goSearch">搜索</button>
           </div>
 
           <div class="right">
@@ -133,6 +130,7 @@ export default {
     scrollDistance(val) {
       if (val >= 80 && this.$route.path != "/PersonalMenu/PersonalIndex"
         && this.$route.path != "/PersonalMenu/MainOrder"
+        && this.$route.path != "/PersonalMenu/MainInfo"
         && this.$route.path != "/OrderDetail") {
         this.fixedShow = true;
         this.$refs.nav.style.position = "fixed";
@@ -150,6 +148,14 @@ export default {
     },
   },
   methods: {
+    goSearch() {
+      this.$router.push({
+        name: "productsearch",
+        params: { msg: this.searchMsg }
+      })
+      this.searchMsg = ""
+    },
+
     goIndex() {
       this.$router.push({ path: "/Index" });
     },

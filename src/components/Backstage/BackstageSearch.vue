@@ -49,7 +49,7 @@ export default {
       uidList: [],
       pidList: [],
       oidList: [],
-      cidList:[],
+      cidList: [],
       cateOptions: [],
       brandOptions: [],
       cateValue: "",
@@ -104,7 +104,7 @@ export default {
             });
           }
           if (this.flag == 3) {
-            ProductDatchDelete(this.oidList).then((res) => {
+            OrderBatchDelete(this.oidList).then((res) => {
               if (res.code == 200) {
                 this.$message({
                   message: `成功删除${this.pidList.length}件订单`,
@@ -113,7 +113,7 @@ export default {
               }
             });
           }
-           if (this.flag == 4) {
+          if (this.flag == 4) {
             CartDatchDelete(this.cidList).then((res) => {
               if (res.code == 200) {
                 this.$message({

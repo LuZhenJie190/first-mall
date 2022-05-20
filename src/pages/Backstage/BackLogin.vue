@@ -37,11 +37,17 @@ export default {
     methods: {
         login() {
             UserLogin(this.form).then((res) => {
+
                 if (res.code == 200) {
-                    this.$router.replace({
-                        path: "/BackendSystem/Home",
-                    });
-                    localStorage.setItem("rootName", res.data.userName);
+                    if (res.data.userIdentity == 1) {
+                        this.$router.replace({
+                            path: "/BackendSystem/Home",
+                        });
+                        localStorage.setItem("rootName", res.data.userName);
+                    } else {
+                        this.$alert("权限不足")
+                    }
+
                 }
                 res.code == 201 ? this.$alert("帐号和密码不能为空") : "";
                 res.code == 202 ? (this.nameShow = true) : (this.nameShow = false);
