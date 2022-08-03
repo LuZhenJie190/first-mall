@@ -1,95 +1,104 @@
 <template>
   <div class="user-root">
-    <BackstageSearch
-      :inputValue="inputValue"
-      @searchInput="searchInput"
-      class="search"
-    />
-    <el-table :data="tableData" border height="433">
-      <el-table-column prop="uId" label="ID" width="150"> </el-table-column>
-      <el-table-column prop="userName" label="用户名" width="200">
-      </el-table-column>
-      <el-table-column prop="userPwd" label="密码" width="200">
-      </el-table-column>
-      <el-table-column prop="userPhone" label="手机号" width="235">
-      </el-table-column>
-      <el-table-column prop="userEmail" label="邮箱" width="258">
-      </el-table-column>
-      <el-table-column label="权限" width="200">
+    <common-form :formData="formData" :formLabel="formLabel" :inline="true">
+      <el-button type="primary" @click="searchInput">搜索</el-button>
+    </common-form>
+    <common-table :tableData="tableData" :tableLabel="tableLabel" :pagination="pagination"
+      @changePage="getUserRootList">
+      <el-table-column label="权限操作" width="auto" align="center">
         <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.userIdentity"
-            :active-value="1"
-            :inactive-value="0"
-            active-text="管理员"
-            inactive-text="普通用户"
-            @change="rootChange(scope.$index)"
-          >
+          <el-switch v-model="scope.row.userIdentity" :active-value="1" :inactive-value="0" active-text="管理员"
+            inactive-text="普通用户" @change="rootChange(scope.row)">
           </el-switch>
         </template>
       </el-table-column>
-    </el-table>
-    <div class="root-pagination">
-      <Paging @pNum="pNum" :pageInfo="pageInfo" />
-    </div>
+    </common-table>
   </div>
 </template>
 
 <script>
-import { UsergetAll, UsergetByName, UserUpdate } from "../../api/index";
+import { UsergetAll, UsergetByName, UserUpdate } from "../../api/user";
+import CommonTable from '../../components/Backstage/CommonTable.vue';
+import CommonForm from '../../components/Backstage/CommonForm.vue';
 
 export default {
+  components: { CommonForm, CommonTable },
   name: "UserRoot",
   inject: ["reload"],
   data() {
     return {
+
+      switchModel: true,
+      formData: {
+        search: ""
+      },
+      formLabel: [
+        { label: '', type: 'input', model: 'search', tip: '用户名' }
+      ],
+      tableLabel: [
+        { label: 'ID', prop: 'uId', width: '80', sortable: true },
+        { label: '身份', prop: 'userIdentityLabel', width: 100 },
+        { label: '用户名', prop: 'userName', width: 150 },
+        { label: '密码', prop: 'userPwd', width: 130 },
+        { label: '性别', prop: 'userSexLabel', width: 50 },
+        { label: '邮箱', prop: 'userEmail', width: 180 },
+        { label: '手机号', prop: 'userPhone', width: 140 },
+        { label: '注册时间', prop: 'uCreateTime', width: 180, sortable: true },
+      ],
+      pagination: {
+        page: 1,
+        size: 10,
+        total: 10,
+        loading: false,
+      },
       inputValue: "请输入用户名",
       tableData: [],
       labelPosition: "right",
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 8,
-        pageTotal: 0,
-        pageShow: true,
-      },
     };
   },
   created() {
     this.getUserRootList();
-    this.pNum();
   },
   methods: {
+    // 命名格式化
+    nameFilter(res) {
+      const result = res.data.list.map(item => {
+        item.userIdentityLabel = item.userIdentity === 0 ? '普通用户' : '管理员';
+        item.userSexLabel = item.userSex === 0 ? '女' : '男';
+        return item;
+      });
+      return result;
+    },
     // 获取用户权限列表
     getUserRootList() {
-      UsergetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then((res) => {
-        this.tableData = res.data.list;
-        this.pageInfo.pageTotal = res.data.total;
-      });
-    },
-    // 获取数据
-    pNum(val) {
-      if (val == undefined) {
-        val = 1;
-      } else {
-        val == val;
-      }
-      UsergetAll(val, this.pageInfo.pageSize).then((res) => {
-        this.tableData = res.data.list;
+      this.pagination.loading = true;
+      UsergetAll({ pageNum: this.pagination.page, pageSize: this.pagination.size }).then((res) => {
+        this.tableData = this.nameFilter(res);
+        this.pagination.total = res.data.total;
+        this.pagination.loading = false;
+        console.log(this.tableData);
       });
     },
     // 根据id改变权限
-    rootChange(rid) {
-      let index = rid;
-
-      UserUpdate(this.tableData[index]).then((res) => {});
+    rootChange(val) {
+      UserUpdate(val).then(res => {
+        if (res.code === "200") {
+          this.$message({
+            showClose: true,
+            type: "success",
+            message: '修改成功'
+          })
+          this.getUserRootList();
+        }
+      })
     },
 
     //搜索用户名
-    searchInput(val) {
-      if (val != "") {
-        UsergetByName(val).then((res) => {
-          this.tableData = res.data.list;
-          this.pageInfo.pageTotal = res.data.total;
+    searchInput() {
+      if (this.formData.search !== "") {
+        UsergetByName(this.formData.search).then((res) => {
+          this.tableData = this.nameFilter(res);
+          this.pagination.total = res.data.total;
         });
       } else {
         this.getUserRootList();
@@ -101,8 +110,9 @@ export default {
 
 <style scoped>
 .user-root {
-  padding: 20px;
+  height: 100%;
 }
+
 .root-pagination {
   margin-top: 10px;
   display: flex;
@@ -111,5 +121,9 @@ export default {
 
 .search /deep/ .list-delete {
   display: none !important;
+}
+
+.search /deep/ .screen {
+  display: none;
 }
 </style>

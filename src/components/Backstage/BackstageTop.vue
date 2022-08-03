@@ -35,7 +35,7 @@ export default {
       }, 100);
     },
     backTo() {
-      this.$router.push({
+      this.$router.replace({
         path: "/BackLogin",
       });
       localStorage.clear();

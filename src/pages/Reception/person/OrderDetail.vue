@@ -88,7 +88,9 @@
 </template>
 
 <script>
-import { OrderUpdate, ProductDetail } from "../../../api/index"
+import { OrderUpdate } from "../../../api/order"
+import { ProductDetail } from "../../../api/product"
+
 export default {
   name: "orderDetail",
   data() {
@@ -195,6 +197,11 @@ export default {
   display: flex;
   margin-left: 200px;
   align-items: center;
+}
+
+.price p {
+  padding-left: 10px;
+  line-height: 20px;
 }
 
 .products img {

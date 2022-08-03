@@ -1,7 +1,7 @@
 <template>
   <div class="tabs-list">
     <el-tabs v-model="activeName">
-      <el-tab-pane :label="p1.brandName" v-for="(p1, index) in phoneData" :key="p1.brandId">
+      <el-tab-pane :label="p1.brandName" v-for="p1 in phoneData" :key="p1.brandId">
         <div class="m-body">
           <ul class="m-list">
             <li v-for="(p2, index) in p1.product" :key="p2.pid" @click="goDetail(index)">

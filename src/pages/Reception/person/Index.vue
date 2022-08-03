@@ -54,7 +54,8 @@ import {
   UsergetById,
   AddressById,
   AddressDelete,
-} from "../../../api/index";
+} from "../../../api/user";
+
 import AddressModel from '../../../components/Reception/AddressModel.vue';
 import BreadHeader from "../../../components/Reception/BreadHeader.vue";
 export default {
@@ -62,7 +63,7 @@ export default {
   name: "Index",
   data() {
     return {
-      userName: localStorage.getItem("uname"),
+      userName: "",
       addressList: [],
       userData: [],
       current: -1,
@@ -72,7 +73,7 @@ export default {
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
 
       addForm: {
-        userId: localStorage.getItem("uid"),
+        userId: "",
         userName: "",
         userPhone: "",
         uAddress: "",
@@ -90,6 +91,10 @@ export default {
       });
     });
     this.getAddress();
+  },
+  mounted() {
+    this.userName = localStorage.getItem("uname");
+    this.addForm.userId = localStorage.getItem("uid");
   },
   methods: {
     getAddressList() {
@@ -148,7 +153,7 @@ export default {
 }
 
 .item {
-  width: 240px;
+  width: 235px;
   height: 160px;
   border: 1px solid #ccc;
   margin-right: 10px;
@@ -217,8 +222,6 @@ export default {
 }
 
 .wrap {
-  width: 1200px;
-  margin: auto;
   position: relative;
   top: 20px;
 }

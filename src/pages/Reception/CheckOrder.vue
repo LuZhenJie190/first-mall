@@ -97,10 +97,14 @@ import {
   AddressInsert,
   AddressUpdate,
   AddressDelete,
+} from "../../api/user";
+import {
   OrderParamsInsertBatch,
   OrderInsert,
+} from "../../api/order";
+import {
   CartDatchDelete
-} from "../../api/index";
+} from "../../api/cart";
 import AddressModel from "../../components/Reception/AddressModel.vue";
 export default {
   components: { CartHeader, AddressModel },
@@ -322,15 +326,15 @@ export default {
   transition: 0.2s;
 }
 
-
-.check-order {}
+.check-order {
+  padding-bottom: 40px;
+}
 
 .wrap {
-  width: 1200px;
+  width: 1180px;
   background-color: #fff;
-  position: relative;
-  top: 30px;
   margin: auto;
+  transform: translateY(20px);
   padding: 20px;
 }
 

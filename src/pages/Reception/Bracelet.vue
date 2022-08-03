@@ -10,17 +10,16 @@
         <tabs-list :products="bData" />
       </div>
     </div>
-    <ds-footer />
   </div>
 </template>
 
 <script>
-import DsFooter from "../../components/Reception/DsFooter.vue";
+
 import TabsList from "../../components/Reception/TabsList.vue";
 import BreadHeader from "../../components/Reception/BreadHeader.vue";
-import { ProductGetByCate } from "../../api/index.js";
+import { ProductGetByCate } from "../../api/product";
 export default {
-  components: { DsFooter, TabsList, BreadHeader },
+  components: { TabsList, BreadHeader },
   name: "Bracelet",
   data() {
     return {
@@ -41,9 +40,8 @@ export default {
 </script>
 
 <style scoped>
-.wrap {
-  max-width: 1200px;
-  margin: 0 auto;
+.bracelet {
+  padding-top: 80px;
 }
 
 .bread {

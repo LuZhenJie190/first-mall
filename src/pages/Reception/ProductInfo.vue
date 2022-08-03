@@ -39,7 +39,8 @@
           <div class="colors">
             <h2>选择颜色</h2>
             <ul>
-              <li v-for="(item, index) in colorList" :key="index" @click="colorIndex(index)"
+              <li v-show="listShow">加载中</li>
+              <li v-for="(item, index) in colorList" :key="index" @click="colorIndex(index)" v-show="!listShow"
                 :class="{ active: current == index }" ref="color">
                 {{ item }}
               </li>
@@ -48,7 +49,8 @@
           <div class="versions">
             <h2>选择版本</h2>
             <ul>
-              <li v-for="(item, index) in versionList" :key="index" @click="versionIndex(index)"
+              <li v-show="listShow">加载中</li>
+              <li v-for="(item, index) in versionList" :key="index" @click="versionIndex(index)" v-show="!listShow"
                 :class="{ active: current1 == index }" ref="version">
                 {{ item }}
               </li>
@@ -65,7 +67,7 @@
             <span>{{ productData.title }} {{ params2.pmVersion }}
               {{ params1.pmColor }}</span>
             <span>{{ total }}元</span>
-            <h1>总计：{{ allTotal }}元</h1>
+            <h1>总计：<span style="margin:0px 5px">{{ allTotal }}</span>元</h1>
           </div>
           <button class="cart" @click="addToCart">加入购物车</button>
         </div>
@@ -76,7 +78,9 @@
 
 <script>
 import Swiper from "swiper"; // 注意引入的是Swiper
-import { ProductGetPrice, ProductDetail, ProductGetCV, CartInsert } from "../../api/index";
+import { ProductGetPrice, ProductDetail, ProductGetCV } from "../../api/product";
+import { CartInsert } from "../../api/cart";
+
 export default {
   name: "ProductInfo",
   data() {
@@ -114,6 +118,9 @@ export default {
         total: "",
       },
       carouselList: [],
+      listShow: true,
+      c1: '',
+      v1: '',
     };
   },
   watch: {
@@ -153,9 +160,11 @@ export default {
       handler(newValue, oldValue) {
         ProductGetCV(this.params1).then((res) => {
           this.cvparams.pmColor = this.params1.pmColor;
-          this.versionList = res.data.map((e) => {
+          let versions = res.data.map((e) => {
             return e.pmVersion;
           });
+          this.versionList = [...new Set(versions)];
+
         });
       },
     },
@@ -164,9 +173,10 @@ export default {
       handler(newValue, oldValue) {
         ProductGetCV(this.params2).then((res) => {
           this.cvparams.pmVersion = this.params2.pmVersion;
-          this.colorList = res.data.map((e) => {
+          let colors = res.data.map((e) => {
             return e.pmColor;
           });
+          this.colorList = [...new Set(colors)];
         });
       },
     },
@@ -175,8 +185,10 @@ export default {
       handler(newValue, oldValue) {
         this.cvparams.productId = this.params1.productId;
         if (this.cvparams.pmColor != "" && this.cvparams.pmVersion != "") {
+          // console.log(this.cvparams);
+
           ProductGetPrice(this.cvparams).then((res) => {
-            //  console.log(res);
+            // console.log(res);
             this.total = res.data.price;
           });
         }
@@ -190,34 +202,29 @@ export default {
       sum += result;
       return sum;
     },
-    getCV() {
-      return function () {
-        setTimeout(() => {
-          ProductGetCV(this.params1).then((res) => {
-            let c = res.data.map((e) => {
-              return e.pmColor;
-            });
-            let v = res.data.map((e) => {
-              return e.pmVersion;
-            });
-            this.colorList = [...new Set(c)];
-            this.versionList = [...new Set(v)];
-          });
-        }, 100);
-      };
-    },
   },
   created() {
     this.getDetail();
-    this.getCV();
     this.getCarousel();
   },
   // beforeDestroy() {
   //   localStorage.removeItem("info");
   // },
-  mounted() {
-  },
   methods: {
+    getCV() {
+      ProductGetCV(this.params1)
+        .then((res) => {
+          let c = res.data.map((e) => {
+            return e.pmColor;
+          });
+          let v = res.data.map((e) => {
+            return e.pmVersion;
+          });
+          this.colorList = [...new Set(c)];
+          this.versionList = [...new Set(v)];
+          this.listShow = false;
+        })
+    },
     getCarousel() {
       ProductDetail(this.productData.pid).then(res => {
         //console.log(res);
@@ -255,7 +262,7 @@ export default {
       }
     },
     getDetail() {
-      console.log(this.$route.params.details);
+      // console.log(this.$route.params.details);
       if (this.$route.params.details != undefined) {
         localStorage.setItem(
           "info",
@@ -266,7 +273,7 @@ export default {
       this.productData = info;
       this.params1.productId = this.productData.pid;
       this.params2.productId = this.productData.pid;
-      // console.log(this.productData);
+      this.getCV();
     },
     colorIndex(val) {
       // console.log(this.$refs.color[val].innerText);
@@ -290,14 +297,13 @@ export default {
 <style scoped>
 .info {
   width: 100%;
+  height: 100vh;
   background-color: #fff;
 }
 
 .wrap {
-  width: 1200px;
-  margin: 0 auto;
   display: flex;
-  padding-top: 20px;
+  padding-top: 100px;
 }
 
 .info-left {
@@ -310,7 +316,7 @@ export default {
 .info-right {
   flex: 5.5;
   display: grid;
-  grid-template-rows: auto 1fr 100px;
+  grid-template-rows: auto 1fr auto;
   margin-left: 50px;
 }
 
@@ -392,6 +398,7 @@ export default {
   background-color: #eee;
   line-height: 40px;
   padding: 10px 30px;
+  margin-bottom: 20px;
 }
 
 .total span :first-child {
@@ -414,8 +421,6 @@ export default {
   background: #be0f2d;
   color: #fff;
   padding: 15px 100px;
-  position: relative;
-  top: 20px;
   cursor: pointer;
 }
 
@@ -452,7 +457,7 @@ export default {
 .swiper-slide img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   background-position: center;
 }
 
@@ -461,5 +466,6 @@ export default {
   width: 20px;
   height: 3px;
   border-radius: 0px;
+  transform: translateY(-20px);
 }
 </style>

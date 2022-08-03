@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { OrderGetParams, OrderGetParamsByPhone, OrderUpdate } from "../../../api/index";
+import { OrderGetParams, OrderGetParamsByPhone, OrderUpdate } from "../../../api/order";
 import OrderItem from "../../../components/Reception/OrderItem.vue";
 export default {
   name: "MainOrder",

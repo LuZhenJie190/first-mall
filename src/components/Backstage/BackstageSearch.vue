@@ -8,7 +8,7 @@
         </el-input>
       </div>
       <!-- 筛选 -->
-      <div class="screen">
+      <div class="screen" v-show="screenShow">
         <!-- 分类 -->
         <p>筛选:</p>
         <el-select v-model="cateValue" placeholder="请选择类型" @change="cateChange(cateValue)" clearable>
@@ -31,18 +31,14 @@
 </template>
 
 <script>
-import {
-  UserDatchDelete,
-  ProductDatchDelete,
-  ProductCategory,
-  ProductBrandGetByCate,
-  OrderBatchDelete,
-  CartDatchDelete
-} from "../../api/index";
+import { OrderBatchDelete } from "../../api/order";
+import { UserDatchDelete } from "../../api/user";
+import { CartDatchDelete } from "../../api/cart";
+import { ProductDatchDelete, ProductCategory, ProductBrandGetByCate, } from "../../api/product";
 export default {
   inject: ["reload"],
   name: "BackstageSearch",
-  props: ["inputValue", "multipleSelection", "flag"],
+  props: ["inputValue", "multipleSelection", "screenShow"],
   data() {
     return {
       search: "",
@@ -64,70 +60,71 @@ export default {
       this.$emit("searchInput", this.search);
     },
     datchDelete() {
-      this.multipleSelection.forEach((element) => {
-        let uuId = element.uId;
-        let ppId = element.pid;
-        let ooId = element.orderId;
-        let ccId = element.cid;
+      this.$emit("datchDelete");
+      // this.multipleSelection.forEach((element) => {
+      //   let uuId = element.uId;
+      //   let ppId = element.pid;
+      //   let ooId = element.orderId;
+      //   let ccId = element.cid;
 
-        this.uidList.push(uuId);
-        this.pidList.push(ppId);
-        this.oidList.push(ooId);
-        this.cidList.push(ccId);
+      //   this.uidList.push(uuId);
+      //   this.pidList.push(ppId);
+      //   this.oidList.push(ooId);
+      //   this.cidList.push(ccId);
 
-      });
-      this.$confirm("是否删除选中?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          // 删除操作
-          if (this.flag == 1) {
-            UserDatchDelete(this.uidList).then((res) => {
-              if (res.code == 200) {
-                this.$message({
-                  message: `成功删除${this.uidList.length}位用户`,
-                  type: "success",
-                });
-              }
-            });
-          }
-          if (this.flag == 2) {
-            ProductDatchDelete(this.pidList).then((res) => {
-              if (res.code == 200) {
-                this.$message({
-                  message: `成功删除${this.pidList.length}位用户`,
-                  type: "success",
-                });
-              }
-            });
-          }
-          if (this.flag == 3) {
-            OrderBatchDelete(this.oidList).then((res) => {
-              if (res.code == 200) {
-                this.$message({
-                  message: `成功删除${this.pidList.length}件订单`,
-                  type: "success",
-                });
-              }
-            });
-          }
-          if (this.flag == 4) {
-            CartDatchDelete(this.cidList).then((res) => {
-              if (res.code == 200) {
-                this.$message({
-                  message: `成功删除${this.pidList.length}件商品`,
-                  type: "success",
-                });
-              }
-            });
-          }
+      // });
+      // this.$confirm("是否删除选中?", "提示", {
+      //   confirmButtonText: "确定",
+      //   cancelButtonText: "取消",
+      //   type: "warning",
+      // })
+      //   .then(() => {
+      //     // 删除操作
+      //     if (this.flag == 1) {
+      //       UserDatchDelete(this.uidList).then((res) => {
+      //         if (res.code == 200) {
+      //           this.$message({
+      //             message: `成功删除${this.uidList.length}位用户`,
+      //             type: "success",
+      //           });
+      //         }
+      //       });
+      //     }
+      //     if (this.flag == 2) {
+      //       ProductDatchDelete(this.pidList).then((res) => {
+      //         if (res.code == 200) {
+      //           this.$message({
+      //             message: `成功删除${this.pidList.length}件商品`,
+      //             type: "success",
+      //           });
+      //         }
+      //       });
+      //     }
+      //     if (this.flag == 3) {
+      //       OrderBatchDelete(this.oidList).then((res) => {
+      //         if (res.code == 200) {
+      //           this.$message({
+      //             message: `成功删除${this.pidList.length}件订单`,
+      //             type: "success",
+      //           });
+      //         }
+      //       });
+      //     }
+      //     if (this.flag == 4) {
+      //       CartDatchDelete(this.cidList).then((res) => {
+      //         if (res.code == 200) {
+      //           this.$message({
+      //             message: `成功删除${this.pidList.length}件商品`,
+      //             type: "success",
+      //           });
+      //         }
+      //       });
+      //     }
 
-          // 重新获取数据
-          this.reload();
-        })
-        .catch(() => { });
+      //     // 重新获取数据
+      //     this.reload();
+      //   })
+      //   .catch(() => { });
     },
     // 获取分类
     getCategory() {

@@ -58,19 +58,17 @@
         </div>
       </div>
     </div>
-    <ds-footer></ds-footer>
   </div>
 </template>
 
 <script>
-// import Counter from "../../components/Reception/Counter.vue";
-import DsFooter from "../../components/Reception/DsFooter.vue";
-import { CartById, CartDelete, ProductDetail } from "../../api/index";
+import { CartById, CartDelete } from "../../api/cart";
+import { ProductDetail } from "../../api/product";
+
 import CartHeader from "../../components/Reception/CartHeader.vue";
 export default {
   name: "ShoppingCart",
   components: {
-    DsFooter,
     CartHeader,
   },
   data() {
@@ -147,7 +145,7 @@ export default {
     },
     goShoppingIndex() {
       this.$router.push({
-        path: "/Index",
+        path: "/",
       });
     },
     toggleSelection(rows) {
@@ -196,6 +194,7 @@ export default {
 .container {
   max-width: 1200px;
   margin: auto;
+  min-height: 69vh;
 }
 
 .content {
@@ -226,21 +225,21 @@ export default {
 }
 
 .bottom {
-  height: 50px;
-  background-color: #f5f5f5;
+  width: 100%;
+  min-height: 60px;
+  background-color: #fff;
   position: sticky;
-  bottom: 20px;
+  bottom: 0px;
+  box-shadow: 0px -5px 10px #eee;
   z-index: 999;
 
 }
 
 .b-container {
-  background-color: #fff;
   width: 1180px;
   height: 50px;
   margin: auto;
   padding: 10px;
-  box-shadow: 0px -5px 5px #f5f5f5;
 }
 
 .bottom .num {

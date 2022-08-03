@@ -44,7 +44,7 @@ import {
   OrderFindByPhone,
   OrderGetParamsByPhone,
   OrderGetParamsByName
-} from "../../api/index";
+} from "../../api/order";
 import BackstageSearch from '../../components/Backstage/BackstageSearch.vue';
 export default {
   name: "OrderManagement",

@@ -34,14 +34,7 @@
 </template>
 
 <script>
-import {
-    AddressById,
-    AddressInsert,
-    AddressUpdate,
-    AddressDelete,
-    OrderParamsInsertBatch,
-    OrderInsert,
-} from "../../api/index";
+import { AddressInsert, AddressUpdate } from "../../api/user";
 import {
     phoneValidation,
 } from "../../utils/index";

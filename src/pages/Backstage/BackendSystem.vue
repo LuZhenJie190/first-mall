@@ -5,61 +5,45 @@
         <backstage-top />
       </el-header>
       <el-container>
-        <el-aside>
-          <el-menu default-active="1" class="el-menu-vertical-demo" :router="true" :unique-opened="true">
-            <el-menu-item index="/BackendSystem/Home">
-              <i class="el-icon-house"></i>
-              <span slot="title">首页</span>
+        <el-aside width="auto">
+          <el-menu default-active="1" class="el-menu-vertical-demo" :router="true" :unique-opened="true"
+            :collapse="isCollapse">
+            <el-menu-item v-for="item in noChild" :key="item.path" :index="item.path" @click="getRoute(item)">
+              <i :class="item.icon"></i>
+              <span slot="title">{{ item.title }}</span>
             </el-menu-item>
-            <el-submenu index="2">
+            <el-submenu :index="String(index + 1)" v-for="(item, index) in hasChild" :key="index">
               <template slot="title">
-                <i class="el-icon-user"></i>
-                <span slot="title">用户管理</span>
+                <i :class="item.icon"></i>
+                <span slot="title">{{ item.title }}</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="/BackendSystem/UserList">
-                  <i class="el-icon-s-fold"></i>
-                  <span slot="title">用户列表</span>
-                </el-menu-item>
-                <el-menu-item index="/BackendSystem/UserRoot">
-                  <i class="el-icon-setting"></i>
-                  <span slot="title">用户权限</span>
-                </el-menu-item>
-                <el-menu-item index="/BackendSystem/UserAdd">
-                  <i class="el-icon-plus"></i>
-                  <span slot="title">添加用户</span>
+                <el-menu-item :index="item.path" v-for="item in item.children" :key="item.path" @click="getRoute(item)">
+                  <i :class="item.icon"></i>
+                  <span slot="title">{{ item.title }}</span>
                 </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-submenu index="3">
-              <template slot="title">
-                <i class="el-icon-shopping-bag-2"></i>
-                <span slot="title">商品管理</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="/BackendSystem/ProductList">
-                  <i class="el-icon-notebook-2"></i>
-                  <span slot="title">商品列表</span>
-                </el-menu-item>
-                <el-menu-item index="/BackendSystem/ProductAdd">
-                  <i class="el-icon-sell"></i>
-                  <span slot="title">商品发布</span>
-                </el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-menu-item index="/BackendSystem/OrderManagement">
-              <i class="el-icon-tickets"></i>
-              <span slot="title">订单管理</span>
-            </el-menu-item>
-
-            <el-menu-item index="/BackendSystem/CartManagement">
-              <i class="el-icon-shopping-cart-1"></i>
-              <span slot="title">购物车管理</span>
-            </el-menu-item>
           </el-menu>
+          <div class="is-collapse">
+            <el-button @click="changeCollapse" size="mini" :type="isCollapse ? 'default' : 'default'">{{ isCollapse ?
+                "展开" : "收起"
+            }}</el-button>
+          </div>
         </el-aside>
         <el-main>
-          <router-view />
+          <div class="tags" style="margin: 5px 0px 10px 0px">
+            <el-tag v-for="(tag, index) in tagList" :key="tag.name" :closable="index !== 0" :disable-transitions="false"
+              @close="handleClose(tag, index)" style="margin-right: 10px;cursor: pointer;"
+              :effect="$route.name === tag.name ? 'dark' : 'plain'" @click="goPage(tag, index)" size="mini">
+              {{ tag.title }}
+            </el-tag>
+          </div>
+
+          <keep-alive>
+            <router-view />
+          </keep-alive>
+
         </el-main>
       </el-container>
     </el-container>
@@ -75,8 +59,73 @@ export default {
     return {
       vrouter: true,
       isCollapse: false,
+      mainMenu: [
+        { title: "首页", icon: "el-icon-house", name: "home", path: "/BackendSystem/Home" },
+
+        {
+          title: "用户管理", icon: "el-icon-user", children: [
+            { title: "用户列表", icon: "el-icon-s-fold", name: "userlist", path: "/BackendSystem/UserList" },
+            { title: "用户权限", icon: "el-icon-setting", name: "userroot", path: "/BackendSystem/UserRoot" },
+          ]
+        },
+
+
+        {
+          title: "商品管理", icon: "el-icon-shopping-bag-2", children: [
+            { title: "商品列表", icon: "el-icon-notebook-2", name: "productlist", path: "/BackendSystem/ProductList" },
+            { title: "商品发布", icon: "el-icon-sell", name: "productadd", path: "/BackendSystem/ProductAdd" },
+          ]
+        },
+
+
+        { title: "订单管理", icon: "el-icon-tickets", name: "ordermanagement", path: "/BackendSystem/OrderManagement" },
+        { title: "购物车管理", icon: "el-icon-shopping-cart-1", name: "cartmanagement", path: "/BackendSystem/CartManagement" },
+
+
+      ],
+      tagList: [{ title: "首页", icon: "el-icon-house", name: "home", path: "/BackendSystem/Home" },],
+      arr: [{ title: "首页", icon: "el-icon-house", name: "home", path: "/BackendSystem/Home" },]
     };
   },
+  computed: {
+    hasChild() {
+      return this.mainMenu.filter(item => item.children);
+    },
+    noChild() {
+      return this.mainMenu.filter(item => !item.children);
+    }
+  },
+  methods: {
+    changeCollapse() {
+      this.isCollapse = !this.isCollapse;
+    },
+    getRoute(data) {
+      if (data.name === 'home') {
+        return;
+      }
+      this.arr.push(data);
+      this.tagList = [...(new Set(this.arr))]
+    },
+    handleClose(tag, index) {
+      this.tagList.splice(this.tagList.indexOf(tag), 1);
+      // 判断是否最后一位，如果是就往前移一位，不是就无需移动
+      const length = this.tagList.length;
+      if (index === length) {
+        this.$router.push({
+          name: this.tagList[index - 1].name
+        })
+      } else {
+        this.$router.push({
+          name: this.tagList[index].name
+        })
+      }
+    },
+    goPage(val, index) {
+      this.$router.push({
+        name: val.name
+      })
+    }
+  }
 };
 </script>
 
@@ -98,24 +147,31 @@ html {
 }
 
 .el-aside {
-  width: 230px !important;
+  /* width: 230px !important; */
   height: 90vh;
   margin: 5px 5px 0px 5px;
   padding: 15px;
   background: #fff;
   border-radius: 5px;
+  position: relative;
 }
 
 .el-main {
   background: #fff;
   margin: 5px 5px 0px 0px;
-  padding: 20px 10px 10px 10px;
+  padding: 5px 10px 10px 10px;
   border-radius: 5px;
   height: 90vh;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .el-menu {
   border: none;
+}
+
+.is-collapse {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
 }
 </style>

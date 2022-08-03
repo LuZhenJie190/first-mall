@@ -1,67 +1,31 @@
 <template>
   <div class="user-list">
+    <!-- 弹框 -->
+    <el-dialog :title="dialogType === 'add' ? '添加用户' : '编辑信息'" :visible.sync="dialogShow" width="30%">
+      <common-form ref="formData" style="padding:0px 30px" :formData="formData" :formLabel="formLabel" :rules="rules"
+        :inline="false">
+        <el-button @click="handleCancel('formData')">取 消</el-button>
+        <el-button v-if="dialogType === 'add'" type="primary" @click="submitUser('formData')">确 定</el-button>
+        <el-button v-if="dialogType === 'edit'" type="primary" @click="submitUpdate('formData')">确 定</el-button>
+      </common-form>
+    </el-dialog>
     <!-- 搜索 -->
-    <BackstageSearch @searchInput="searchInput" :inputValue="uvalue" :multipleSelection="multipleSelection" :flag="flag"
-      class="search" />
-    <el-table :data="tableData" border stripe ref="multipleTable" height="485"
-      @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="50" />
-      <el-table-column prop="uId" label="ID" width="80" fixed="left" />
-      <el-table-column prop="userIdentity" sortable label="身份" width="120" :formatter="identity" />
-      <el-table-column prop="userName" label="用户名" width="150" />
-      <el-table-column prop="userPwd" label="密码" width="160" />
-      <el-table-column prop="userSex" label="性别" width="100" :formatter="sex" />
-      <el-table-column prop="userEmail" label="邮箱" width="180" />
-      <el-table-column prop="userPhone" label="手机号" width="170" />
-      <el-table-column prop="uCreateTime" label="注册时间" width="180" />
-      <el-table-column label="操作" width="180" fixed="right" align="center">
+    <common-form :formData="formSearchData" :inline="true" :formLabel="formSearchLabel">
+      <el-button type="primary" @click="searchInput">搜索</el-button>
+      <el-button type="primary" @click="addUser">添加用户</el-button>
+      <el-button class="btn-dels" type="danger" @click="batchesDel" :disabled="multipleSelection.length === 0">批量删除
+      </el-button>
+    </common-form>
+    <!-- 表格 -->
+    <common-table :tableData="tableData" :tableLabel="tableLabel" :pagination="pagination" @changePage='getUserList'
+      @handleSelectionChange="handleSelectionChange">
+      <el-table-column label="操作" align="center" width="auto">
         <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="update(scope.row)">修改</el-button>
-          <el-button size="mini" type="danger" @click.native="removeList(scope.row)">删除</el-button>
+          <el-button size="mini" @click="update(scope.row)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="removeUser(scope.row)">删除</el-button>
         </template>
       </el-table-column>
-    </el-table>
-
-    <!-- 分页 -->
-    <div class="pagination">
-      <Paging @pNum="pNum" :pageInfo="pageInfo" />
-    </div>
-
-    <!-- 修改模态框 -->
-    <div class="model-update" v-show="modelShow">
-      <div class="model-bg"></div>
-      <div class="model-context">
-        <i class="el-icon-circle-close" @click="mShow"></i>
-        <div class="form">
-          <el-form :label-position="labelPosition" label-width="100px" :model="form" :rules="rules" ref="form">
-            <el-form-item label="用户名：" prop="userName">
-              <el-input v-model="form.userName"></el-input>
-            </el-form-item>
-            <el-form-item label="密码：" prop="userPwd">
-              <el-input v-model="form.userPwd"></el-input>
-            </el-form-item>
-            <el-form-item label="性别：" prop="userSex">
-              <el-select v-model="form.userSex" placeholder="请选择">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="手机号码：" prop="userPhone">
-              <el-input v-model="form.userPhone"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱：" prop="userEmail">
-              <el-input v-model="form.userEmail"></el-input>
-            </el-form-item>
-            <el-form-item label="注册时间：">
-              <el-input v-model="form.uCreateTime"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('form')">确认修改</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </div>
-    </div>
+    </common-table>
   </div>
 </template>
 
@@ -69,43 +33,22 @@
 import {
   UsergetAll,
   UserRemove,
-  UsergetById,
+  UserDatchDelete,
   UserUpdate,
   UsergetByName,
-} from "../../api/index";
+  UserRegsiter
+} from "../../api/user";
+import CommonTable from '../../components/Backstage/CommonTable.vue';
+import CommonForm from '../../components/Backstage/CommonForm.vue';
+import { getnowDate } from "../../utils/index";
 export default {
+  components: { CommonTable, CommonForm },
   inject: ["reload"],
   name: "UserList",
   data() {
     return {
-      flag: "1",
-      uvalue: "请输入用户名",
-      search: "",
-      tableData: [],
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 8,
-        pageTotal: 0,
-        pageShow: true,
-      },
-
-      ppp: [],
-      modelShow: false,
-      options: [
-        { value: 1, label: "男" },
-        { value: 0, label: "女" },
-      ],
-      labelPosition: "right",
-      form: {
-        uId: "",
-        userName: "",
-        userPwd: "",
-        userSex: "",
-        userPhone: "",
-        userEmail: "",
-        userIdentity: "0",
-        uCreateTime: "",
-      },
+      dialogType: 'add',
+      dialogShow: false,
       rules: {
         userName: [
           { required: true, message: "请输入用户名", trigger: "blur" },
@@ -115,7 +58,7 @@ export default {
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 6, max: 20, message: "不少于6位数字或字母", trigger: "blur" },
         ],
-        userSex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        userSex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
         userPhone: [
           { required: true, message: "请输入手机号", trigger: "blur" },
           {
@@ -131,113 +74,196 @@ export default {
         ],
       },
       multipleSelection: [],
+      tableData: [],
+      tableLabel: [
+        { label: 'ID', prop: 'uId', width: 80, sortable: true },
+        { label: '身份', prop: 'userIdentityLabel', width: 100 },
+        { label: '用户名', prop: 'userName', width: 150 },
+        { label: '密码', prop: 'userPwd', width: 160 },
+        { label: '性别', prop: 'userSexLabel', width: 80 },
+        { label: '邮箱', prop: 'userEmail', width: 180 },
+        { label: '手机号', prop: 'userPhone', width: 130 },
+        { label: '注册时间', prop: 'uCreateTime', width: 170, sortable: true },
+      ],
+      pagination: {
+        total: 0,
+        page: 1,
+        size: 10,
+        loading: true,
+      },
+
+      formSearchData: {
+        search: ''
+      },
+      formSearchLabel: [
+        { label: '', type: 'input', model: 'search', tip: '用户名' }
+      ],
+      formLabel: [
+        { label: '用户名:', model: 'userName', type: 'input' },
+        { label: '密码:', model: 'userPwd', type: 'password' },
+        {
+          label: '性别:', model: 'userSex', type: 'select',
+          opts: [
+            { label: '男', value: 1 },
+            { label: '女', value: 0 },
+          ]
+        },
+        { label: '手机号:', model: 'userPhone', type: 'input' },
+        { label: '邮箱:', model: 'userEmail', type: 'input' },
+        { label: '注册时间:', model: 'uCreateTime', type: 'input', disabled: true }
+      ],
+      formData: {
+        userName: "",
+        userPwd: "",
+        userSex: "",
+        userPhone: "",
+        userEmail: "",
+        userIdentity: "0",
+        uCreateTime: "",
+      },
+
     };
   },
   created() {
     this.getUserList();
-    this.pNum();
-
-    //  this.userData();
   },
   methods: {
+    sortMethod(a, b) {
+      return a - b;
+    },
     // 获取用户列表
     getUserList() {
-      UsergetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then((res) => {
-        this.tableData = res.data.list;
-        this.pageInfo.pageTotal = res.data.total;
+      this.pagination.loading = true;
+      UsergetAll({ pageNum: this.pagination.page, pageSize: this.pagination.size }).then((res) => {
+        this.tableData = this.nameFilter(res);
+        this.pagination.total = res.data.total;
+        this.pagination.loading = false;
       });
     },
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach((row) => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
-    },
+
+    // 多选框
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    // 获取数据展示
-    pNum(val) {
-      if (val == undefined) {
-        val = 1;
-      } else {
-        val == val;
-      }
-      UsergetAll(val, this.pageInfo.pageSize).then((res) => {
-        this.tableData = res.data.list;
-
-      });
-    },
-
-    //重命名
-    identity(row, column) {
-      if (row.userIdentity == 0) return "普通用户"
-      if (row.userIdentity == 1) return "管理员"
-
-    },
-    sex(row, column) {
-      if (row.userSex == 0) return "女"
-      if (row.userSex == 1) return "男"
-
-    },
-
 
     //删除行
-    removeList(data) {
+    removeUser(data) {
       // 拿到表格行的下标，把它赋值给数组的下标，实现根据对象的id删除
       const index = data.uId;
-      // console.log(tableIndex);
-      this.$confirm("此操作将永久删除用户, 是否继续?", "提示", {
+      if (index !== 1) {
+        this.$confirm("此操作将永久删除用户, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+          // 删除操作
+          UserRemove(index);
+          this.$message({
+            message: "删除成功",
+            type: "success",
+          });
+          // 刷新页面
+          this.getUserList();
+
+        });
+      } else {
+        this.$alert('此用户不能删除')
+      }
+
+
+    },
+    // 批量删除
+    batchesDel() {
+      const arrId = [];
+      this.multipleSelection.forEach(item => {
+        arrId.push(item.uId);
+      })
+      arrId.forEach(item => {
+        if (item === 1) {
+          arrId.splice(item, 1);
+        }
+      })
+
+      this.$confirm(`此操作将永久删除${arrId.length}名用户, 是否继续?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
         // 删除操作
-        UserRemove(index);
-        this.$message({
-          message: "删除成功",
-          type: "success",
+        UserDatchDelete(arrId).then(res => {
+          if (res.code === 200) {
+            this.$message({
+              message: "删除成功",
+              type: "success",
+            });
+          }
         });
         // 刷新页面
-        this.reload();
         this.getUserList();
       });
     },
-    // 拿到数据并放到输入框里面
+    // 修改数据
     update(data) {
-      this.modelShow = true;
-      this.form.uId = data.uId;
-      this.form.userName = data.userName;
-      this.form.userPwd = data.userPwd;
-      this.form.userSex = data.userSex;
-      this.form.userPhone = data.userPhone;
-      this.form.userEmail = data.userEmail;
-      this.form.userIdentity = data.userIdentity;
-      this.form.uCreateTime = data.uCreateTime;
-
+      this.dialogType = 'edit';
+      this.formData = data;
+      this.dialogShow = true;
     },
-    // 模态框隐藏
-    mShow() {
-      this.modelShow = false;
+    // 添加用户
+    addUser() {
+      this.dialogType = 'add';
+      this.getTime();
+      this.formData = {
+        userName: "",
+        userPwd: "",
+        userSex: "",
+        userPhone: "",
+        userEmail: "",
+        userIdentity: "0",
+        uCreateTime: "",
+      };
+      this.dialogShow = true;
     },
-    // 点击修改更新数据
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    // 提交添加用户
+    submitUser(formData) {
+      this.$refs[formData].$children[0].validate((valid) => {
         if (valid) {
-          UserUpdate(this.form).then((res) => {
-            console.log(res);
+          UserRegsiter(this.formData).then((res) => {
+            if (res.code == 200) {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              });
+              this.dialogShow = false;
+              this.getUserList();
+            } else {
+              this.$message.error(res.message);
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+
+    // 关闭模态框并重置
+    handleCancel(formData) {
+      this.dialogShow = false;
+      this.$refs[formData].$children[0].resetFields();
+      this.getUserList();
+    },
+
+    // 点击修改更新数据
+    submitUpdate(formName) {
+      this.$refs[formName].$children[0].validate((valid) => {
+        if (valid) {
+          UserUpdate(this.formData).then((res) => {
             if (res.code == 200) {
               this.$message({
                 message: "修改成功",
                 type: "success",
               });
-              //关闭模态框
-              this.modelShow = false;
+              this.dialogShow = false;
               //刷新数据
-              // this.reload();
               this.getUserList();
             }
           });
@@ -246,21 +272,34 @@ export default {
         }
       });
     },
-    // 接收子组件的数据
-    searchInput(val) {
-      this.search = val;
-      if (this.search != "") {
-        UsergetByName(this.search).then((res) => {
-          console.log(res);
-          this.tableData = res.data.list;
-          this.pageInfo.pageTotal = res.data.total;
-          // this.pageInfo.pageShow = false;
+
+    // 名称搜索
+    searchInput() {
+      if (this.formSearchData.search) {
+        UsergetByName(this.formSearchData.search).then((res) => {
+          this.tableData = this.nameFilter(res);
+          this.pagination.total = res.data.total;
         });
       } else {
-        // this.reload();
         this.getUserList();
-        // this.pageInfo.pageShow = true;
       }
+    },
+
+    // 命名格式化
+    nameFilter(res) {
+      const result = res.data.list.map(item => {
+        item.userIdentityLabel = item.userIdentity === 0 ? '普通用户' : '管理员';
+        item.userSexLabel = item.userSex === 0 ? '女' : '男';
+        return item;
+      });
+      return result;
+    },
+
+    // 获取当前时间
+    getTime() {
+      this.timer = setInterval(() => {
+        this.formData.uCreateTime = getnowDate();
+      }, 100);
     },
   },
 };
@@ -268,8 +307,9 @@ export default {
 
 <style scoped>
 .user-list {
-  padding: 20px;
+  height: 100%;
 }
+
 
 .btn-prev,
 .btn-next {
@@ -332,5 +372,6 @@ export default {
 
 .search /deep/ .screen {
   display: none;
+
 }
 </style>

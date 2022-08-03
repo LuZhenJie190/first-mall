@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { ProductDetail } from "../../api/index"
+import { ProductDetail } from "../../api/product"
 export default {
   name: "OrderItem",
   props: ["orderList"],

@@ -66,20 +66,15 @@ export default {
 </script>
 
 <style scoped>
-.personal-menu {
-  height: 100%;
-}
-
 .wrap {
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px 0;
+  padding: 80px 0;
   position: relative;
 }
 
 .container {
   margin-top: 20px;
   display: flex;
+
 }
 
 .conter-left {
@@ -87,8 +82,7 @@ export default {
   top: 0px;
   left: 0px;
   margin-right: 10px;
-  max-width: 276px;
-  width: 30vw;
+  flex: 2;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -122,7 +116,7 @@ export default {
 }
 
 .conter-right {
-  min-width: 62vw;
+  flex: 8;
   background-color: #fff;
   padding: 40px;
   box-sizing: border-box;

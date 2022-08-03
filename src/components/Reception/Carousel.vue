@@ -11,13 +11,8 @@
 <script>
 export default {
   name: "Carousel",
-  props: ["carouselData"],
-  data() {
-    return {
-    };
-  },
-  created() {
-
+  props: {
+    carouselData: Array
   },
   methods: {
     goDetail(data) {

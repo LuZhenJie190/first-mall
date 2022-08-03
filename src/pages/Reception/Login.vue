@@ -81,8 +81,8 @@ import {
   emailValidation,
   getnowDate,
 } from "../../utils/index";
-import { UserLogin, UserRegsiter } from "../../api/index";
-import LoginForm from "../../components/LoginForm.vue";
+import { UserLogin, UserRegsiter } from "../../api/user";
+import LoginForm from "../../components/Reception/LoginForm.vue";
 import Index from './Index.vue';
 export default {
   components: { LoginForm, Index },
@@ -224,11 +224,8 @@ export default {
 
     // 提交表单
     submitForm(formName) {
-
       this.$refs[formName].validate((valid) => {
-
         if (valid) {
-
           this.registerForm.uCreateTime = getnowDate();
           UserRegsiter(this.registerForm).then((res) => {
             console.log(res);
@@ -236,7 +233,7 @@ export default {
               this.$alert(`${res.message}`, {
                 confirmButtonText: "确定",
                 callback: () => {
-                  this.reload();
+                  this.$router.go(0);
                 },
               });
             } else {

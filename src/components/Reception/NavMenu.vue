@@ -1,10 +1,9 @@
 <template>
-  <div>
-    <div class="navmenu">
-      <div class="wrap">
+  <transition>
+    <div :class="{ nav_fixed: fixedShow, navmenu: !fixedShow }" ref="nav">
+      <div class="nav_wrap">
         <h1 class="logo" @click="goIndex">数码购</h1>
-        <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect">
-          <!-- <img class="icon-logo" src="../../assets/logo2.png" alt="" /> -->
+        <el-menu class="el-menu-demo" mode="horizontal">
           <el-menu-item index="1">
             <router-link to="/Index" active-class="active">首页</router-link>
           </el-menu-item>
@@ -20,11 +19,9 @@
           <el-menu-item index="5">
             <router-link to="/Bracelet" active-class="active">智能穿戴</router-link>
           </el-menu-item>
-
-          <!-- <el-menu-item index="6"><router-link to="/MobilePhone">手机</router-link></el-menu-item> -->
         </el-menu>
         <div class="search-input">
-          <input type="text" v-model="searchMsg" placeholder="请输入商品名称" />
+          <input type="text" v-model="searchMsg" placeholder="请输入商品名称" @keyup.enter="goSearch" />
           <i class="el-icon-search"></i>
           <button @click="goSearch">搜索</button>
         </div>
@@ -45,66 +42,13 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="a" class="ditem"><a>个人中心</a></el-dropdown-item>
               <el-dropdown-item command="b" class="ditem"><a>退出登录</a></el-dropdown-item>
+
             </el-dropdown-menu>
           </el-dropdown>
         </div>
       </div>
     </div>
-
-    <transition enter-active-class="animate__animated animate__fadeInDown"
-      leave-active-class="animate__animated animate__fadeOut">
-      <div class="navmenu" ref="nav" v-show="fixedShow">
-        <div class="wrap">
-          <h1 class="logo" @click="goIndex">数码购</h1>
-          <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelect">
-
-            <el-menu-item index="1">
-              <router-link to="/Index" active-class="active">首页</router-link>
-            </el-menu-item>
-            <el-menu-item index="2">
-              <router-link to="/MobilePhone" active-class="active">手机</router-link>
-            </el-menu-item>
-            <el-menu-item index="3">
-              <router-link to="/Notebook" active-class="active">笔记本</router-link>
-            </el-menu-item>
-            <el-menu-item index="4">
-              <router-link to="/Television" active-class="active">电视</router-link>
-            </el-menu-item>
-            <el-menu-item index="5">
-              <router-link to="/Bracelet" active-class="active">智能穿戴</router-link>
-            </el-menu-item>
-
-
-          </el-menu>
-          <div class="search-input">
-            <input type="text" v-model="searchMsg" placeholder="请输入商品名称" />
-            <i class="el-icon-search"></i>
-            <button @click="goSearch">搜索</button>
-          </div>
-
-          <div class="right">
-            <span class="scar">
-              <i class="el-icon-shopping-cart-2"></i>
-              <a @click="goCart">购物车</a>
-            </span>
-            <div class="login" @click="linkToLogin" v-show="uname == null">
-              <i class="el-icon-user"></i>
-              <a>登录</a>
-            </div>
-            <el-dropdown @command="handleCommand" v-show="uname != null">
-              <span class="el-dropdown-link">
-                <a>{{ uname }}</a><i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="a" class="ditem"><a>个人中心</a></el-dropdown-item>
-                <el-dropdown-item command="b" class="ditem"><a>退出登录</a></el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </div>
-        </div>
-      </div>
-    </transition>
-  </div>
+  </transition>
 </template>
 
 <script scoped>
@@ -123,18 +67,14 @@ export default {
       uname: localStorage.getItem("uname"),
     };
   },
-  mounted() {
-    // console.log(this.uname);
-  },
   watch: {
     scrollDistance(val) {
-      if (val >= 80 && this.$route.path != "/PersonalMenu/PersonalIndex"
+      if (val >= 70
+        && this.$route.path != "/PersonalMenu/PersonalIndex"
         && this.$route.path != "/PersonalMenu/MainOrder"
         && this.$route.path != "/PersonalMenu/MainInfo"
         && this.$route.path != "/OrderDetail") {
         this.fixedShow = true;
-        this.$refs.nav.style.position = "fixed";
-        this.$refs.nav.style.top = "0px";
       } else {
         this.fixedShow = false;
       }
@@ -155,18 +95,8 @@ export default {
       })
       this.searchMsg = ""
     },
-
     goIndex() {
-      this.$router.push({ path: "/Index" });
-    },
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    search() {
-      this.inputShow = true;
-    },
-    mainSearch() {
-      console.log(this.searchMsg);
+      this.$router.push({ path: "/" });
     },
     linkToLogin() {
       this.$router.push({
@@ -174,27 +104,25 @@ export default {
       });
     },
     handleCommand(command) {
+      // 个人中心
       if (command == "a") {
         this.$router.push({
           path: "/PersonalMenu/PersonalIndex",
         });
-      } else if (command == "b") {
+      }
+      // 退出登录
+      if (command == "b") {
         localStorage.clear();
-        if (this.$route.path == "/Index") {
-          this.$router.go();
+        if (this.$route.path == "/" || this.$route.path == "/Index") {
+          this.$router.go(0);
         } else {
           this.$router.push({
-            path: "/Index",
+            path: "/",
           });
+          this.$router.go(0);
         }
-
       }
     },
-    // goPersonal() {
-    //   this.$router.push({
-    //     path: "/PersonalMenu/PersonalIndex",
-    //   });
-    // },
     goCart() {
       this.$router.push({
         path: "/ShoppingCart",
@@ -205,6 +133,30 @@ export default {
 </script>
 
 <style scoped>
+.nav_fixed {
+  width: 100%;
+  min-height: 70px;
+  background-color: #fff;
+  z-index: 999;
+  box-shadow: 0px 0px 10px #ccc;
+  position: fixed;
+  top: 0;
+  left: 0;
+  animation: navFixed 0.3s linear forwards;
+}
+
+@keyframes navFixed {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
 .active {
   color: #be0f2d !important;
   border-bottom: 3px solid #be0f2d;
@@ -214,19 +166,26 @@ export default {
 .navmenu {
   width: 100%;
   height: 70px;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.8);
   z-index: 999;
   box-shadow: 0px 0px 10px #ccc;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.wrap {
+.nav_wrap {
   padding: 0px 50px;
+  min-width: 1100px;
   display: grid;
   grid-template-columns: 1fr 3fr 2fr 2fr;
   height: 70px;
   justify-content: center;
   align-items: center;
+}
+
+.el-menu {
+  background-color: transparent;
 }
 
 .el-menu.el-menu--horizontal a,

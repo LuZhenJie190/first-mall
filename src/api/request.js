@@ -1,7 +1,4 @@
 import axios from 'axios'
-import {
-    Loading
-} from 'element-ui';
 // 利用axios对象的方法create创建一个axios实例，进行配置
 const requests = axios.create({
     // 基础路劲

@@ -16,4 +16,11 @@ export default {
 </script>
 
 <style scoped>
+.bread /deep/ .el-breadcrumb__inner.is-link {
+  color: #000;
+}
+
+.bread /deep/ .el-breadcrumb__inner.is-link:hover {
+  color: #be0f2d;
+}
 </style>

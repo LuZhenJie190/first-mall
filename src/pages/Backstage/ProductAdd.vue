@@ -1,102 +1,94 @@
 <template>
   <div id="add-product">
     <div class="addForm">
-      <el-form label-width="100px" :model="form" :rules="rules" ref="form">
-        <el-form-item label="商品类型：" prop="categoryId">
-          <el-radio-group v-model="form.categoryId">
-            <el-radio v-for="item in category" :key="item.pcid" v-model="form.categoryId" :label="item.categoryId"
-              @change="typeRadio(form.categoryId)">{{ item.categoryName }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="商品品牌：" prop="brandId">
-          <el-select v-model="form.brandId" placeholder="请选择">
-            <el-option v-for="item in brand" :key="item.pbid" :label="item.brandName" :value="item.brandId">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="商品名称：" prop="title">
-          <el-input v-model="form.title"></el-input>
-        </el-form-item>
-        <el-form-item label="商品简介：" prop="subTitle">
-          <el-input type="textarea" placeholder="请输入内容" v-model="form.subTitle"></el-input>
-        </el-form-item>
-        <el-form-item label="商品主图：" style="width: 1200px; height: 180px">
-          <el-upload class="upload-demo" action="#" :http-request="upload" list-type="picture-card"
-            :file-list="fileList" :limit="1">
-            <i slot="default" class="el-icon-plus"></i>
-            <div class="el-upload__tip" slot="tip" style="margin-top: -5px; font-weight: bold">
-              只能上传jpg/png文件，限定一张
-            </div>
+      <el-steps :active="active" finish-status="success">
+        <el-step title="步骤 1"></el-step>
+        <el-step title="步骤 2"></el-step>
+      </el-steps>
+
+      <common-form v-show="active === 0" :formData="form" :formLabel="formLabel" :inline="false" labelWidth="100px"
+        @typeRadio="typeRadio" :rules="rules">
+        <!-- 主图区 -->
+        <el-form-item label="主图：">
+          <el-upload action="" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove"
+            :http-request="upload" :file-list="mainUpload.fileList" :limit="1">
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过一张</div>
+            <span>点击添加</span>
           </el-upload>
+          <el-dialog :visible.sync="mainUpload.dialogVisible">
+            <img width="80%" :src="mainUpload.dialogImageUrl" alt="">
+          </el-dialog>
         </el-form-item>
-        <el-form-item label="商品轮播图：" style="width: 1200px; height: 180px">
-          <el-upload class="upload-demo" action="#" :http-request="Cupload" list-type="picture-card"
-            :file-list="fileList" :limit="1">
-            <i slot="default" class="el-icon-plus"></i>
-            <div class="el-upload__tip" slot="tip" style="margin-top: -5px; font-weight: bold">
-              只能上传jpg/png文件，限定一张
-            </div>
+        <!-- 轮播图区 -->
+        <el-form-item label="轮播图：" style="margin-top:10px">
+          <el-upload action="" list-type="picture-card" :on-preview="handleCarouselPictureCardPreview"
+            :on-remove="handleCarouselRemove" :http-request="Cupload" :file-list="carouselUpload.fileList" :limit="1">
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过一张</div>
+            <span>点击添加</span>
           </el-upload>
+          <el-dialog :visible.sync="carouselUpload.dialogVisible">
+            <img width="80%" :src="carouselUpload.dialogImageUrl" alt="">
+          </el-dialog>
         </el-form-item>
+
+        <!-- 设置区 -->
         <el-form-item label="展示设置：">
           <el-checkbox label="轮播图" v-model="form.isCarousel"></el-checkbox>
           <el-checkbox label="每日推荐" v-model="form.isRecommend"></el-checkbox>
           <el-form-item>
-            <!-- v-show="paramsContext === false" -->
-            <el-button type="primary" @click="getParams">展开添加参数</el-button>
           </el-form-item>
         </el-form-item>
-        <div class="paramsContext" v-show="paramsContext" v-loading="loading3">
-          <el-form-item label="详情图片：" style="width: 1200px; height: 180px">
-            <el-upload class="upload-demo" action="#" :http-request="pUpload" list-type="picture-card"
-              :file-list="imageList" :limit="5" multiple>
-              <i slot="default" class="el-icon-plus"></i>
-              <div class="el-upload__tip" slot="tip" style="margin-top: -5px; font-weight: bold">
-                只能上传jpg/png文件，限定五张
-              </div>
-            </el-upload>
-          </el-form-item>
-          <el-form-item label="商品参数：" style="width: 800px">
-            <div class="params">
-              <ul class="params-th">
-                <li>颜色</li>
-                <li>版本</li>
-                <li>价格</li>
-                <li>库存</li>
-              </ul>
-              <ul class="params-tr" v-for="(item, index) in paramList" :key="index">
-                <li>{{ item.pmColor }}</li>
-                <li>{{ item.pmVersion }}</li>
-                <li>{{ item.price }}</li>
-                <li>{{ item.stock }}</li>
-                <i @click="deleteParam(index)" class="el-icon-close dd"></i>
-              </ul>
-              <ul class="params-tr" v-show="paramShow">
-                <li>
-                  <el-input v-model="paramForm.pmColor"></el-input>
-                </li>
-                <li>
-                  <el-input v-model="paramForm.pmVersion"></el-input>
-                </li>
-                <li>
-                  <el-input v-model="paramForm.price"></el-input>
-                </li>
-                <li>
-                  <el-input v-model="paramForm.stock"></el-input>
-                </li>
-              </ul>
-              <el-button class="param-btn" type="primary" plain size="mini" @click="addParams"><i
-                  class="el-icon-plus"></i></el-button>
-            </div>
-          </el-form-item>
-        </div>
+      </common-form>
 
-        <el-form-item style="margin-top: -18px">
-          <el-button class="p_submit" type="primary" @click="submitForm('form')">提交</el-button>
-          <el-button @click="resetForm('form')">重置</el-button>
+      <common-form v-show="active === 1" ref="form" :formData="form" :inline="false" labelWidth="100px">
+        <el-form-item label="销售参数：">
+          <div class="writeParam">
+            <el-input style="width:130px;margin:10px 2px" v-for="item in FormParamLabel" :key="item.label"
+              :type="item.type" :placeholder="'请输入' + item.label" v-model="paramForm[item.prop]" clearable>
+            </el-input>
+            <el-button type="primary" @click="addParams">确定</el-button>
+          </div>
+          <!-- 嵌套表格 -->
+          <el-table :data="tableData" border>
+            <el-table-column v-for="item in FormParamLabel" :key="item.label" :prop="item.prop" :label="item.label">
+              <template slot-scope="scope">
+                <span>{{ scope.row[item.prop] }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="150px">
+              <template slot-scope="scope">
+                <el-button type="default" size="mini" @click="edit(scope.row)">编辑</el-button>
+                <el-button type="danger" size="mini" @click="del(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-form-item>
-      </el-form>
+
+        <el-form-item label="参数图片：">
+          <el-upload class="upload-demo" action="#" :http-request="pUpload" list-type="picture-card"
+            :file-list="imageList" :limit="5" multiple>
+            <i slot="default" class="el-icon-plus"></i>
+            <div class="el-upload__tip" slot="tip" style="margin-top: -5px; font-weight: bold">
+              只能上传jpg/png文件，限定五张
+            </div>
+          </el-upload>
+        </el-form-item>
+      </common-form>
+
+      <div style="text-align: center" v-show="active === 2">
+        <h1 style="line-height:60px;font-size:28px">提交成功</h1>
+      </div>
     </div>
+    <span style="display:flex">
+      <el-button type="primary" style="margin-left:47%" @click="next('form')">{{ active === 2 ? '完成'
+          : '下一步'
+      }}
+      </el-button>
+      <el-button v-if="active === 1" type="primary" @click="prev('form')">上一步
+      </el-button>
+    </span>
+
+
   </div>
 </template>
 
@@ -107,8 +99,10 @@ import {
   ProductImageAdd,
   ProductGetCate,
   CateGetBrand
-} from "../../api/index";
+} from "../../api/product";
 import { getnowDate } from "../../utils/index";
+import CommonForm from "../../components/Backstage/CommonForm.vue";
+
 const COS = require("cos-js-sdk-v5");
 // 填写自己腾讯云cos中的key和id (密钥)
 const cos = new COS({
@@ -116,10 +110,20 @@ const cos = new COS({
   SecretKey: "C8nBI8i13oJXUAajbCVYKp2zf5E8KJ6e", // 身份秘钥
 });
 export default {
+  components: { CommonForm },
   inject: ["reload"],
   name: "ProductAdd",
   data() {
     return {
+      FormParamLabel: [
+        { prop: 'pmColor', label: '颜色', type: 'input' },
+        { prop: 'pmVersion', label: '规格', type: 'input' },
+        { prop: 'price', label: '价格', type: 'number' },
+        { prop: 'stock', label: '数量', type: 'number' },
+
+      ],
+      changeTable: true,
+      tableData: [],
       category: [],
       brand: [],
       fileList: [],
@@ -135,6 +139,26 @@ export default {
         isCarousel: false,
         isRecommend: false,
         carouselImg: ""
+      },
+      formLabel: [
+        { label: "商品类型：", type: "radio", model: "categoryId", radios: [] },
+        { label: "商品品牌：", type: "select", model: "brandId", opts: [] },
+        { label: "商品名称：", type: "input", model: "title" },
+        { label: "商品简介：", type: "textarea", model: "subTitle" },
+      ],
+
+      mainUpload: {
+        fileList: [],
+        dialogVisible: false,
+        dialogImageUrl: '',
+        newImg: ""
+      },
+      carouselUpload: {
+        fileList: [],
+        dialogVisible: false,
+        dialogImageUrl: '',
+        carouselImage: '',
+        newImg: ""
       },
       pageNum: 1,
       pageSize: 100,
@@ -192,6 +216,7 @@ export default {
         productId: "",
       },
       loading3: false,
+      active: 0,
     };
   },
   created() {
@@ -199,14 +224,100 @@ export default {
     this.getTime();
     // 获取分类
     ProductGetCate().then((res) => {
-      this.category = res.data;
+      // console.log(res);
+      this.formLabel[0].radios = this.category = res.data;
+      this.formLabel[0].radios.forEach(item => {
+        item.label = item.categoryName
+        item.value = item.categoryId
+      })
     });
+
   },
 
   beforeDestroy() {
     clearInterval(this.timer);
   },
   methods: {
+    edit(val) {
+
+    },
+    del(val) {
+      this.tableData.splice(val, 1);
+    },
+
+    async next(formName) {
+      // 当第二面时
+      if (this.active == 1) {
+        if (this.form.mainImg != "") {
+          this.form.isCarousel === true ? (this.form.isCarousel = 1) : (this.form.isCarousel = 0);
+          this.form.isRecommend === true ? (this.form.isRecommend = 1) : (this.form.isRecommend = 0);
+          // 当参数和图片不为空时，才调用接口
+          if (this.imageList.length != 0 && this.tableData.length != 0) {
+            const result = await ProductAdd(this.form);
+            if (result.code == 200) {
+              this.tableData.forEach(item => {
+                item.productId = result.data.pid
+              })
+              this.imageList.forEach(item => {
+                item.productId = result.data.pid
+                item.name = result.data.title;
+              })
+              ProductImageAdd(this.imageList);
+              ProductParamsAdd(this.tableData);
+              this.$alert("添加成功");
+            } else {
+              this.$alert(`${result.message}`)
+              this.active = 0;
+            }
+          } else {
+            this.$alert("请添加参数和图片");
+            this.active = 0;
+          }
+        } else {
+          this.$alert("请添加主图")
+          this.active = -1;
+        }
+      }
+      // this.$refs[formName].$children[0].validate((valid) => {
+      //   if (valid) {
+      //     if (this.imageList.length != 0 && this.paramList.length != 0) {
+      //       ProductImageAdd(this.imageList);
+      //       ProductParamsAdd(this.paramList);
+      //       this.$alert("添加成功");
+      //       // 重置表单
+      //       this.reload();
+      //     } else {
+      //       // this.active = 0;
+      //       this.$alert("请添加图片和参数");
+      //     }
+      //   } else {
+      //     return false;
+      //   }
+      // });
+      if (this.active++ === 2) this.active = 0;
+    },
+    prev() {
+      if (this.active >= -1) {
+        this.active--;
+      } else {
+        this.active = -1;
+      }
+
+    },
+    handleCarouselRemove(file, fileList) {
+      // console.log(file, fileList);
+    },
+    handleCarouselPictureCardPreview(file) {
+      this.carouselUpload.dialogImageUrl = file.url;
+      this.carouselUpload.dialogVisible = true;
+    },
+    handleRemove(file, fileList) {
+      // console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {
+      this.carouselUpload.dialogImageUrl = file.url;
+      this.carouselUpload.dialogVisible = true;
+    },
     // 点击添加参数
     getParams() {
       if (this.form.mainImg != "") {
@@ -220,7 +331,7 @@ export default {
         ProductAdd(this.form).then((res) => {
           if (res.code == 200) {
             this.paramForm.productId = res.data.pid;
-            this.paramsContext = true;
+            // this.paramsContext = true;
             this.imageInfo.productId = res.data.pid;
             this.imageInfo.name = res.data.title;
           } else {
@@ -237,21 +348,21 @@ export default {
     },
     // 添加参数到数组
     addParams() {
-      this.paramShow = true;
+      // this.paramShow = true;
       if (
         this.paramForm.pmColor != "" &&
         this.paramForm.pmVersion != "" &&
         this.paramForm.price != "" &&
         this.paramForm.stock != ""
       ) {
-        let pdata = JSON.parse(JSON.stringify(this.paramForm));
-        this.paramList.push(pdata);
-        this.paramShow = false;
-        this.paramForm.pmColor = "";
-        this.paramForm.pmVersion = "";
-        this.paramForm.price = "";
-        this.paramForm.stock = "";
-        // console.log(this.paramList);
+        // let pdata = JSON.parse(JSON.stringify(this.paramForm));
+        this.tableData.push(this.paramForm);
+        // // this.paramShow = false;
+        // this.paramForm.pmColor = "";
+        // this.paramForm.pmVersion = "";
+        // this.paramForm.price = "";
+        // this.paramForm.stock = "";
+        console.log(this.tableData);
       }
     },
     // 获取当前时间
@@ -265,8 +376,13 @@ export default {
       // 根据分类获取品牌
       CateGetBrand(radio).then((res) => {
         res.data.forEach((e) => {
-          e.categoryId == radio ? this.brand = e.productBrand : []
+          e.categoryId === radio ? this.formLabel[1].opts = e.productBrand : [];
+          this.formLabel[1].opts.forEach(item => {
+            item.label = item.brandName
+            item.value = item.brandId
+          })
         })
+
       });
     },
     // 提交添加表单
@@ -292,29 +408,48 @@ export default {
       this.$refs[formName].resetFields();
       this.reload();
     },
-    //  上传图片
+
+    //  上传图片到腾讯云对象储存
     upload(res) {
       if (!res.file) {
         return;
       }
       // 1. 把图片上传到腾讯云COS
       // 执行上传操作
-      cos.putObject(
-        {
-          Bucket: "leo-1310014300" /* 存储桶 */,
-          Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
-          Key: res.file.name /* 文件名 */,
-          StorageClass: "STANDARD", // 上传模式, 标准模式
-          Body: res.file, // 上传文件对象
-          onProgress: (progressData) => {
-            this.percentage = progressData.percent * 100;
-          },
+      cos.putObject({
+        Bucket: "leo-1310014300" /* 存储桶 */,
+        Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
+        Key: res.file.name /* 文件名 */,
+        StorageClass: "STANDARD",
+        Body: res.file,
+        onProgress: (progressData) => {
+          this.percentage = progressData.percent * 100;
         },
-        (error, data) => {
-          this.form.mainImg = "http://" + data.Location;
-          // console.log(this.form);
-        }
-      );
+      }, (error, data) => {
+        this.form.mainImg = "http://" + data.Location;
+
+      });
+    },
+    Cupload(res) {
+      if (!res.file) {
+        return;
+      }
+      // 1. 把图片上传到腾讯云COS
+      // 执行上传操作
+      cos.putObject({
+        Bucket: "leo-1310014300" /* 存储桶 */,
+        Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
+        Key: res.file.name /* 文件名 */,
+        StorageClass: "STANDARD",
+        Body: res.file,
+        onProgress: (progressData) => {
+          this.percentage = progressData.percent * 100;
+        },
+      }, (error, data) => {
+
+        this.form.carouselImg = "http://" + data.Location;
+
+      });
     },
     pUpload(res) {
       this.loading3 = true;
@@ -340,41 +475,27 @@ export default {
             productId: this.imageInfo.productId,
             url: "http://" + data.Location,
           });
-          setTimeout(() => {
-            this.loading3 = false;
-          }, 1000);
+          console.log(this.imageList)
         }
       );
     },
-    Cupload(res) {
-      if (!res.file) {
-        return;
-      }
-      // 1. 把图片上传到腾讯云COS
-      // 执行上传操作
-      cos.putObject(
-        {
-          Bucket: "leo-1310014300" /* 存储桶 */,
-          Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
-          Key: res.file.name /* 文件名 */,
-          StorageClass: "STANDARD", // 上传模式, 标准模式
-          Body: res.file, // 上传文件对象
-          onProgress: (progressData) => {
-            this.percentage = progressData.percent * 100;
-          },
-        },
-        (error, data) => {
-          this.form.carouselImg = "http://" + data.Location;
-          // console.log(this.form);
-        }
-      );
-    },
+
   },
 };
 </script>
 
 <style scoped>
+#add-product {
+  height: 600px;
+  overflow: auto;
+}
+
 .addForm {
+  width: 720px;
+  margin: auto;
+}
+
+/* .addForm {
   width: 40%;
   margin: 0px 100px 0px 50px;
 }
@@ -449,5 +570,5 @@ export default {
 .paramsContext {
   padding-top: 30px;
   width: 75vw;
-}
+} */
 </style>

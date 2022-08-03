@@ -2,7 +2,7 @@
   <div class="recommend">
     <slot></slot>
     <br />
-    <vue-seamless-scroll :data="recommendData1" :class-option="classOption" class="warp">
+    <vue-seamless-scroll :data="recommendData1" :class-option="classOption" style="max-width:1180px;overflow:hidden">
       <ul class="recommend-list">
         <li v-for="(item, index) in recommendData" :key="index" @click="goDetail(item.pid)">
           <div class="recommend-detail">
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { ProductDetail } from "../../api/index"
+import { ProductDetail } from "../../api/product"
 import vueSeamlessScroll from "vue-seamless-scroll";
 export default {
   name: "Recommend",
@@ -43,7 +43,6 @@ export default {
   },
   methods: {
     goDetail(index) {
-      console.log(index);
       ProductDetail(index).then(res => {
         if (res.code == 200) {
           this.$router.push({

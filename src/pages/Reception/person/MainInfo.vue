@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { UsergetById, UserUpdate } from "../../../api/index";
+import { UsergetById, UserUpdate } from "../../../api/user";
 export default {
   name: "MainInfo",
   data() {

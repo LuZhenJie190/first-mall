@@ -1,93 +1,63 @@
 <template>
-  <div class="product-list" v-loading="loading">
+  <div class="product-list">
     <!-- 搜索和批量删除按钮 -->
-    <BackstageSearch @searchInput="searchInput" @brand="searchBrand" :inputValue="ivalue"
-      :multipleSelection="multipleSelection" :flag="flag">
+    <BackstageSearch @searchInput="searchInput" @brand="searchBrand" :inputValue="ivalue" @datchDelete="datchDelete"
+      :screenShow="screenShow">
     </BackstageSearch>
     <!-- 表格 -->
-    <el-table :data="tableData" stripe border ref="multipleTable" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="50" />
-      <el-table-column prop="pid" label="商品ID" width="100" sortable />
-      <el-table-column prop="categoryId" label="品类" width="100" sortable :formatter="formatCate" />
-      <el-table-column prop="brandId" label="品牌" width="100" sortable :formatter="formatBrand" />
-      <el-table-column prop="mainImg" label="主图" width="105">
+    <common-table :tableData="tableData" :tableLabel="tableLabel" :pagination="pagination"
+      @handleSelectionChange="handleSelectionChange" :tableLabelImg="tableLabelImg" @changePage="getProductList">
+      <el-table-column label="操作" width="auto" align="center">
         <template slot-scope="scope">
-          <img :src="scope.row.mainImg" alt="" style="width: 60px; height: 55px" />
+          <el-button type="info" size="mini" @click="detail(scope.row)">参数</el-button>
+          <el-button size="mini" @click="editProduct(scope.row)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="removeProduct(scope.row)">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="名称" width="180" />
-      <el-table-column prop="subTitle" label="简介" width="200" />
-      <el-table-column prop="createTime" label="轮播图" width="120" align="center">
-        <template slot-scope="scope">
-          <el-switch v-model="scope.row.isCarousel" :active-value="1" :inactive-value="0"
-            @change="carouselChange(scope.$index, scope.row)"
-            :disabled="scope.row.carousel == null || scope.row.carousel.carouselImg == null" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="createTime" label="每日推荐" width="120" align="center">
-        <template slot-scope="scope">
-          <el-switch v-model="scope.row.isRecommend" :active-value="1" :inactive-value="0" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" width="160" />
-      <el-table-column label="操作" width="228" fixed="right">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="detail(scope.$index)">详情</el-button>
-          <el-button type="success" size="mini" @click="update(scope.$index)">修改</el-button>
-          <el-button size="mini" type="danger" @click="removeProduct(scope.$index)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    </common-table>
 
-    <!-- 分页 -->
-    <div class="product-page">
-      <Paging @pNum="pNum" :pageInfo="pageInfo" />
-    </div>
-
-    <!-- 修改弹框 -->
-    <el-dialog title="修改商品" :visible.sync="dialogTableVisible">
-      <el-tabs tab-position="left" style="height: 200px" v-model="tabsIndex">
-        <el-tab-pane label="基本信息" name="0">
-          <el-form label-width="100px" v-model="form">
-            <el-form-item label="商品类型：">
-              <el-tag>{{ form.categoryId | cateName }}</el-tag>
-            </el-form-item>
-            <el-form-item label="商品品牌：">
-              <el-tag type="success">{{ form.brandId | cateName }}</el-tag>
-            </el-form-item>
-            <el-form-item label="商品名称：">
-              <el-input v-model="form.title"></el-input>
-            </el-form-item>
-            <el-form-item label="商品简介：">
-              <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 2 }" v-model="form.subTitle"></el-input>
-            </el-form-item>
-            <el-form-item label="创建时间：">
-              <el-input v-model="form.createTime"></el-input>
-            </el-form-item>
-          </el-form>
-        </el-tab-pane>
-        <el-tab-pane label="商品图片" name="1">
-          <el-image :src="form.mainImg"></el-image>
-          <el-upload class="upload-demo" action="#" :http-request="upload" :file-list="fileList" list-type="picture"
-            :limit="1">
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">
-              &nbsp; &nbsp; &nbsp; &nbsp;只能上传jpg/png文件<i>(限制一张，如已选择图片，请务必删除后重新选择)</i>
-            </span>
-          </el-upload>
-        </el-tab-pane>
-        <el-tab-pane label="轮播图" name="2">
-          <el-image :src="form.carouselImg"></el-image>
-          <el-upload class="upload-demo" action="#" :http-request="Cupload" :file-list="fileList" list-type="picture"
-            :limit="1">
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">
-              &nbsp; &nbsp; &nbsp; &nbsp;只能上传jpg/png文件<i>(限制一张，如已选择图片，请务必删除后重新选择)</i>
-            </span>
-          </el-upload>
-        </el-tab-pane>
-      </el-tabs>
-      <el-button type="primary" class="p-update-btn" @click="updateInfo">确定修改</el-button>
+    <el-dialog title="编辑信息" :visible.sync="dialogTableVisible">
+      <common-form :formData="form" :formLabel="formLabel" :inline="true" :labelWidth="labelWidth">
+        <!-- 主图区 -->
+        <el-form-item label="主图：">
+          <div class="uploadImg" style="width:500px;display: flex">
+            <el-image style="width:150px;height: 150px;" :src="form.mainImg">
+              <div slot="error" class="image-slot">
+                <span>暂无图片</span>
+              </div>
+            </el-image>
+            <el-upload action="" list-type="picture-card" :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove" :on-progress="handleProgress" :http-request="upload"
+              :file-list="mainUpload.fileList" :limit="1">
+              <span>点击修改</span>
+            </el-upload>
+            <el-dialog :visible.sync="mainUpload.dialogVisible">
+              <img width="80%" :src="mainUpload.dialogImageUrl" alt="">
+            </el-dialog>
+          </div>
+        </el-form-item>
+        <!-- 轮播图区 -->
+        <el-form-item label="轮播图：" style="margin-top:10px">
+          <div class="uploadImg" style="width:100%;display: flex">
+            <el-image style="width:300px;height: 150px;" :src="carouselUpload.carouselImage">
+              <div slot="error" class="image-slot">
+                <span>暂无图片</span>
+              </div>
+            </el-image>
+            <el-upload action="" list-type="picture-card" :on-preview="handleCarouselPictureCardPreview"
+              :on-remove="handleCarouselRemove" :http-request="Cupload" :file-list="carouselUpload.fileList" :limit="1">
+              <span>点击修改</span>
+            </el-upload>
+            <el-dialog :visible.sync="carouselUpload.dialogVisible">
+              <img width="80%" :src="carouselUpload.dialogImageUrl" alt="">
+            </el-dialog>
+          </div>
+        </el-form-item>
+      </common-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="updateCancel">取 消</el-button>
+        <el-button type="primary" @click="updateInfo">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -95,18 +65,17 @@
 <script>
 import {
   ProductgetAll,
-  ProductGetInfoById,
   ProductRemove,
   ProductUpdate,
   ProductCategory,
   ProductBrandGetByCate,
-  ProductGetTitle,
-  ProductBrand,
   ProductGetByBrand,
   ProductGetInfoByTitle,
-  ProductGetInfoByTitleL
-} from "../../api/index.js";
-
+  ProductDatchDelete
+} from "../../api/product";
+import CommonForm from '../../components/Backstage/CommonForm.vue';
+// import Paging from "../../components/Backstage/Paging.vue";
+import CommonTable from '../../components/Backstage/CommonTable.vue';
 const COS = require("cos-js-sdk-v5");
 // 填写自己腾讯云cos中的key和id (密钥)
 const cos = new COS({
@@ -118,27 +87,54 @@ const cos = new COS({
 
 export default {
   name: "ProductList",
-  inject: ["reload"],
+  components: { CommonTable, CommonForm },
   data() {
     return {
+      mainUpload: {
+        fileList: [],
+        dialogVisible: false,
+        dialogImageUrl: '',
+        newImg: ""
+      },
+      carouselUpload: {
+        fileList: [],
+        dialogVisible: false,
+        dialogImageUrl: '',
+        carouselImage: '',
+        newImg: ""
+      },
+      pagination: {
+        page: 1,
+        size: 10,
+        total: 0,
+        loading: false
+      },
+      formSearchData: {},
+      formSearch: [],
+      tableLabel: [
+        { label: "ID", prop: "pid", width: 80, sortable: true },
+        { label: "品类", prop: "cateLabel", width: 70 },
+        { label: "品牌", prop: "brandLabel", width: 70 },
+        { label: "名称", prop: "title", width: 150 },
+        { label: "简介", prop: "subTitle", width: 'auto' },
+        { label: "创建时间", prop: "createTime", width: 170 },
+        { label: "轮播图", prop: "carouselLabel", width: 70 },
+        { label: "推荐", prop: "recommendLabel", width: 60 },
+
+      ],
+      tableLabelImg: [
+        { label: "主图", prop: "mainImg", width: 105 },
+      ],
       flag: "2",
       tabsIndex: "0",
       ivalue: "请输入商品名称",
       search: "",
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 8,
-        pageTotal: 0,
-        pageShow: true,
-      },
       tableData: [],
       brandList: [],
       categoryList: [],
-      labelPosition: "right",
       oldImg: "",
       oldCImg: "",
-      // 上传图片的缩略图展示列表
-      fileList: [],
+      labelWidth: "120px",
       // 表单信息
       form: {
         pid: "",
@@ -153,18 +149,20 @@ export default {
         isRecommend: "",
         carouselImg: "",
       },
-
+      formLabel: [
+        { label: '类型：', type: 'tag', model: "cateLabel", tagType: "success" },
+        { label: '品牌：', type: 'tag', model: "brandLabel" },
+        { label: '名称：', type: 'input', model: "title" },
+        { label: '简介：', type: 'textarea', model: "subTitle" },
+        { label: '创建时间：', type: 'input', model: "createTime" },
+        { label: '轮播图：', type: 'switch', model: "isCarousel" },
+        { label: '推荐', type: 'switch', model: "isRecommend" },
+      ],
       multipleSelection: [],
-      dialogData: [],
-      carousel: true,
-      recommend: false,
-      loading: true,
       dialogTableVisible: false,
-      cateNames: [],
-      carouselImg: "0",
+      screenShow: true
     };
   },
-
   created() {
     this.getProductList();
     // 获取分类
@@ -172,38 +170,101 @@ export default {
       this.categoryList = res.data;
     });
   },
-  filters: {
-    cateName(val) {
-      if (val == 1001) return "手机";
-      if (val == 1002) return "笔记本";
-      if (val == 1003) return "电视";
-      if (val == 1004) return "智能穿戴";
-      if (val == 101) return "小米";
-      if (val == 102) return "华为";
-      if (val == 103) return "VIVO";
-      if (val == 104) return "OPPO";
-      if (val == 201) return "联想";
-      if (val == 202) return "惠普";
-      if (val == 301) return "华为";
-      if (val == 302) return "创维";
-
-      if (val == 401) return "小米";
-      if (val == 402) return "荣耀";
-
-    },
-  },
   methods: {
+    // 批量删除
+    datchDelete() {
+      if (this.multipleSelection.length) {
+        const result = this.multipleSelection.map(item => {
+          return item.pid;
+        })
+        this.$confirm("是否删除选中?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+          ProductDatchDelete(result).then(res => {
+            if (res.code == 200) {
+              this.$message({
+                message: `成功删除${result.length}件商品`,
+                type: "success",
+              });
+              this.getProductList();
+            }
+          })
+        })
+      } else {
+        this.$alert("至少勾选一项")
+      }
+    },
+
+    handleCarouselRemove(file, fileList) { },
+
+    handleCarouselPictureCardPreview(file) {
+      this.carouselUpload.dialogImageUrl = file.url;
+      this.carouselUpload.dialogVisible = true;
+    },
+
+    handleRemove(file, fileList) { },
+
+    handlePictureCardPreview(file) {
+      this.carouselUpload.dialogImageUrl = file.url;
+      this.carouselUpload.dialogVisible = true;
+    },
+    handleProgress(event, file, fileList) {
+      console.log(file);
+    },
+    // 命名格式化
+    nameFilter1(resArr) {
+      const result = resArr.map(item => {
+        item.isCarousel === 0 ? item.carouselLabel = '×' : item.carouselLabel = '√';
+        item.isRecommend === 0 ? item.recommendLabel = '×' : item.recommendLabel = '√';
+
+        if (item.categoryId === 1001) {
+          item.cateLabel = "手机"
+        } else if (item.categoryId === 1002) {
+          item.cateLabel = "笔记本"
+        } else if (item.categoryId === 1003) {
+          item.cateLabel = "电视"
+        } else if (item.categoryId === 1004) {
+          item.cateLabel = "手环"
+        }
+
+        if (item.brandId == 101) {
+          item.brandLabel = "小米"
+        } else if (item.brandId == 102) {
+          item.brandLabel = "华为"
+        } else if (item.brandId == 102 || item.brandId == 402) {
+          item.brandLabel = "华为"
+        } else if (item.brandId == 103) {
+          item.brandLabel = "VIVO"
+        } else if (item.brandId == 104) {
+          item.brandLabel = "OPPO"
+        } else if (item.brandId == 201) {
+          item.brandLabel = "xxx"
+        } else if (item.brandId == 202) {
+          item.brandLabel = "aaa"
+        } else if (item.brandId == 301) {
+          item.brandLabel = "ccc"
+        } else if (item.brandId == 302) {
+          item.brandLabel = "创维"
+        } else if (item.brandId == 401) {
+          item.brandLabel = "sss"
+        }
+        return item;
+      });
+      return result;
+    },
+
     // 获取商品列表
     getProductList() {
-      ProductgetAll(this.pageInfo.pageNum, this.pageInfo.pageSize).then(
-        (res) => {
-          console.log(res);
-          this.tableData = res.data.list;
-          this.pageInfo.pageTotal = res.data.total;
-          this.loading = false;
-        }
-      );
+      this.pagination.loading = true;
+      ProductgetAll({ pageNum: this.pagination.page, pageSize: this.pagination.size }).then((res) => {
+        this.tableData = this.nameFilter1(res.data.list);
+        this.pagination.total = res.data.total;
+        this.pagination.loading = false;
+      });
     },
+
     // 点击分类重新获取品牌
     typeRadio(radio) {
       this.form.brandId = "";
@@ -211,47 +272,34 @@ export default {
         this.brandList = res.data[0].productBrand;
       });
     },
-    sortSelect(brand) { },
+
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
           this.$refs.multipleTable.toggleRowSelection(row);
         });
-      } else {
+      }
+      else {
         this.$refs.multipleTable.clearSelection();
       }
     },
+
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      //console.log(this.multipleSelection);
-    },
-    // 获取数据并展示
-    pNum(val) {
-      if (val == undefined) {
-        val = 1;
-      } else {
-        val == val;
-      }
-      ProductgetAll(val, this.pageInfo.pageSize).then((res) => {
-        this.tableData = res.data.list;
-      });
     },
 
     // 商品详情
-    detail(pid) {
-      let i = pid;
-      let index = this.tableData[i].pid;
+    detail(row) {
       this.$router.push({
         path: "/BackendSystem/ProductDetail",
         query: {
-          pid: index,
+          pid: row.pid,
         },
       });
     },
+
     // 删除商品
-    removeProduct(pid) {
-      let index = pid;
-      let listIndex = this.tableData[index].pid;
+    removeProduct(row) {
       this.$confirm("此操作将永久删除此商品, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -259,7 +307,7 @@ export default {
       })
         .then(() => {
           // 删除操作
-          ProductRemove(listIndex).then((res) => {
+          ProductRemove(row.pid).then((res) => {
             // 重新获取数据
             this.getProductList();
           });
@@ -272,87 +320,107 @@ export default {
     },
 
     // 修改按钮
-    update(pid) {
+    editProduct(row) {
+      console.log(row);
       // 显示dialog
       this.dialogTableVisible = true;
       this.fileList = [];
-      // 根据ID获取数据
-      let pData = this.tableData[pid];
-      console.log(pData);
-      this.form.categoryId = pData.categoryId;
-      this.form.brandId = pData.brandId;
-      this.form.pid = pData.pid;
-      this.form.mainImg = pData.mainImg;
-      this.form.carouselImg = pData.carousel.carouselImg;
-      this.form.title = pData.title;
-      this.form.subTitle = pData.subTitle;
-      this.form.createTime = pData.createTime;
-      this.form.isCarousel = pData.isCarousel;
-      this.form.isRecommend = pData.isRecommend;
+      this.carouselUpload.carouselImage = row.carousel.carouselImg;
+      const result = this.nameFilter1([row]);
+      this.form = { ...result }[0];
+      this.form.isCarousel === 0 ? this.form.isCarousel = false : this.form.isCarousel = true;
+      this.form.isRecommend === 0 ? this.form.isRecommend = false : this.form.isRecommend = true;
+
     },
+
     // 确定修改信息，提交表单
     updateInfo() {
       if (this.form.title == "" || this.form.createTime == "") {
         this.$alert("不能为空");
-      } else {
-        // 重置图片列表
-        this.fileList = [];
-        // 重置选项
-        this.tabsIndex = "0";
-        this.form.mainImg = this.oldImg;
-        this.form.carouselImg = this.oldCImg;
-        ProductUpdate(this.form);
-        this.$message({
-          message: "修改成功",
-          type: "success",
-        });
-        // 重新获取数据
-        this.getProductList();
-        this.reload();
-        this.pageInfo.pageNum = 1;
-        // 模态框显示
-        this.dialogTableVisible = false;
       }
+      else {
+        // 重置图片列表
+        this.mainUpload.fileList = [];
+        this.carouselUpload.fileList = [];
+        this.form.isCarousel === false ? this.form.isCarousel = 0 : this.form.isCarousel = 1;
+        this.form.isRecommend === false ? this.form.isRecommend = 0 : this.form.isRecommend = 1;
+        this.form.mainImg = this.mainUpload.newImg;
+        this.form.carouselImg = this.carouselUpload.newImg;
+        console.log(this.form);
+        ProductUpdate(this.form).then(res => {
+          if (res.code === "200") {
+            this.$message({
+              message: "修改成功",
+              type: "success",
+            });
+            // 重新获取数据
+            this.getProductList();
+            this.updateCancel();
+          }
+
+        });
+      }
+
     },
 
-    // 分类格式化
-    formatCate(row, column) {
-      if (row.categoryId == 1001) return "手机";
-      if (row.categoryId == 1002) return "笔记本";
-      if (row.categoryId == 1003) return "电视";
-      if (row.categoryId == 1004) return "手环";
+    // 取消修改
+    updateCancel() {
+      this.dialogTableVisible = false;
+      this.getProductList();
     },
 
-    // 品牌格式化
-    formatBrand(row, column) {
-      if (row.brandId == 101) return "小米";
-      if (row.brandId == 102) return "华为";
-      if (row.brandId == 103) return "VIVO";
-      if (row.brandId == 104) return "OPPO";
-      if (row.brandId == 201) return "xxx";
-      if (row.brandId == 202) return "aaa";
-      if (row.brandId == 301) return "ccc";
-      if (row.brandId == 401) return "sss";
-    },
-
+    // // 分类格式化
+    // formatCate(row, column) {
+    //   if (row.categoryId == 1001)
+    //     return "手机";
+    //   if (row.categoryId == 1002)
+    //     return "笔记本";
+    //   if (row.categoryId == 1003)
+    //     return "电视";
+    //   if (row.categoryId == 1004)
+    //     return "手环";
+    // },
+    // // 品牌格式化
+    // formatBrand(row, column) {
+    //   if (row.brandId == 101)
+    //     return "小米";
+    //   if (row.brandId == 102)
+    //     return "华为";
+    //   if (row.brandId == 103)
+    //     return "VIVO";
+    //   if (row.brandId == 104)
+    //     return "OPPO";
+    //   if (row.brandId == 201)
+    //     return "xxx";
+    //   if (row.brandId == 202)
+    //     return "aaa";
+    //   if (row.brandId == 301)
+    //     return "ccc";
+    //   if (row.brandId == 401)
+    //     return "sss";
+    // },
     // 设置轮播图
     carouselChange(val, data) {
       if (data.carousel.carouselImg === null) {
-        this.$alert("请先到修改中添加轮播图")
-      } else {
+        this.$alert("请先到修改中添加轮播图");
+      }
+      else {
         ProductUpdate(this.tableData[val]).then((res) => {
           if (res.code == 200) {
             this.getProductList();
           }
         });
       }
-
     },
+
     // 设置推荐
     recommendChange(val) {
-      console.log(val);
+      ProductUpdate(this.tableData[val]).then((res) => {
+        if (res.code == 200) {
+          this.getProductList();
+        }
+      });
     },
-
     //  上传图片到腾讯云对象储存
     upload(res) {
       if (!res.file) {
@@ -360,82 +428,76 @@ export default {
       }
       // 1. 把图片上传到腾讯云COS
       // 执行上传操作
-      cos.putObject(
-        {
-          Bucket: "leo-1310014300" /* 存储桶 */,
-          Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
-          Key: res.file.name /* 文件名 */,
-          StorageClass: "STANDARD", // 上传模式, 标准模式
-          Body: res.file, // 上传文件对象
-          onProgress: (progressData) => {
-            this.percentage = progressData.percent * 100;
-          },
+      cos.putObject({
+        Bucket: "leo-1310014300" /* 存储桶 */,
+        Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
+        Key: res.file.name /* 文件名 */,
+        StorageClass: "STANDARD",
+        Body: res.file,
+        onProgress: (progressData) => {
+          this.percentage = progressData.percent * 100;
         },
-        (error, data) => {
-          this.oldImg = "http://" + data.Location;
-        }
-      );
+      }, (error, data) => {
+        this.mainUpload.newImg = "http://" + data.Location;
+      });
     },
-
     Cupload(res) {
       if (!res.file) {
         return;
       }
       // 1. 把图片上传到腾讯云COS
       // 执行上传操作
-      cos.putObject(
-        {
-          Bucket: "leo-1310014300" /* 存储桶 */,
-          Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
-          Key: res.file.name /* 文件名 */,
-          StorageClass: "STANDARD", // 上传模式, 标准模式
-          Body: res.file, // 上传文件对象
-          onProgress: (progressData) => {
-            this.percentage = progressData.percent * 100;
-          },
+      cos.putObject({
+        Bucket: "leo-1310014300" /* 存储桶 */,
+        Region: "ap-guangzhou" /* 存储桶所在地域，必须字段 */,
+        Key: res.file.name /* 文件名 */,
+        StorageClass: "STANDARD",
+        Body: res.file,
+        onProgress: (progressData) => {
+          this.percentage = progressData.percent * 100;
         },
-        (error, data) => {
-          this.oldCImg = "http://" + data.Location;
-
-        }
-      );
+      }, (error, data) => {
+        this.carouselUpload.newImg = "http://" + data.Location;
+      });
     },
     // 搜索商品
     searchInput(val) {
       this.loading = true;
       this.search = val;
-      if (this.search != "") {
+      if (this.search) {
         ProductGetInfoByTitle(this.search).then((res) => {
           this.tableData = res.data;
-          this.pageInfo.pageShow = false
+          this.nameFilter1(this.tableData)
+          this.pagination.total = res.data.length;
+          this.screenShow = false;
           this.loading = false;
         });
-      } else {
+      }
+      else {
         this.getProductList();
-        this.pageInfo.pageShow = true
+        this.screenShow = true;
       }
     },
+
     // 筛选商品
     searchBrand(val) {
-      if (val != "") {
+      if (val) {
         ProductGetByBrand(val).then((res) => {
           // 不是空就获取数据
-          if (res != "") {
-            this.tableData = res[0].product;
+          if (res) {
             this.loading = true;
-            this.pageInfo.pageShow = false;
-            setTimeout(() => {
-              this.loading = false;
-            }, 500);
-          } else {
-            this.tableData = [];
-            this.pageInfo.pageShow = false;
+            this.tableData = res[0].product;
+            this.pagination.total = this.tableData.length;
+            this.nameFilter1(this.tableData);
+
+            this.loading = false;
           }
         });
-      } else {
+      }
+      else {
         // 重新获取数据
         this.getProductList();
-        this.pageInfo.pageShow = true;
+
       }
     },
   },
@@ -443,85 +505,15 @@ export default {
 </script>
 
 <style scoped>
-.product-list /deep/ .el-table thead {
-  color: gray;
-}
-
 .product-list {
-  padding: 20px;
+  height: 100%;
 }
 
-.product-list /deep/ .el-table--border::after,
-.product-list /deep/ .el-table--group::after,
-.product-list /deep/ .el-table::before {
-  z-index: 0;
-}
-
-.product-list /deep/.el-form {
-  position: relative;
-  top: 30px;
-  right: 50px;
-  width: 70%;
-  height: 351px;
-  margin: auto;
-}
-
-.product-list /deep/.el-icon-circle-close:hover {
-  color: #f56c6c;
-}
-
-.product-list /deep/.el-tabs__nav-scroll {}
-
-.product-list /deep/.el-tabs--left .el-tabs__nav-wrap.is-left::after {
-  height: 0px;
-}
-
-.product-list /deep/.el-tabs {
-  height: 80% !important;
-  position: relative;
-}
-
-.product-list /deep/.el-image {
-  position: relative;
-  top: 0px;
-  left: 50px;
-  width: 150px;
-  height: 150px;
-  border: 1px solid #eee;
-  border-radius: 5px;
-}
-
-.product-list /deep/.el-form {
-  margin-top: -30px;
-}
-
-.product-list /deep/.upload-demo {
-  padding: 40px 50px 0px 50px;
-}
-
-.p-update-btn {
-  width: 180px;
-  position: relative;
-  left: 250px;
-  top: 20px;
-}
-
-.product-page {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
+.el-image {
+  padding-right: 10px;
 }
 
 .product-list /deep/ .el-dialog {
-  margin-top: 5vh !important;
-  height: 500px;
-  width: 50%;
-  border-radius: 5px;
-}
-
-.product-list /deep/ .upload-demo {
-  width: 500px;
-  height: 145px;
-  padding: 20px 0px 0px 30px;
+  margin-top: 2vh !important;
 }
 </style>

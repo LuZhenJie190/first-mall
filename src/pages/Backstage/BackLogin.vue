@@ -5,15 +5,18 @@
             <h1 class="title">数码购后台管理系统</h1>
             <el-form label-width="80px" :model="form" status-icon ref="form" @keyup.enter.native="login('form')">
                 <el-form-item label="帐号：" prop="userPhone">
-                    <input type="text" :class="{ warn: nameShow }" v-model="form.userPhone" placeholder="请输入手机号" />
+                    <input ref="thePhone" type="input" :class="{ warn: nameShow }" v-model="form.userPhone"
+                        placeholder="请输入手机号(测试帐号13533752163)" clearable />
                 </el-form-item>
                 <p v-if="nameShow" class="tip">用户名不存在</p>
                 <el-form-item label="密码：" prop="userPwd">
-                    <input type="password" :class="{ warn: pwdShow }" v-model="form.userPwd" placeholder="请输入密码" />
+                    <input type="password" :class="{ warn: pwdShow }" v-model="form.userPwd"
+                        placeholder="请输入密码(测试密码123456)" clearable />
                 </el-form-item>
                 <p v-if="pwdShow" class="tip">密码错误</p>
                 <el-form-item>
-                    <el-button type="primary" class="loginbtn" @click="login('form')">登录</el-button>
+                    <el-button type="primary" class="loginbtn" @click="login('form')" @keydown.enter="login('form')">登录
+                    </el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -21,7 +24,7 @@
 </template>
 
 <script>
-import { UserLogin } from "../../api/index";
+import { UserLogin } from "../../api/user";
 export default {
     name: "BackLogin",
     data() {
@@ -34,10 +37,12 @@ export default {
             pwdShow: false,
         };
     },
+    mounted() {
+        this.$refs.thePhone.focus();
+    },
     methods: {
         login() {
             UserLogin(this.form).then((res) => {
-
                 if (res.code == 200) {
                     if (res.data.userIdentity == 1) {
                         this.$router.replace({

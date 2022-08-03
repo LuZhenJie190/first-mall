@@ -27,11 +27,8 @@
 </template>
 
 <script>
-import {
-  CartById,
-  OrderFindByPhone,
-  CartGetALL
-} from "../../api/index";
+import { CartById, CartGetALL } from "../../api/cart";
+import { OrderFindByPhone } from "../../api/order"
 import BackstageSearch from '../../components/Backstage/BackstageSearch.vue';
 export default {
   name: "CartManagement",
@@ -56,7 +53,6 @@ export default {
     // 获取数据
     getOrderList() {
       CartGetALL().then((res) => {
-        console.log(res);
         this.tableData = res.data;
       });
     },
@@ -65,7 +61,6 @@ export default {
       this.search = val;
       if (this.search != "") {
         OrderFindByPhone(val).then((res) => {
-          console.log(res);
           this.tableData = res;
           this.pageShow = false;
         });

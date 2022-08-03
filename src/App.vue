@@ -1,7 +1,10 @@
 <template>
-  <div class="app">
+  <div id="app">
     <nav-menu v-if="!$route.meta.showNav" :scrollDistance="scrollDistance" />
-    <router-view v-if="isRouterAlive" />
+    <keep-alive :include="['Index', 'ProductSearch']">
+      <router-view />
+    </keep-alive>
+    <ds-footer v-show="$route.meta.footerShow"></ds-footer>
     <div class="back">
       <el-button type="danger" plain v-show="backTop" @click="goback"><i class="el-icon-top"></i></el-button>
     </div>
@@ -11,10 +14,11 @@
 
 <script>
 import NavMenu from "./components/Reception/NavMenu.vue";
+import DsFooter from "./components/Reception/DsFooter.vue";
 
 export default {
-  components: { NavMenu },
-  name: "App",
+  components: { NavMenu, DsFooter },
+  name: "app",
   provide() {
     return {
       reload: this.reload,
@@ -68,12 +72,18 @@ export default {
 </script>
 
 <style>
-.app {
+#app {
   background: #f5f5f5;
+  width: 100%;
   height: 100%;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   font-size: 14px;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
 }
 
 * {

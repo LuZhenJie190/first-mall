@@ -6,8 +6,7 @@
     </div>
     <div class="product-context">
       <div class="product-right">
-        <cards-list class="card" v-for="(p1, index) in recommendData.slice(0, 8)" :key="index"
-          @click.native="goDetail(p1)">
+        <card class="card" v-for="(p1, index) in products.slice(0, 8)" :key="index" @click.native="goDetail(p1)">
           <template slot="image">
             <img class="images cardimg" :src="p1.mainImg" />
           </template>
@@ -20,39 +19,25 @@
           <template slot="price">
             <h4 class="price">{{ p1.productParams[0].price }} 元</h4>
           </template>
-        </cards-list>
+        </card>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import CardsList from "./Card.vue";
+import Card from "./Card.vue";
 export default {
-  components: { CardsList },
+  components: { Card },
   name: "ProductShow",
-  props: ["sorts", "products"],
+  props: ['products'],
   data() {
     return {
       recommendData: [],
     };
   },
-  created() {
-
-  },
-  watch: {
-    // 监听props的数据，解决无法读取到父组件数据的问题
-    products: {
-      deep: true,
-      handler(newVal, oldVal) {
-        this.recommendData = this.products
-
-      },
-    },
-  },
   methods: {
     goDetail(data) {
-      // console.log(data);
       this.$router.push({
         name: "productinfo",
         params: {
@@ -76,8 +61,8 @@ export default {
 
 .card {
   padding: 0;
-  row-gap: 0px;
   width: 100%;
+  min-width: 280px;
   height: 350px;
 }
 
@@ -102,20 +87,16 @@ export default {
 }
 
 .productshow {
-  margin-top: 60px;
+  padding: 30px 0;
   width: 100%;
-  display: grid;
-  grid-template-rows: 50px 1fr;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
 }
 
 .product-right {
+  width: 100%;
+  min-width: 1180px;
   display: grid;
-  width: 1200px;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 1fr);
   column-gap: 15px;
   row-gap: 15px;
 }

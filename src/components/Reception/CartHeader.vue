@@ -40,11 +40,11 @@ export default {
         });
       } else if (command == "b") {
         localStorage.clear();
-        if (this.$route.path == "/Index") {
+        if (this.$route.path == "/") {
           this.$router.go();
         } else {
           this.$router.push({
-            path: "/Index",
+            path: "/",
           });
         }
 
@@ -52,7 +52,7 @@ export default {
     },
     goShopping() {
       this.$router.push({
-        path: "/Index",
+        path: "/",
       });
     },
     goOrder() {
@@ -92,6 +92,7 @@ export default {
   color: #be0f2d;
   font-size: 30px;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .left p,

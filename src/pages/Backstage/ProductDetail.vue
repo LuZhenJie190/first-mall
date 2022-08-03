@@ -83,7 +83,7 @@ import {
   ProductParamsDelete,
   ProductParamsAdd,
   ProductParamsUpdate,
-} from "../../api/index.js";
+} from "../../api/product";
 export default {
   name: "ProductDetail",
   inject: ["reload"],
@@ -139,7 +139,7 @@ export default {
             message: "添加成功",
           });
           this.dialogTableVisible = false;
-          this.reload();
+          this.getDetail();
         }
       });
     },
