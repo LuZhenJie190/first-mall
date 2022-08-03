@@ -110,7 +110,7 @@ export default {
           path: "/PersonalMenu/PersonalIndex",
         });
       }
-      // 退出登录
+      // 退出登录并刷新
       if (command == "b") {
         localStorage.clear();
         if (this.$route.path == "/" || this.$route.path == "/Index") {
